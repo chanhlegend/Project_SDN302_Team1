@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign In</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/login.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="left">
+        <img src="/img/Background.png" />
+        <p>
+          To keep connected with the largest e-commerce platform in the world.
+        </p>
+      </div>
+      <div class="right">
+        <div class="logo">
+          <img src="/img/logo.png" alt="Eco Hand logo" />
+          <h1>ECO HAND</h1>
+        </div>
+        <div class="sign-in">
+          <% if (typeof err !== 'undefined' && err) { %>
+          <div class="errors">
+            <p style="color: red;"><%= err %></p>
+          </div>
+          <% } %>
+          <h2>Đăng Nhập</h2>
+          <form action="/login" method="post">
+            <label for="username">Tên đăng nhập</label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              placeholder="Địa chỉ Email"
+              required
+            />
+            <label for="password">Mật khẩu</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Mật khẩu"
+              required
+            />
+            <div class="remember">
+              <a href="#" class="forgot">Quên mật khẩu?</a>
+            </div>
+            <button type="submit">Đăng nhập</button>
+          </form>
+          <div class="signup">
+            Chưa có tài khoản? <a href="/signup">Đăng kí</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
