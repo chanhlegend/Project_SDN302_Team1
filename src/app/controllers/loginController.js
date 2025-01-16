@@ -2,22 +2,6 @@ const User = require('../models/User')
 const { mutipleMongoeseToObject } = require('../../util/Mongoese')
 
 class loginController {
-    listUser(req, res, next) {
-        User.find({})
-            .then(users => {
-                res.json({
-                    message: 'success',
-                    data: users
-                })
-            })
-            .catch(err => {
-                res.json({
-                    message: 'failure',
-                    data: []
-                })
-            })
-    }
-
     postLogin(req, res, next) {
         const { username, password } = req.body
         User.findOne({ username: username })

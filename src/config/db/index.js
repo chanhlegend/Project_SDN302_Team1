@@ -1,15 +1,26 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+require('dotenv').config({ path: './src/.env' });
 
+// Lấy URL từ .env
+const { MONGO_URI } = process.env;
+
+// Hàm kết nối đến MongoDB
 async function connect() {
-    try {
-        await mongoose.connect('mongodb://127.0.0.1:27017/SDN302_Team1', {
- 
-        });
-        console.log('connect successfully')
-    } catch (error) {
-        console.log('connect failure')
+    if (!MONGO_URI) {
+        console.error('MONGO_URI is not defined in .env file');
+        return;
+    }
 
+    try {
+        mongoose.set('strictQuery', false); // Tùy chọn: giảm cảnh báo trong phiên bản mới
+        await mongoose.connect(MONGO_URI, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
+        console.log('Connected to MongoDB successfully');
+    } catch (error) {
+        console.error('Failed to connect to MongoDB:', error.message);
     }
 }
 
-module.exports = { connect }
+module.exports = { connect };
