@@ -3,7 +3,7 @@ const morgan = require('morgan')
 const path = require('path')
 const app = express()
 const route = require('./routes')
-const port = 3000
+require('dotenv').config({ path: './src/.env' });
 
 const db = require('./config/db')
 
@@ -28,6 +28,7 @@ app.use(morgan('combined'));
 // Routes init
 route(app);
 
-app.listen(port, () => {
-  console.log(`app listening on port ${port}`);
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`app listening on port ${PORT}`);
 });
