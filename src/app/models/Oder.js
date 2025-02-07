@@ -16,16 +16,12 @@ const Order = new Schema({
         required: true,
     },
 
-    date: {
-        type: Date,
-        default: Date.now
-    },
-
     price:{
         type: String,
         required: true,
         default: 0
-    }
-})
+    },
+    
+}, { timestamps: true })
 exports.module = mongoose.model('Order', Order);
 
