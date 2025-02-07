@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign In</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        font-family: "Roboto", sans-serif;
+        display: flex;
+        height: 100vh;
+        justify-content: center;
+        align-items: center;
+        background-color: #f5f5f5;
+      }
+      .container {
+        display: flex;
+        width: 80%;
+        max-width: 1200px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+      }
+      .left {
+        flex: 1;
+        background-color: #f5e6d8;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        padding: 20px;
+      }
+      .left img {
+        max-width: 100%;
+        height: auto;
+      }
+      .left p {
+        color: #fff;
+        font-size: 24px;
+        font-weight: 500;
+        text-align: center;
+        margin-top: 20px;
+      }
+      .right {
+        flex: 1;
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        margin-bottom: 40px;
+      }
+      .logo img {
+        width: 60px;
+        height: 50px;
+        margin-right: 10px;
+      }
+      .logo h1 {
+        font-size: 24px;
+        font-weight: 700;
+        margin: 0;
+      }
+      .sign-in {
+        max-width: 400px;
+        width: 100%;
+      }
+      .sign-in h2 {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 20px;
+      }
+      .sign-in label {
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 5px;
+        display: block;
+      }
+      .sign-in input {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 14px;
+      }
+      .sign-in button {
+        width: 100%;
+        padding: 10px;
+        background-color: #000;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+      .sign-in .signup {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 14px;
+      }
+      .otp-inputs {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+      .otp-inputs input {
+        width: 60px;
+        height: 60px;
+        font-size: 2rem;
+        text-align: center;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      @media (max-width: 768px) {
+        .container {
+          flex-direction: column;
+        }
+        .left,
+        .right {
+          flex: none;
+          width: 100%;
+        }
+        .left,
+        .right {
+          padding: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="left">
+        <img src="/img/Background.png" />
+        <p>
+          To keep connected with the largest e-commerce platform in the world.
+        </p>
+      </div>
+      <div class="right">
+        <div class="logo">
+          <img src="/img/logo.png" alt="Eco Hand logo" />
+          <h1>ECO HAND</h1>
+        </div>
+        <div class="sign-in">
+          <% if (typeof err !== 'undefined' && err) { %>
+          <div class="errors">
+            <p style="color: red"><%= err %></p>
+          </div>
+          <% } %>
+          <h2>Xác thực OTP</h2>
+          <p>Chúng tôi đã gửi mã bao gồm 4 mã số đến email của bạn!</p>
+          <form action="/verify-otp" method="post">
+            <label for="otp">Vui lòng nhập mã OTP</label>
+            <div class="otp-inputs">
+              <input type="text" id="otp1" name="otp1" maxlength="1" required />
+              <input type="text" id="otp2" name="otp2" maxlength="1" required />
+              <input type="text" id="otp3" name="otp3" maxlength="1" required />
+              <input type="text" id="otp4" name="otp4" maxlength="1" required />
+            </div>
+            <button type="submit">Xác nhận</button>
+          </form>
+          <div class="signup">
+            Chưa nhận được mã? <a href="#">Gửi lại mã</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
