@@ -7,15 +7,20 @@ class loginController {
         User.findOne({ username: username })
             .then(user => {
                 if (!user) {
-                    res.render('login', {err: 'Tên đăng nhập hoặc mật khẩu không đúng!'})
+                    res.render('login', { err: 'Tên đăng nhập hoặc mật khẩu không đúng!' })
                 } else {
                     if (user.password === password) {
-                        res.json({
-                            message: 'success',
-                            data: user
-                        })
+                        if (user.status === 'non-active') {
+                            res.render('verifyOTPRegister', { err: 'Tài khoản chưa được kích hoạt!' })
+                        } else {
+                            req.session.user = user;
+                            res.json({
+                                message: 'success',
+                                data: user
+                            })
+                        }
                     } else {
-                        res.render('login', {err: 'Tên đăng nhập hoặc mật khẩu không đúng!'})
+                        res.render('login', { err: 'Tên đăng nhập hoặc mật khẩu không đúng!' })
                     }
                 }
             })
@@ -25,7 +30,7 @@ class loginController {
                     data: 'Server error'
                 })
             })
-        }
+    }
 
     login(req, res, next) {
         res.render('login')

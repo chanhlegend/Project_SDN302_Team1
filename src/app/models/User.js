@@ -1,7 +1,7 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const User = new Schema({
+const UserSchema = new Schema({
     username: { type: String, required: true },
     password: { type: String, required: true },
     name: { type: String, default: 'Người dùng' },
@@ -12,13 +12,8 @@ const User = new Schema({
     phone: { type: String },
     email: { type: String, required: true },
     status: { type: String, default: 'non-active' },
-    evaluate: [{
-        star: { type: Number },
-        evaluaterId: { type: String }
-    }],
-    followers: [{
-        followerId: { type: String }
-    }]
-});
+    evaluate: [{ type: Schema.Types.ObjectId, ref: 'Evaluate' }],
+    followers: [{ type: Schema.Types.ObjectId, ref: 'Follower' }]
+}, { timestamps: true });
 
-module.exports = mongoose.model('User', User);
+module.exports = mongoose.model('User', UserSchema);
