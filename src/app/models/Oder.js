@@ -4,19 +4,19 @@ const Schema = mongoose.Schema;
 
 const Order = new Schema({
 
-    Product: [{
+    product: [{
         type: schema.types.ObjectId,
         ref: 'Product',
         required: true,
     }],
 
-    User: {
+    user: {
         type: schema.types.ObjectId,
         ref: 'User',
         required: true,
     },
 
-    price:{
+    totalPrice:{
         type: String,
         required: true,
         default: 0
