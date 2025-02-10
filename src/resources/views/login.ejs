@@ -30,7 +30,11 @@
         <div class="sign-in">
           <% if (typeof err !== 'undefined' && err) { %>
           <div class="errors">
-            <p style="color: red;"><%= err %></p>
+            <p style="color: red"><%= err %></p>
+          </div>
+          <% } %> <% if (typeof mess !== 'undefined' && mess) { %>
+          <div class="messages">
+            <p style="color: green"><%= mess %></p>
           </div>
           <% } %>
           <h2>Đăng Nhập</h2>

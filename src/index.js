@@ -14,6 +14,11 @@ db.connect()
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Sử dụng method-override để gửi form DELETE, PUT từ HTML
+const methodOverride = require('method-override');
+// Cấu hình method-override để sử dụng query parameter
+app.use(methodOverride('_method'));
+
 // Sử dụng session
 app.use(session({
   secret: 'your_secret_key',

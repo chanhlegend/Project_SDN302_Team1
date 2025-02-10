@@ -10,15 +10,11 @@ class loginController {
                     res.render('login', { err: 'Tên đăng nhập hoặc mật khẩu không đúng!' })
                 } else {
                     if (user.password === password) {
-                        if (user.status === 'non-active') {
-                            res.render('verifyOTPRegister', { err: 'Tài khoản chưa được kích hoạt!' })
-                        } else {
-                            req.session.user = user;
-                            res.json({
-                                message: 'success',
-                                data: user
-                            })
-                        }
+                        req.session.user = user;
+                        res.json({
+                            message: 'success',
+                            data: user
+                        })
                     } else {
                         res.render('login', { err: 'Tên đăng nhập hoặc mật khẩu không đúng!' })
                     }
