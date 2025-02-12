@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your personal information</title>
+    <link rel="stylesheet" href="/css/profile.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+</head>
+<body>
+    <div class="header-banner">
+        <img src="/img/brg.png" alt="Personal Information Banner" width="1899" height="176">
+    </div>
+
+    <% if (messages && messages.message) { %>
+        <div class="alert alert-<%= messages.message.type %>">
+            <%= messages.message.content %>
+        </div>
+    <% } %>
+
+    <form action="/user/update-profile/<%= user._id %>" method="POST">
+        <div class="radio-group">
+            <label>Social title</label>
+            <input type="radio" name="social_title" value="Mr." <%= user.social_title === 'Mr.' ? 'checked' : '' %>> Mr.
+            <input type="radio" name="social_title" value="Mrs." <%= user.social_title === 'Mrs.' ? 'checked' : '' %>> Mrs.
+        </div>
+    
+        <div class="form-group">
+            <label>First name<span class="required">*</span></label>
+            <input type="text" name="first_name" value="<%= user.first_name %>" required>
+        </div>
+        <p class="help-text">Only letters and the dot (.) character, followed by a space, are allowed.</p>
+    
+        <div class="form-group">
+            <label>Last name<span class="required">*</span></label>
+            <input type="text" name="last_name" value="<%= user.last_name %>" required>
+        </div>
+        <p class="help-text">Only letters and the dot (.) character, followed by a space, are allowed.</p>
+    
+        <div class="form-group">
+            <label>Email<span class="required">*</span></label>
+            <input type="email" name="email" value="<%= user.email %>" required>
+        </div>
+    
+        <div class="password-field">
+            <label>Password<span class="required">*</span></label>
+            <input type="password" name="password" value="<%=user.password %>">
+            <button type="button" class="show-password">SHOW</button>
+        </div>
+    
+        <div class="password-field">
+            <label>New password</label>
+            <input type="password" name="new_password">
+            <button type="button" class="show-password">SHOW</button>
+        </div>
+    
+        <div class="form-group">
+            <label>Birthdate</label>
+            <input type="text" id="birthdate" name="birthdate" 
+            value="<%= user.dob ? user.dob.toLocaleDateString('en-US') : '' %>"
+            placeholder="Select Date...">        </div>
+        <p class="birthdate-format">(E.g. 05/31/1970)</p>
+    
+        <div class="checkbox-group">
+            <input type="checkbox" name="offers" id="offers">
+            <label for="offers">Receive offers from our partners</label>
+        </div>
+        
+        <div class="checkbox-group">
+            <input type="checkbox" name="privacy" id="privacy">
+            <label for="privacy">Customer data privacy</label>
+        </div>
+        <p class="privacy-text">
+            The personal data you provide is used to answer queries, process orders or allow access to specific information. You have the right to modify and delete all the personal information found in the "My Account" page.
+        </p>
+        
+        <div class="checkbox-group">
+            <input type="checkbox" name="newsletter" id="newsletter">
+            <label for="newsletter">Sign up for our newsletter</label>
+        </div>
+        <p class="newsletter-text">
+            You may unsubscribe at any moment. For that purpose, please find our contact info in the legal notice.
+        </p>
+        
+        <div class="checkbox-group">
+            <input type="checkbox" name="terms" id="terms">
+            <label for="terms">I agree to the terms and conditions and the privacy policy</label>
+        </div>
+
+        <div class="form-actions">
+            <div class="left-buttons">
+                <a href="/account" class="back-button">
+                    <span class="arrow">←</span> BACK TO YOUR ACCOUNT
+                </a>
+                <a href="/home" class="home-button">
+                    <span class="home-icon">⌂</span> HOME
+                </a>
+            </div>
+            <button type="submit" class="save-button">SAVE</button>
+        </div>
+    </form>
+
+    <script>
+        document.querySelectorAll('.show-password').forEach(button => {
+            button.addEventListener('click', function() {
+                const passwordField = this.previousElementSibling;
+                if (passwordField.type === 'password') {
+                    passwordField.type = 'text';
+                    this.textContent = 'HIDE';
+                } else {
+                    passwordField.type = 'password';
+                    this.textContent = 'SHOW';
+                }
+            });
+        });
+
+        flatpickr("#birthdate", {
+            dateFormat: "m/d/Y",
+            maxDate: new Date(), // Không cho chọn ngày trong tương lai
+            allowInput: true,
+            defaultDate: "<%= user.dob ? user.dob.toISOString() : '' %>",
+            locale: {
+                firstDayOfWeek: 1 // Thứ 2 là ngày đầu tuần
+            }
+        });
+    </script>
+</body>
+</html>
