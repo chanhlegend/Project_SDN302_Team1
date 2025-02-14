@@ -5,5 +5,6 @@ const { userController, userProfileController , updateUserProfileController } = 
 router.get('/addUser', userController.addUser)
 router.get('/:id', userProfileController.getUserProfile);
 router.post('/update-profile/:id',updateUserProfileController.updateUserProfile)
+router.get('/view/:id' , userProfileController.viewUserProfile)
 
 module.exports = router;

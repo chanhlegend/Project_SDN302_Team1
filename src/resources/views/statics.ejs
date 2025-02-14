@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="/css/statics.css">
+</head>
+<body>
+    <div class="stats-container">
+        <div class="stat-card">
+            <div class="stat-icon selling"></div>
+            <div class="stat-info">
+                <h3>Sản Phẩm Đang Bán</h3>
+                <div class="stat-number">5,423</div>
+                <div class="stat-change increase">16% this month</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon sold"></div>
+            <div class="stat-info">
+                <h3>Sản Phẩm Đã Bán</h3>
+                <div class="stat-number">1,893</div>
+                <div class="stat-change decrease">1% this month</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon pending"></div>
+            <div class="stat-info">
+                <h3>Sản Phẩm Đang Kiểm Duyệt</h3>
+                <div class="stat-number">189</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="products-section">
+        <div class="products-header">
+            <h2>All Products</h2>
+            <div class="search-sort">
+                <input type="text" id="searchInput" placeholder="Search" class="search-input">
+                <select class="sort-select">
+                    <option value="newest">Newest</option>
+                    <option value="oldest">Oldest</option>
+                </select>
+            </div>
+        </div>
+
+        <table class="products-table">
+            <thead>
+                <tr>
+                    <th>Tên Sản Phẩm</th>
+                    <th>Giá Bán</th>
+                    <th>Loại</th>
+                    <th>Thời Gian</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% products.forEach(product => { %>
+                    <tr>
+                        <td><%= product.productName %></td>
+                        <td><%= product.price ? product.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " VND" : "N/A" %></td>
+                        <td><%= product.type %></td>
+                        <td>  <% if (product.createdAt) { %>
+                            <%= new Date(product.createdAt).toLocaleString('vi-VN') %>
+                        <% } else { %>
+                            N/A
+                        <% } %></td> 
+                        <td>
+                            <% if (product.status && product.status.toLowerCase() === "active") { %>
+                                <span class="status-badge approved">Đã Kiểm Duyệt</span>
+                            <% } else { %>
+                                <span class="status-badge rejected">Từ Chối</span>
+                            <% } %>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+
+        <div class="pagination">
+            <% if (currentPage > 1) { %>
+                <a href="?page=<%= currentPage - 1 %>&limit=<%= limit %>" class="prev-page">←</a>
+            <% } %>
+        
+            <% if (currentPage > 3) { %>
+                <a href="?page=1&limit=<%= limit %>">1</a>
+                <% if (currentPage > 4) { %>
+                    <span class="dots">...</span>
+                <% } %>
+            <% } %>
+        
+            <% for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) { %>
+                <a href="?page=<%= i %>&limit=<%= limit %>" class="<%= i === currentPage ? 'active' : '' %>">
+                    <%= i %>
+                </a>
+            <% } %>
+        
+            <% if (currentPage < totalPages - 2) { %>
+                <% if (currentPage < totalPages - 3) { %>
+                    <span class="dots">...</span>
+                <% } %>
+                <a href="?page=<%= totalPages %>&limit=<%= limit %>"><%= totalPages %></a>
+            <% } %>
+        
+            <% if (currentPage < totalPages) { %>
+                <a href="?page=<%= currentPage + 1 %>&limit=<%= limit %>" class="next-page">→</a>
+            <% } %>
+        </div>
+    </div>
+</body>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("searchInput");
+    const tableRows = document.querySelectorAll(".products-table tbody tr");
+
+    function removeVietnameseTones(str) {
+        return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    }
+
+    searchInput.addEventListener("input", function () {
+        const searchTerm = removeVietnameseTones(searchInput.value.trim());
+
+        tableRows.forEach(row => {
+            const productName = removeVietnameseTones(row.querySelector("td:first-child").textContent);
+            
+            // Chỉ hiển thị nếu tên sản phẩm chứa từ khóa tìm kiếm
+            if (searchTerm === "" || productName.includes(searchTerm)) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    });
+});
+
+</script>
+</html>

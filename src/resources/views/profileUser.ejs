@@ -90,10 +90,10 @@
 
         <div class="form-actions">
             <div class="left-buttons">
-                <a href="/account" class="back-button">
+                <a href="/" class="back-button">
                     <span class="arrow">←</span> BACK TO YOUR ACCOUNT
                 </a>
-                <a href="/home" class="home-button">
+                <a href="/" class="home-button">
                     <span class="home-icon">⌂</span> HOME
                 </a>
             </div>
@@ -117,11 +117,11 @@
 
         flatpickr("#birthdate", {
             dateFormat: "m/d/Y",
-            maxDate: new Date(), // Không cho chọn ngày trong tương lai
+            maxDate: new Date(),
             allowInput: true,
             defaultDate: "<%= user.dob ? user.dob.toISOString() : '' %>",
             locale: {
-                firstDayOfWeek: 1 // Thứ 2 là ngày đầu tuần
+                firstDayOfWeek: 1 
             }
         });
     </script>

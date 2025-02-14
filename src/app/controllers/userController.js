@@ -36,6 +36,7 @@ class userController {
 class UserProfileController {
 
     getUserProfile(req, res, next) {
+
         const userId = req.params.id; 
         User.findById(userId)
             .then(user => {
@@ -47,7 +48,25 @@ class UserProfileController {
             })
             .catch(next);
     }
+    
+    viewUserProfile(req, res, next) {
+        const userId = req.params.id;
+        User.findById(userId)
+            .then(user => {
+                if (!user) {
+                    return res.status(404).json({ message: 'User not found' });
+                }
+                res.render('viewProfile', { 
+                    user: mongoeseToObject(user),
+                    messages: req.flash()
+                });
+            })
+            .catch(next);
+    }
 }
+
+
+
 
 class updateUserProfileController{
     async updateUserProfile (req, res, next){
@@ -60,7 +79,6 @@ class updateUserProfileController{
                 email: req.body.email,
                 dob: req.body.dob,
             }
-            console.log(updateData);
             if(req.body.new_password){
                 if(req.body.password){
                     updateData.password = req.body.new_password
