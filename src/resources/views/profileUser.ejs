@@ -57,7 +57,7 @@
     
         <div class="form-group">
             <label>Birthdate</label>
-            <input type="text" id="birthdate" name="birthdate" 
+            <input type="text" id="dob" name="dob" 
             value="<%= user.dob ? user.dob.toLocaleDateString('en-US') : '' %>"
             placeholder="Select Date...">        </div>
         <p class="birthdate-format">(E.g. 05/31/1970)</p>
@@ -115,7 +115,7 @@
             });
         });
 
-        flatpickr("#birthdate", {
+        flatpickr("#dob", {
             dateFormat: "m/d/Y",
             maxDate: new Date(),
             allowInput: true,
