@@ -19,7 +19,31 @@ class productController {
                 })
             })
     }
-    
+  
+    createProduct = (req, res, next) => {
+        const { productName, price, description, sellerId, status, category } = req.body
+        const product = new Product({
+            productName,
+            price,
+            description,
+            sellerId,
+            status,
+            category
+        })
+        product.save()
+            .then(product => {
+                res.json({
+                    message: 'success',
+                    data: product
+                })
+            })
+            .catch(err => {
+                res.json({
+                    message: 'failure',
+                    data: []
+                })
+            })
+    }
 }
 
 class SellerProductController {

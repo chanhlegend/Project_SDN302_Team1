@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trang Chủ</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    />
+    <style>
+      /* Reset mặc định */
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 0;
+      }
+
+      /* Carousel */
+      .carousel {
+        margin-bottom: 30px;
+      }
+      .carousel img {
+        height: 400px;
+        object-fit: cover;
+      }
+
+      /* Tiêu đề danh mục */
+      .container h2 {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #333;
+        border-bottom: 2px solid #007bff;
+        display: inline-block;
+        padding-bottom: 5px;
+      }
+
+      /* Sản phẩm */
+      .card {
+        border: none;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease-in-out;
+      }
+      .card:hover {
+        transform: translateY(-5px);
+      }
+      .card img {
+        height: 200px;
+        object-fit: cover;
+      }
+      .card-title {
+        font-size: 18px;
+        font-weight: bold;
+      }
+      .card-text {
+        color: #28a745;
+        font-size: 16px;
+        font-weight: bold;
+      }
+      .btn-primary {
+        background-color: #007bff;
+        border: none;
+      }
+      .btn-primary:hover {
+        background-color: #0056b3;
+      }
+
+      /* Khoảng cách giữa các danh mục */
+      .container {
+        margin-bottom: 40px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Include Header -->
+    <%- include('partials/header') %>
+
+    <!-- Carousel -->
+    <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-inner">
+        <% for (let i = 0; i < 5; i++) { %>
+        <div class="carousel-item <%= i === 0 ? 'active' : '' %>">
+          <img
+            src="/img/slide<%= i + 1 %>.jpg"
+            class="d-block w-100"
+            alt="Slide <%= i + 1 %>"
+          />
+        </div>
+        <% } %>
+      </div>
+      <button
+        class="carousel-control-prev"
+        type="button"
+        data-bs-target="#carouselExample"
+        data-bs-slide="prev"
+      >
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      </button>
+      <button
+        class="carousel-control-next"
+        type="button"
+        data-bs-target="#carouselExample"
+        data-bs-slide="next"
+      >
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      </button>
+    </div>
+
+     <!-- Sản phẩm mới đăng -->
+     <div class="container mt-4">
+        <h2>Sản phẩm mới đăng</h2>
+        <div class="row">
+          <% products.forEach(product => { %>
+          <div class="col-md-3 mb-3">
+            <div class="card">
+              <img
+                src="<%= product.image %>"
+                class="card-img-top"
+                alt="<%= product.name %>"
+              />
+              <div class="card-body">
+                <h5 class="card-title"><%= product.name %></h5>
+                <p class="card-text"><%= product.price %> VND</p>
+                <a href="/product/<%= product.id %>" class="btn btn-primary"
+                  >Xem chi tiết</a
+                >
+              </div>
+            </div>
+          </div>
+          <% }); %>
+        </div>
+      </div>
+  
+      <!-- Danh sách sản phẩm máy tính -->
+      <div class="container mt-4">
+        <h2>Máy tính</h2>
+        <div class="row">
+          <% computers.forEach(product => { %>
+          <div class="col-md-3 mb-3">
+            <div class="card">
+              <img
+                src="<%= product.image %>"
+                class="card-img-top"
+                alt="<%= product.name %>"
+              />
+              <div class="card-body">
+                <h5 class="card-title"><%= product.name %></h5>
+                <p class="card-text"><%= product.price %> VND</p>
+                <a href="/product/<%= product.id %>" class="btn btn-primary"
+                  >Xem chi tiết</a
+                >
+              </div>
+            </div>
+          </div>
+          <% }); %>
+        </div>
+      </div>
+  
+      <!-- Danh sách sản phẩm điện thoại -->
+      <div class="container mt-4">
+        <h2>Điện thoại</h2>
+        <div class="row">
+          <% phones.forEach(product => { %>
+          <div class="col-md-3 mb-3">
+            <div class="card">
+              <img
+                src="<%= product.image %>"
+                class="card-img-top"
+                alt="<%= product.name %>"
+              />
+              <div class="card-body">
+                <h5 class="card-title"><%= product.name %></h5>
+                <p class="card-text"><%= product.price %> VND</p>
+                <a href="/product/<%= product.id %>" class="btn btn-primary"
+                  >Xem chi tiết</a
+                >
+              </div>
+            </div>
+          </div>
+          <% }); %>
+        </div>
+      </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
