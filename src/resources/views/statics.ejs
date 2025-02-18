@@ -127,7 +127,6 @@ document.addEventListener("DOMContentLoaded", function () {
         tableRows.forEach(row => {
             const productName = removeVietnameseTones(row.querySelector("td:first-child").textContent);
             
-            // Chỉ hiển thị nếu tên sản phẩm chứa từ khóa tìm kiếm
             if (searchTerm === "" || productName.includes(searchTerm)) {
                 row.style.display = "";
             } else {
