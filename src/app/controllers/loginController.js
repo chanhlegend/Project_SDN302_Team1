@@ -12,10 +12,8 @@ class loginController {
                 } else {
                     if (user.password === password) {
                         req.session.user = user;
-                        res.json({
-                            message: 'success',
-                            data: user
-                        })
+                        console.log('Session after login:', req.session); // Thêm dòng này để in ra thông tin session
+                        res.redirect('/')
                     } else {
                         res.render('login', { err: 'Tên đăng nhập hoặc mật khẩu không đúng!' })
                     }
@@ -30,7 +28,11 @@ class loginController {
     }
 
     login(req, res, next) {
-        res.render('login')
+        if (req.session.user) {
+            res.redirect('/')
+        } else {
+            res.render('login')
+        }
     }
 
     forgotPassword(req, res, next) {

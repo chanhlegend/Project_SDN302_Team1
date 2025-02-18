@@ -3,7 +3,7 @@ const morgan = require('morgan')
 const path = require('path')
 const app = express()
 const route = require('./routes')
-require('dotenv').config({ path: './src/.env' });
+require('dotenv').config({ path: './.env' });
 const bodyParser = require('body-parser');
 const flash = require('express-flash')
 const session = require('express-session');
@@ -27,6 +27,11 @@ app.use(session({
   saveUninitialized: true,
   cookie: { secure: false } // Set to true if using HTTPS
 }));
+app.use((req, res, next) => {
+  res.locals.session = req.session;
+  next();
+});
+
 app.use(flash())
 // Thiết lập view engine là EJS
 app.set('view engine', 'ejs');
@@ -47,7 +52,7 @@ app.use(morgan('combined'));
 // Routes init
 route(app);
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`app listening on port ${PORT}`);
 });
