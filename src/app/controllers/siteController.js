@@ -13,11 +13,13 @@ class siteController {
         const phoneCategory = await Category.findOne({ name: 'Phone' });
         const phones = phoneCategory ? await Product.find({ category: phoneCategory._id }).sort({ createdAt: -1 }) : [];
 
+        const categories = await Category.find().sort({ createdAt: -1 });
         res.render('home', {
             user,
             products,
             laptops,
-            phones
+            phones,
+            categories
         });
 
         // res.render('partials/footer');
