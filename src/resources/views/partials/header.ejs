@@ -56,8 +56,14 @@
     </div>
     <div class="nav-bar">
       <a href="#"> TRANG CHỦ </a>
-      <a href="#"> DANH MỤC </a>
-      <!-- dropdown categories xuống -->
+      <div class="dropdown">
+        <a href="#"> DANH MỤC </a>
+        <div class="dropdown-content">
+          <% categories.forEach(category => { %>
+            <a href="#"><%= category.name %></a>
+          <% }); %>
+        </div>
+      </div>
       <a href="#"> TIN NHẮN </a>
       <a href="#"> GIỚI THIỆU </a>
       <a href="#"> LIÊN HỆ HỖ TRỢ </a>

@@ -97,10 +97,14 @@
     text-align: center;
     font-size: 12px; /* Giảm font-size */
   }
+
+  footer .bottom-bar p{
+    margin-top: 10px;
+  }
   
   footer .bottom-bar .payment-icons img {
     width: 40px; /* Giảm width */
-    margin: 0 3px; /* Giảm margin */
+    margin: 10 3px; /* Giảm margin */
   }
   
   footer .bottom-bar .links {
@@ -112,6 +116,10 @@
     text-decoration: none;
     margin: 0 5px; /* Giảm margin */
     font-size: 12px; /* Giảm font-size */
+  }
+
+  .info-links{
+    padding-left: 100px;
   }
   
   @media (max-width: 768px) {
