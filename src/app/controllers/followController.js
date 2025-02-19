@@ -5,9 +5,26 @@ class FollowController {
     static async followUser(req, res) {
         try {
             const { followerId, followingId } = req.body;
-
+            
             if(followerId === followingId) {
                 return res.status(400).json({ message: "Không thể theo dõi chính mình" });
+            }
+
+            const follower = await User.findById(followerId)
+            
+            if(!follower){
+                return res.status(404).json({message: "Người theo dõi không tồn tại"})
+            }
+
+            const following = await User.findById(followingId);
+
+            if (!following) {
+                return res.status(404).json({ message: "Người được theo dõi không tồn tại" });
+            }
+
+
+            if (following.role !== "sale") {
+                return res.status(400).json({ message: "Người này không thể có người theo dõi" });
             }
 
             const existingFollower = await Follower.findOne({ followerId, followingId });
@@ -58,9 +75,15 @@ class FollowController {
 
     static async getFollowers(req, res) {
         try {
-            const { userId } = req.params;
+            const { userId } = req.session.userId;
+            if(!userId) {
+                return res.status(401).json({message: "Chưa đăng nhập"})
+            }
             const followers = await Follower.find({ followingId: userId }).populate('followerId', 'username email avatar');
-            return res.status(200).json({ message: "Danh sách người theo dõi", data: followers });
+            res.render("friend", { 
+                title: "Bạn Bè", 
+                followers: followers 
+            });
         } catch (error) {
             return res.status(500).json({ message: "Lỗi server", error: error.message });
         }
