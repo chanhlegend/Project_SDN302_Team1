@@ -14,6 +14,8 @@ class siteController {
         const phones = phoneCategory ? await Product.find({ category: phoneCategory._id }).sort({ createdAt: -1 }) : [];
 
         const categories = await Category.find().sort({ createdAt: -1 });
+
+        console.log('products', products);
         res.render('home', {
             user,
             products,
