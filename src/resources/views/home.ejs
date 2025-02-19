@@ -53,12 +53,13 @@
         <div class="col-md-3 mb-3">
           <div class="card">
             <img
-              src="<%= product.image %>"
+              src="<%= product.image.length > 0 ? product.image[0].url : '' %>"
               class="card-img-top"
               alt="<%= product.name %>"
             />
             <div class="card-body">
-              <h5 class="card-title"><%= product.name %></h5>
+              <h5 class="card-title"><%= product.productName %></h5>
+              <p class="seller-name"><%= product.sellerId.name %></p>
               <p class="card-text"><%= product.price %> VND</p>
               <a href="/product/<%= product.id %>" class="btn btn-primary"
                 >Xem chi tiết</a
@@ -78,12 +79,13 @@
         <div class="col-md-3 mb-3">
           <div class="card">
             <img
-              src="<%= product.image %>"
+              src="<%= product.image.length > 0 ? product.image[0].url : '' %>"
               class="card-img-top"
               alt="<%= product.name %>"
             />
             <div class="card-body">
-              <h5 class="card-title"><%= product.name %></h5>
+              <h5 class="card-title"><%= product.productName %></h5>
+              <p class="seller-name"><%= product.sellerId.name %></p>
               <p class="card-text"><%= product.price %> VND</p>
               <a href="/product/<%= product.id %>" class="btn btn-primary"
                 >Xem chi tiết</a
@@ -103,16 +105,16 @@
         <div class="col-md-3 mb-3">
           <div class="card">
             <img
-              src="<%= product.image %>"
+              src="<%= product.image.length > 0 ? product.image[0].url : '' %>"
               class="card-img-top"
               alt="<%= product.name %>"
             />
             <div class="card-body">
-              <h5 class="card-title"><%= product.name %></h5>
+              <h5 class="card-title"><%= product.productName %></h5>
+              <p class="seller-name"><%= product.sellerId.name %></p>
               <p class="card-text"><%= product.price %> VND</p>
               <a href="/product/<%= product.id %>" class="btn btn-primary"
-                >Xem chi tiết</a
-              >
+                >Xem chi tiết</a>
             </div>
           </div>
         </div>
