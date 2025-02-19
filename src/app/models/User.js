@@ -12,7 +12,7 @@ const UserSchema = new Schema({
     address: { type: String, default: '' },
     phone: { type: String },
     email: { type: String, required: true },
-    status: { type: String, default: 'non-active' },
+    status: { type: String, default: 'active' },
     evaluate: [{ type: Schema.Types.ObjectId, ref: 'Evaluate' }],
     followers: [{ type: Schema.Types.ObjectId, ref: 'Follower' }],
     social_title: {type: String , enum: ['Mr.' , 'Mrs.']}
