@@ -6,6 +6,7 @@ const registerRouter = require('./register')
 const followRouter = require('./follow')
 const reportRouter = require('./report')
 const reviewRouter = require('./review')
+
 const sellerRouter = require('./sellerDashboard')
 const categoryRouter = require('./category')
 const orderRouter = require('./order')
