@@ -55,4 +55,4 @@ class SellerDashboardController {
     }
 }
 
-module.exports = new SellerDashboardController();
+module.exports = new SellerDashboardController;

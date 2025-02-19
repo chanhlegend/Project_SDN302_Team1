@@ -46,4 +46,4 @@ class productController {
     }
 }
 
-module.exports = new ProductController();
+module.exports = new productController;
