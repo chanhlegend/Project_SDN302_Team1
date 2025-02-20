@@ -12,7 +12,7 @@
   </head>
   <body>
     <!-- Include Header -->
-    <%- include('partials/header') %> 
+    <%- include('partials/header') %>
 
     <!-- Carousel -->
     <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
@@ -48,77 +48,160 @@
     <!-- Sản phẩm mới đăng -->
     <div class="container mt-4">
       <h2>Sản phẩm mới đăng</h2>
-      <div class="row">
-        <% products.forEach(product => { %>
-        <div class="col-md-3 mb-3">
-          <div class="card">
-            <img
-              src="<%= product.image.length > 0 ? product.image[0].url : '' %>"
-              class="card-img-top"
-              alt="<%= product.name %>"
-            />
-            <div class="card-body">
-              <h5 class="card-title"><%= product.productName %></h5>
-              <p class="seller-name"><%= product.sellerId.name %></p>
-              <p class="card-text"><%= product.price %> VND</p>
-              <a href="/product/<%= product.id %>" class="btn btn-primary"
-                >Xem chi tiết</a
-              >
+      <div
+        id="newProductsCarousel"
+        class="carousel slide"
+        data-bs-ride="carousel"
+      >
+        <div class="carousel-inner">
+          <% for (let i = 0; i < products.length; i += 4) { %>
+          <div class="carousel-item <%= i === 0 ? 'active' : '' %>">
+            <div class="row">
+              <% for (let j = i; j < i + 4 && j < products.length; j++) { %>
+              <div class="col-md-3 mb-3">
+                <div class="card">
+                  <img
+                    src="<%= products[j].image.length > 0 ? products[j].image[0].url : '' %>"
+                    class="card-img-top"
+                    alt="<%= products[j].name %>"
+                  />
+                  <div class="card-body">
+                    <h5 class="card-title"><%= products[j].productName %></h5>
+                    <p class="seller-name"><%= products[j].sellerId.name %></p>
+                    <p class="card-text"><%= products[j].price %> VND</p>
+                    <a
+                      href="/product/<%= products[j].id %>"
+                      class="btn btn-primary"
+                      >Xem chi tiết</a
+                    >
+                  </div>
+                </div>
+              </div>
+              <% } %>
             </div>
           </div>
+          <% } %>
         </div>
-        <% }); %>
+        <button
+          class="carousel-control-prev"
+          type="button"
+          data-bs-target="#newProductsCarousel"
+          data-bs-slide="prev"
+        >
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        </button>
+        <button
+          class="carousel-control-next"
+          type="button"
+          data-bs-target="#newProductsCarousel"
+          data-bs-slide="next"
+        >
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        </button>
       </div>
     </div>
 
     <!-- Danh sách sản phẩm máy tính -->
     <div class="container mt-4">
       <h2>Máy tính</h2>
-      <div class="row">
-        <% laptops.forEach(product => { %>
-        <div class="col-md-3 mb-3">
-          <div class="card">
-            <img
-              src="<%= product.image.length > 0 ? product.image[0].url : '' %>"
-              class="card-img-top"
-              alt="<%= product.name %>"
-            />
-            <div class="card-body">
-              <h5 class="card-title"><%= product.productName %></h5>
-              <p class="seller-name"><%= product.sellerId.name %></p>
-              <p class="card-text"><%= product.price %> VND</p>
-              <a href="/product/<%= product.id %>" class="btn btn-primary"
-                >Xem chi tiết</a
-              >
+      <div id="laptopsCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <% for (let i = 0; i < laptops.length; i += 4) { %>
+          <div class="carousel-item <%= i === 0 ? 'active' : '' %>">
+            <div class="row">
+              <% for (let j = i; j < i + 4 && j < laptops.length; j++) { %>
+              <div class="col-md-3 mb-3">
+                <div class="card">
+                  <img
+                    src="<%= laptops[j].image.length > 0 ? laptops[j].image[0].url : '' %>"
+                    class="card-img-top"
+                    alt="<%= laptops[j].name %>"
+                  />
+                  <div class="card-body">
+                    <h5 class="card-title"><%= laptops[j].productName %></h5>
+                    <p class="seller-name"><%= laptops[j].sellerId.name %></p>
+                    <p class="card-text"><%= laptops[j].price %> VND</p>
+                    <a
+                      href="/product/<%= laptops[j].id %>"
+                      class="btn btn-primary"
+                      >Xem chi tiết</a
+                    >
+                  </div>
+                </div>
+              </div>
+              <% } %>
             </div>
           </div>
+          <% } %>
         </div>
-        <% }); %>
+        <button
+          class="carousel-control-prev"
+          type="button"
+          data-bs-target="#laptopsCarousel"
+          data-bs-slide="prev"
+        >
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        </button>
+        <button
+          class="carousel-control-next"
+          type="button"
+          data-bs-target="#laptopsCarousel"
+          data-bs-slide="next"
+        >
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        </button>
       </div>
     </div>
 
     <!-- Danh sách sản phẩm điện thoại -->
     <div class="container mt-4">
       <h2>Điện thoại</h2>
-      <div class="row">
-        <% phones.forEach(product => { %>
-        <div class="col-md-3 mb-3">
-          <div class="card">
-            <img
-              src="<%= product.image.length > 0 ? product.image[0].url : '' %>"
-              class="card-img-top"
-              alt="<%= product.name %>"
-            />
-            <div class="card-body">
-              <h5 class="card-title"><%= product.productName %></h5>
-              <p class="seller-name"><%= product.sellerId.name %></p>
-              <p class="card-text"><%= product.price %> VND</p>
-              <a href="/product/<%= product.id %>" class="btn btn-primary"
-                >Xem chi tiết</a>
+      <div id="phonesCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <% for (let i = 0; i < phones.length; i += 4) { %>
+          <div class="carousel-item <%= i === 0 ? 'active' : '' %>">
+            <div class="row">
+              <% for (let j = i; j < i + 4 && j < phones.length; j++) { %>
+              <div class="col-md-3 mb-3">
+                <div class="card">
+                  <img
+                    src="<%= phones[j].image.length > 0 ? phones[j].image[0].url : '' %>"
+                    class="card-img-top"
+                    alt="<%= phones[j].name %>"
+                  />
+                  <div class="card-body">
+                    <h5 class="card-title"><%= phones[j].productName %></h5>
+                    <p class="seller-name"><%= phones[j].sellerId.name %></p>
+                    <p class="card-text"><%= phones[j].price %> VND</p>
+                    <a
+                      href="/product/<%= phones[j].id %>"
+                      class="btn btn-primary"
+                      >Xem chi tiết</a
+                    >
+                  </div>
+                </div>
+              </div>
+              <% } %>
             </div>
           </div>
+          <% } %>
         </div>
-        <% }); %>
+        <button
+          class="carousel-control-prev"
+          type="button"
+          data-bs-target="#phonesCarousel"
+          data-bs-slide="prev"
+        >
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        </button>
+        <button
+          class="carousel-control-next"
+          type="button"
+          data-bs-target="#phonesCarousel"
+          data-bs-slide="next"
+        >
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        </button>
       </div>
     </div>
 
