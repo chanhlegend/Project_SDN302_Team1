@@ -1,14 +1,14 @@
 const Product = require('../models/Product');
 const Category = require('../models/Category');
-const Image = require('../models/Image'); // Thêm mô hình Image
-const User = require('../models/User'); // Thêm mô hình User
+const Image = require('../models/Image'); 
+const User = require('../models/User');
 
 class siteController {
   async index(req, res) {
     const user = req.session.user;
     const products = await Product.find().sort({ createdAt: -1 })
       .populate('image')
-      .populate('sellerId'); // Sử dụng populate để truy xuất thông tin người bán
+      .populate('sellerId'); 
 
     const laptopCategory = await Category.findOne({ name: 'Laptop' });
     const laptops = laptopCategory ? await Product.find({ category: laptopCategory._id }).sort({ createdAt: -1 })
