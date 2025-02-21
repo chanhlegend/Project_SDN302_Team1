@@ -1,5 +1,7 @@
 const Image = require('../models/Image');
 const Product = require('../models/Product');
+const Category = require('../models/Category');
+
 
 class testController {
     async addImage(req, res) {
@@ -37,6 +39,11 @@ class testController {
         } catch (error) {
             res.status(500).json({ message: 'Error adding image to product', error });
         }
+    }
+
+    async productDetail(req, res) {
+        const categories = await Category.find().sort({ createdAt: -1 });
+        res.render('productDetail', { categories });
     }
 }
 
