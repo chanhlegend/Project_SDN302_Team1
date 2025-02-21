@@ -9,7 +9,7 @@
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="/css/header.css" />
+    <link rel="stylesheet" href="/css/header.module.css" />
   </head>
   <body>
     <div class="top-bar">
@@ -36,24 +36,34 @@
         </button>
       </div>
       <div class="icons">
+        <% if (session.user) { %>
         <a href="#" data-title="Yêu thích">
-          <i class="fas fa-heart"> </i>
+          <i class="fas fa-heart" style="color: #551a8b"> </i>
         </a>
         <a href="#" data-title="Giỏ hàng">
-          <i class="fas fa-shopping-cart"> </i>
+          <i class="fas fa-shopping-cart" style="color: #551a8b"> </i>
         </a>
         <a href="#" data-title="Người dùng">
-          <i class="fas fa-user"> </i>
+          <i class="fas fa-user" style="color: #551a8b"> </i>
         </a>
-        <a data-title="Đăng nhập">
+        <% } else { %>
+        <a href="/login" data-title="Đăng nhập">
           <i class="fas fa-right-to-bracket" style="color: #551a8b"></i>
         </a>
+        <% } %> 
+        <% console.log('Session after login:', session.user); %>
       </div>
     </div>
     <div class="nav-bar">
       <a href="#"> TRANG CHỦ </a>
-      <a href="#"> DANH MỤC </a> 
-      <!-- dropdown categories xuống -->
+      <div class="dropdown">
+        <a href="#"> DANH MỤC </a>
+        <div class="dropdown-content">
+          <% categories.forEach(category => { %>
+            <a href="#"><%= category.name %></a>
+          <% }); %>
+        </div>
+      </div>
       <a href="#"> TIN NHẮN </a>
       <a href="#"> GIỚI THIỆU </a>
       <a href="#"> LIÊN HỆ HỖ TRỢ </a>

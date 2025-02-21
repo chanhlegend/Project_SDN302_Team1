@@ -7,6 +7,7 @@
         description: { type: String, default: '' },
         image: [{ type: Schema.Types.ObjectId, ref: 'Image' }],
         sellerId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+        type: { type: String, default: 'Sản Phẩm'},
         status: { type: String, default: 'non-active' },
         category: { type: Schema.Types.ObjectId, ref: 'Category', required: true },
     }, { timestamps: true });

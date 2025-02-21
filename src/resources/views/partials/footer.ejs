@@ -1,124 +1,16 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
+    <meta charset="UTF-8" />
     <title>Footer Section</title>
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
       rel="stylesheet"
     />
-    <style>
-      body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background-color: #1c1c1c;
-        color: #fff;
-      }
-      .footer {
-        background-color: #1c1c1c;
-        padding: 20px 0;
-        color: #fff;
-      }
-      .footer .container {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        padding: 0 20px;
-      }
-      .footer .container > div {
-        flex: 1;
-        margin: 10px;
-      }
-      .footer .container .info {
-        max-width: 300px;
-      }
-      .footer .container .info p {
-        margin-top: 20px;
-      }
-      .footer .container .info .contact {
-        margin-bottom: 20px;
-        display: flex;
-        align-items: center;
-      }
-      .footer .container .info .contact i {
-        font-size: 24px;
-        margin-right: 10px;
-      }
-      .footer .container .info .social-icons {
-        display: flex;
-        margin-top: 10px;
-      }
-      .footer .container .info .social-icons a {
-        color: #fff;
-        margin-right: 10px;
-        font-size: 18px;
-      }
-      .footer .container .links {
-        display: flex;
-        justify-content: space-between;
-        flex: 2;
-      }
-      .footer .container .links div {
-        margin: 0 20px;
-      }
-      .footer .container .links h3 {
-        margin-bottom: 10px;
-      }
-      .footer .container .links ul {
-        list-style: none;
-        padding: 0;
-      }
-      .footer .container .links ul li {
-        margin-bottom: 5px;
-      }
-      .footer .container .links ul li a {
-        color: #fff;
-        text-decoration: none;
-        font-weight: 300;
-      }
-      .footer .container .links .app-links {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
-      .footer .container .links .app-links img {
-        width: 150px;
-        margin-bottom: 20px;
-        margin-top: 20px;
-      }
-      .footer .bottom-bar {
-        background-color: #333;
-        padding: 10px 20px;
-        text-align: center;
-        font-size: 14px;
-      }
-      .footer .bottom-bar .payment-icons img {
-        width: 50px;
-        margin: 0 5px;
-      }
-      .footer .bottom-bar .links {
-        margin: 10px 0;
-      }
-      .footer .bottom-bar .links a {
-        color: #fff;
-        text-decoration: none;
-        margin: 0 10px;
-      }
-      @media (max-width: 768px) {
-        .footer .container {
-          flex-direction: column;
-          align-items: center;
-        }
-        .footer .container .links {
-          flex-direction: column;
-          align-items: center;
-        }
-        .footer .container .links div {
-          margin: 10px 0;
-        }
-      }
-    </style>
+    <link rel="stylesheet" href="/css/footer.module.css" />
   </head>
   <body>
-    <div class="footer">
+    <footer>
       <div class="container">
         <div class="info">
           <p>
@@ -126,32 +18,32 @@
             produced by local farmers.
           </p>
           <div class="contact">
-            <i class="fas fa-phone-alt"> </i>
+            <i class="fas fa-phone-alt" aria-hidden="true"></i>
             <span> NEED HELP (1800 123 4567) </span>
           </div>
           <div class="social-icons">
             <a href="#">
-              <i class="fab fa-facebook-f"> </i>
+              <i class="fab fa-facebook-f" aria-hidden="true"></i>
             </a>
             <a href="#">
-              <i class="fab fa-twitter"> </i>
+              <i class="fab fa-twitter" aria-hidden="true"></i>
             </a>
             <a href="#">
-              <i class="fab fa-instagram"> </i>
+              <i class="fab fa-instagram" aria-hidden="true"></i>
             </a>
             <a href="#">
-              <i class="fab fa-youtube"> </i>
+              <i class="fab fa-youtube" aria-hidden="true"></i>
             </a>
             <a href="#">
-              <i class="fab fa-whatsapp"> </i>
+              <i class="fab fa-whatsapp" aria-hidden="true"></i>
             </a>
             <a href="#">
-              <i class="fab fa-pinterest"> </i>
+              <i class="fab fa-pinterest" aria-hidden="true"></i>
             </a>
           </div>
         </div>
         <div class="links">
-          <div>
+          <div class="info-links">
             <h3>INFORMATION</h3>
             <ul>
               <li>
@@ -174,7 +66,7 @@
               </li>
             </ul>
           </div>
-          <div>
+          <div class="info-customs">
             <h3>CUSTOM LINKS</h3>
             <ul>
               <li>
@@ -273,6 +165,6 @@
         </div>
         <p>Copyright © Pousthemes. All Rights Reserved.</p>
       </div>
-    </div>
+    </footer>
   </body>
 </html>

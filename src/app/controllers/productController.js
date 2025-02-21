@@ -1,5 +1,7 @@
 const Product = require('../models/Product')
+const Category = require('../models/Category')
 const { mutipleMongoeseToObject } = require('../../util/Mongoese')
+const mongoose = require('mongoose');
 
 class productController {
     listProduct(req, res, next) {
@@ -17,6 +19,7 @@ class productController {
                 })
             })
     }
+  
     createProduct = (req, res, next) => {
         const { productName, price, description, sellerId, status, category } = req.body
         const product = new Product({
@@ -41,7 +44,6 @@ class productController {
                 })
             })
     }
-
 }
 
-module.exports = new productController
+module.exports = new productController;
