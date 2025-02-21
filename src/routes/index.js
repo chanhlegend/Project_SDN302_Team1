@@ -5,6 +5,7 @@ const userRouter = require('./user')
 const registerRouter = require('./register')
 const categoryRouter = require('./category')
 const orderRouter = require('./order')
+const productOwnerRouter = require('./productOwner')
 function route(app) {
     app.use('/', siteRouter)
     app.use('/login', loginRouter)
@@ -13,5 +14,6 @@ function route(app) {
     app.use('/register', registerRouter)
     app.use('/category', categoryRouter)
     app.use('/order', orderRouter)
+    app.use('/productOwner', productOwnerRouter)
 }
 module.exports = route
