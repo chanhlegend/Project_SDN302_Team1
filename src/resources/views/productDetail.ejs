@@ -3,13 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Gamesir T4 Pro Wireless</title>
+    <title><%= product.productName %></title>
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
       rel="stylesheet"
     />
     <link
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/styles.css" />
@@ -68,30 +72,21 @@
         font-size: 24px;
         font-weight: 700;
         color: #333;
-        margin-bottom: 10px;
+        margin-top: 20px;
+        margin-bottom: 20px;
       }
       .product-description {
         font-size: 14px;
         color: #666;
         margin-bottom: 20px;
-      }
-      .product-size {
-        margin-bottom: 20px;
-      }
-      .product-size label {
-        font-size: 14px;
-        color: #333;
-        margin-right: 10px;
-      }
-      .product-size select {
-        padding: 5px;
-        font-size: 14px;
+        margin-top: 20px;
       }
       .product-actions {
         display: flex;
         flex-direction: column;
         gap: 10px;
         margin-bottom: 20px;
+        margin-top: 50px;
       }
       .product-actions button {
         padding: 10px;
@@ -102,10 +97,18 @@
       .add-to-cart {
         background-color: #333;
         color: #fff;
+        transition: background-color 0.3s ease;
+      }
+      .add-to-cart:hover {
+        background-color: #555;
       }
       .buy-now {
         background-color: #d4a373;
         color: #fff;
+        transition: background-color 0.3s ease;
+      }
+      .buy-now:hover {
+        background-color: #b5835a;
       }
       .product-info {
         display: flex;
@@ -113,6 +116,7 @@
         gap: 10px;
         font-size: 14px;
         color: #666;
+        margin-top: 50px;
       }
       .product-info i {
         margin-right: 10px;
@@ -153,41 +157,63 @@
 
     <div class="container">
       <div class="breadcrumb">
-        <a href="#">Trang chủ</a> / <a href="#">Phụ kiện</a> / Gamesir T4 Pro
-        Wireless
+        <a href="/">Trang chủ</a> / <a href=""><%= product.productName %></a>
       </div>
       <div class="product">
         <div class="product-image">
-          <img
-            src="https://th.bing.com/th/id/OIP.XYwqsutIAyIfmaJhJBZ1VwHaGE?rs=1&pid=ImgDetMain"
-            alt="Gamesir T4 Pro Wireless"
-            width="600"
-            height="400"
-          />
+          <!-- Bootstrap Carousel -->
+          <div id="productCarousel" class="carousel slide" data-ride="carousel" style="height: 400px; width: 600px;">
+            <div class="carousel-inner">
+              <% product.image.forEach((img, index) => { %>
+              <div class="carousel-item <%= index === 0 ? 'active' : '' %>" >
+                <img
+                  src="<%= img.url %>"
+                  class="d-block"
+                  alt="<%= product.productName %>"
+                  width="600"
+                  height="400"
+                />
+              </div>
+              <% }) %>
+            </div>
+            <a
+              class="carousel-control-prev"
+              href="#productCarousel"
+              role="button"
+              data-slide="prev"
+            >
+              <span
+                class="carousel-control-prev-icon"
+                aria-hidden="true"
+              ></span>
+              <span class="sr-only">Previous</span>
+            </a>
+            <a
+              class="carousel-control-next"
+              href="#productCarousel"
+              role="button"
+              data-slide="next"
+            >
+              <span
+                class="carousel-control-next-icon"
+                aria-hidden="true"
+              ></span>
+              <span class="sr-only">Next</span>
+            </a>
+          </div>
         </div>
         <div class="product-details">
-          <div class="product-title">Gamesir T4 Pro Wireless</div>
+          <div class="product-title"><%= product.productName %></div>
           <div class="product-rating">
             <% for(let i = 0; i < 4; i++) { %>
             <i class="fas fa-star"></i>
             <% } %>
             <i class="fas fa-star-half-alt"></i>
-            <span>Read reviews (4) | Vote</span>
+            <span>| <%= product.sellerId.name %></span>
           </div>
-          <div class="product-price">100</div>
-          <div class="product-description">
-            Printed on rigid paper with matt finish and smooth surface.
-          </div>
-          <div class="product-size">
-            <label for="size">Size:</label>
-            <select id="size">
-              <option value="S">S</option>
-            </select>
-          </div>
-          <div class="product-actions">
-            <button class="add-to-cart">ADD TO CART</button>
-            <button class="buy-now">BUY NOW</button>
-          </div>
+          <div class="product-price"><%= product.price %> VND</div>
+          <div class="product-description"><%= product.description %></div>
+
           <div class="product-info">
             <div><i class="fas fa-truck"></i> Miễn phí vận chuyển</div>
             <div>
@@ -199,18 +225,20 @@
               toàn cho hệ thống, tổ chức hoặc thực thể khác
             </div>
           </div>
+
+          <div class="product-actions">
+            <button class="add-to-cart">ADD TO CART</button>
+            <button class="buy-now">BUY NOW</button>
+          </div>
         </div>
-      </div>
-      <div class="tabs">
-        <div class="tab active">Mô tả</div>
-        <div class="tab">Chi tiết sản phẩm</div>
-      </div>
-      <div class="tab-content">
-        Có thể sử dụng trên PC thông qua Steam Beta hoặc phần mềm DS4Windows
       </div>
     </div>
 
     <!-- Include Footer -->
     <%- include('partials/footer') %>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   </body>
 </html>
