@@ -1,6 +1,5 @@
 const Product = require('../models/Product')
 const Category = require('../models/Category')
-const { mutipleMongoeseToObject } = require('../../util/Mongoese')
 const mongoose = require('mongoose');
 
 class productController {
@@ -43,6 +42,40 @@ class productController {
                     data: []
                 })
             })
+    }
+
+    async getProduct(req, res, next) {
+        const { id } = req.params;
+        Product.findById(id)
+        .populate({
+            path: 'image',
+        })
+        .populate({
+            path: 'sellerId',
+            populate: {
+                path: 'evaluate',
+                populate: {
+                    path: 'evaluaterId',
+                },
+            },
+        })
+            .then(async product => {
+                if (product) {
+                    const categories = await Category.find().sort({ createdAt: -1 });
+                    res.render('productDetail', {product, categories});
+                } else {
+                    res.json({
+                        message: 'failure',
+                        data: 'Product not found'
+                    });
+                }
+            })
+            .catch(err => {
+                res.json({
+                    message: 'failure',
+                    data: err.message
+                });
+            });
     }
 }
 
