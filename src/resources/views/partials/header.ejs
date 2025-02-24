@@ -60,7 +60,7 @@
         <a href="#"> DANH MỤC </a>
         <div class="dropdown-content">
           <% categories.forEach(category => { %>
-            <a href="#"><%= category.name %></a>
+            <a href="/category/productsByCategory/<%= category._id %>"><%= category.name %></a>
           <% }); %>
         </div>
       </div>
