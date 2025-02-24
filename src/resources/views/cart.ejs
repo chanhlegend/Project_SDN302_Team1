@@ -1,0 +1,274 @@
+<html>
+
+<head>
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+    <style>
+        .checkbox-wrapper-23 *,
+        .checkbox-wrapper-23 *:after,
+        .checkbox-wrapper-23 *:before {
+            box-sizing: border-box;
+        }
+
+        .checkbox-wrapper-23 input {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .checkbox-wrapper-23 input:checked+label svg path {
+            stroke-dashoffset: 0;
+        }
+
+        .checkbox-wrapper-23 input:focus+label {
+            transform: scale(1.03);
+        }
+
+        .checkbox-wrapper-23 input+label {
+            display: block;
+            border: 2px solid #333;
+            width: 20;
+            height: 20;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all .2s ease;
+        }
+
+        .checkbox-wrapper-23 input+label:active {
+            transform: scale(1.05);
+            border-radius: 12px;
+        }
+
+        .checkbox-wrapper-23 input+label svg {
+            pointer-events: none;
+            padding: 5%;
+        }
+
+        .checkbox-wrapper-23 input+label svg path {
+            fill: none;
+            stroke: #333;
+            stroke-width: 4px;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: 100;
+            stroke-dashoffset: 101;
+            transition: all 250ms cubic-bezier(1, 0, .37, .91);
+        }
+
+        .footer-fixed {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #f3f4f6; /* Màu nền cho footer */
+            padding: 10px 0;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .footer-content form {
+            display: flex;
+            align-items: center;
+        }
+
+        .footer-content button {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+
+<body class="bg-white text-black">
+    <!-- Include Header -->
+    <%- include('partials/header') %>
+        <div class="container mx-auto p-4">
+            <div class="overflow-x-auto">
+                <% if (cartItems.length===0 && message) { %>
+                    <div class="bg-yellow-200 text-yellow-700 p-4 rounded mb-4">
+                        <%= message %>
+                    </div>
+                    <% } %>
+                        <table class="min-w-full bg-white border">
+                            <thead>
+                                <tr class="w-full bg-gray-100 border-b">
+                                    <th class="py-2 px-4 text-left">
+                                        Chọn
+                                    </th>
+                                    <th class="py-2 px-4 text-left">
+                                        Sản Phẩm
+                                    </th>
+                                    <th class="py-2 px-4 text-left">
+                                        Mô tả
+                                    </th>
+                                    <th class="py-2 px-4 text-left">
+                                        Giá tiền
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% cartItems.forEach(cartItem=> { %>
+                                    <tr class="border-b">
+                                        <td class="py-4 px-4">
+                                            <div class="checkbox-wrapper-23">
+                                                <input type="checkbox" id="checkbox-<%= cartItem._id %>"
+                                                    name="cart-item" value="<%= cartItem._id %>"
+                                                    data-price="<%= cartItem.price %>" class="checkbox-item">
+                                                <label for="checkbox-<%= cartItem._id %>">
+                                                    <svg width="20" height="20" viewBox="0 0 20 20">
+                                                        <path d="M4 10l3 3L16 6" />
+                                                    </svg>
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="py-4 px-4">
+                                            <img alt="Apple Watch SE" class="w-16 h-16 mr-4" height="100"
+                                                src="<%= cartItem.image %>" width="100" />
+                                            <div>
+                                                <div>
+                                                    <%= cartItem.productName %>
+                                                </div>
+                                                <div class="text-gray-500">
+                                                    <%= cartItem.sellerId.name %>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="py-4 px-4">
+                                            <%= cartItem.description %>
+                                        </td>
+                                        <td class="py-4 px-4">
+                                            <%= cartItem.price %> VND
+                                        </td>
+                                    </tr>
+                                    <% }) %>
+                            </tbody>
+                        </table>
+            </div>
+            <div class="flex justify-between items-center mt-4">
+                <button class="bg-black text-white py-2 px-4">
+                    <a href="/">CONTINUE SHOPPING</a>
+                </button>
+                <div class="w-1/3">
+                    <div class="border p-4">
+                        <div class="flex justify-between mb-2">
+                            <div>
+                                <p>Số lượng sản phẩm đã chọn: <span id="total-count">0</span></p>
+                            </div>
+
+                        </div>
+                        <div class="flex justify-between mb-2">
+                            <span>
+                                Shipping
+                            </span>
+                            <span>
+                                7.000 đ
+                            </span>
+                        </div>
+
+                        <div class="flex justify-between mb-2">
+                            <div class="mt-4">
+                                <strong>Tổng tiền: <span id="total-price">0 VND</span></strong>
+                            </div>
+                        </div>
+
+                        <button class="bg-black text-white w-full py-2">
+                            PROCEED TO CHECKOUT
+                        </button>
+                    </div>
+                    <div class="mt-4">
+                        <div class="flex items-center mb-2">
+                            <i class="fas fa-shipping-fast mr-2">
+                            </i>
+                            <span>
+                                Free Shipping &amp; Returns : On all orders over $99
+                            </span>
+                        </div>
+                        <div class="flex items-center mb-2">
+                            <i class="fas fa-clock mr-2">
+                            </i>
+                            <span>
+                                Estimated Delivery : Usually dispatched within 24 hours
+                            </span>
+                        </div>
+                        <div class="flex items-center mb-2">
+                            <i class="fas fa-shield-alt mr-2">
+                            </i>
+                            <span>
+                                Security Policy : Be secure for a system, organization or other entity
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="footer-fixed">
+            <div class="footer-content">
+                <td class="py-4 px-4">
+                    <form action="/cart/remove" method="POST">
+                        <input type="hidden" name="productId" value="<%= cartItem._id %>" />
+                        <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded">Xóa</button>
+                    </form>
+                </td>
+            </div>
+        </div>
+
+        <script>
+            let addedBonus = false;
+            const checkboxes = document.querySelectorAll('.checkbox-item');
+            const totalPriceElement = document.getElementById('total-price');
+            const totalElement = document.getElementById('total-item');
+            let totalPrice = 0;
+            const totalItem = 0;
+
+
+
+            function updateTotalPrice() {
+                totalPrice = 0; 
+                checkboxes.forEach(checkbox => {
+                    if (checkbox.checked) {
+                        const price = parseFloat(checkbox.getAttribute('data-price'));
+                        const quantity = parseInt(checkbox.closest('tr').querySelector('td:nth-child(4)').innerText);
+
+                        totalPrice += price ;
+
+                        if (!addedBonus) {
+                            totalPrice += 7000;
+                            addedBonus = true; 
+                        }
+                    }
+                });
+
+                // Cập nhật hiển thị giá trị tổng
+                totalPriceElement.innerText = totalPrice.toLocaleString() + ' VND';
+            }
+
+            function countItem() {
+                let totalItem = 0;
+                const checkboxes = document.querySelectorAll('.checkbox-item');
+                const totalElement = document.getElementById('total-count');
+
+                checkboxes.forEach(checkbox => {
+                    if (checkbox.checked) {
+                        totalItem += 1;
+                    }
+                });
+
+                totalElement.innerText = totalItem.toLocaleString();
+            }
+
+            // Lắng nghe sự kiện thay đổi của các checkbox
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateTotalPrice);
+                checkbox.addEventListener('change', countItem);
+
+
+            });
+        </script>
+</body>
+
+</html>
