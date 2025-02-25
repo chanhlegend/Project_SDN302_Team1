@@ -74,6 +74,22 @@ class testController {
         const categories = await Category.find().sort({ createdAt: -1 });
         res.render('productDetail', { categories });
     }
+
+    async productByCategory(req, res) {
+        const categories = await Category.find().sort({ createdAt: -1 });
+        const categoryId = req.params.categoryId;
+        const products = await Product.find({ category: categoryId }).sort({ createdAt: -1 })
+            .populate({
+                path: 'image'
+            })
+            .populate({
+                path: 'sellerId'
+            })
+        
+        // res.json({ categories, products });
+        
+        res.render('productsByCategory', { categories, products });
+    }
 }
 
 module.exports = new testController;
