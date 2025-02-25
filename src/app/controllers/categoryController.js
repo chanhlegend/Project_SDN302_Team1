@@ -35,22 +35,29 @@ class CategoryController {
 
     async getProductsByCategory(req, res, next) {
         try {
-            const { id } = req.params;
-            const category = await Category.findById(id);
-            if (!category) {
-                return res.status(404).json({ message: 'Không tìm thấy category' });
-            }
-
-            const products = await Product.find({ category: id })
+            const categories = await Category.find().sort({ createdAt: -1 });
+            const categoryId = req.params.categoryId;
+            const page = parseInt(req.query.page) || 1;
+            const limit = parseInt(req.query.limit) || 9;
+            const skip = (page - 1) * limit;
+    
+            const products = await Product.find({ category: categoryId })
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit)
                 .populate({
                     path: 'image'
                 })
                 .populate({
                     path: 'sellerId'
-                })
-            res.json({ message: 'Thành công', data: products });
+                });
+    
+            const totalProducts = await Product.countDocuments({ category: categoryId });
+            const totalPages = Math.ceil(totalProducts / limit);
+    
+            res.render('productsByCategory', { categories, products, currentPage: page, totalPages, limit });
         } catch (error) {
-            res.status(500).json({ message: 'Lỗi server', error: error.message });
+            res.status(500).json({ message: 'Server error', error: error.message });
         }
     }
 }
