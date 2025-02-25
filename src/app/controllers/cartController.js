@@ -44,7 +44,7 @@ class cartController {
     async listCartByUser(req, res, next) {
         try {
             if (!req.session.user) {
-                return res.status(401).json({ error: "Bạn chưa đăng nhập!" });
+                return res.redirect('/login');
             }
     
             const userId = req.session.user._id;
@@ -60,7 +60,7 @@ class cartController {
             const categories = await Category.find().sort({ createdAt: -1 });
             
             const cartItems = await Product.find({ _id: { $in: cart.products } }).populate('sellerId', 'name');
-    
+            // res.json(cartItems);
             res.render('cart', { cart, cartItems ,categories });
         } catch (err) {
             console.error("Lỗi khi lấy giỏ hàng:", err);
@@ -71,7 +71,7 @@ class cartController {
     async removeFromCart(req, res, next) {
         try {
             if (!req.session.user) {
-                return res.status(401).json({ error: "Bạn chưa đăng nhập!" });
+                return res.redirect('/login');
             }
     
             const userId = req.session.user._id;
