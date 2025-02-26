@@ -5,7 +5,8 @@ const router = express.Router();
 
 router.post('/', FollowController.followUser);
 router.post('/unfollower', FollowController.unfollowUser);
-router.get('/following/:userId', FollowController.getFollowing);
-router.get('/followers/:userId', FollowController.getFollowers);
+router.get('/following', FollowController.getFollowing);
+router.get('/followers', FollowController.getFollowers);
+router.get("/check-follow/:followingId", FollowController.checkFollowStatus);
 
 module.exports = router;
