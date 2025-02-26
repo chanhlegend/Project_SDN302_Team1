@@ -56,18 +56,18 @@
         }
 
         .footer-fixed {
-            position: absolute;
+            position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            background-color: #f3f4f6; /* Màu nền cho footer */
+            background-color: #abb2c0; 
             padding: 10px 0;
             box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
         }
 
         .footer-content {
             display: flex;
-            justify-content: center;
+            justify-content: end;
             align-items: center;
         }
 
@@ -144,8 +144,10 @@
                                         </td>
                                     </tr>
                             </tbody>
+                            <% }) %>
                         </table>
             </div>
+            
             <div class="flex justify-between items-center mt-4">
                 <button class="bg-black text-white py-2 px-4">
                     <a href="/">CONTINUE SHOPPING</a>
@@ -209,13 +211,13 @@
             <div class="footer-content">
                 <td class="py-4 px-4">
                     <form action="/cart/remove" method="POST">
-                        <input type="hidden" name="productId" value="<%= cartItem._id %>" />
+                        <input type="hidden" name="productId" value="" />
                         <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded">Xóa</button>
                     </form>
                 </td>
             </div>
         </div>
-        <% }) %>
+        
 
         <script>
             let addedBonus = false;
@@ -243,7 +245,6 @@
                     }
                 });
 
-                // Cập nhật hiển thị giá trị tổng
                 totalPriceElement.innerText = totalPrice.toLocaleString() + ' VND';
             }
 
@@ -261,7 +262,6 @@
                 totalElement.innerText = totalItem.toLocaleString();
             }
 
-            // Lắng nghe sự kiện thay đổi của các checkbox
             checkboxes.forEach(checkbox => {
                 checkbox.addEventListener('change', updateTotalPrice);
                 checkbox.addEventListener('change', countItem);
