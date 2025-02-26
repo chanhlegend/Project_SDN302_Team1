@@ -4,7 +4,8 @@ const User = require('../models/User');
 class ReviewController {
     async reviewSeller(req, res) {
         try {
-            const { reviewerId, sellerId, rating, comment } = req.body;
+            const reviewerId = req.session.userId
+            const {  sellerId, rating, comment } = req.body;
 
             if (!reviewerId || !sellerId || !rating) {
                 return res.status(400).json({ message: "Vui lòng nhập đầy đủ thông tin" });
@@ -46,4 +47,4 @@ class ReviewController {
     }
 }
 
-module.exports = new ReviewController();
+module.exports = new ReviewController;

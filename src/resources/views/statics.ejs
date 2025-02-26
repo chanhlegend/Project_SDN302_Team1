@@ -30,7 +30,7 @@
             <div class="stat-icon pending"></div>
             <div class="stat-info">
                 <h3>Sản Phẩm Đang Kiểm Duyệt</h3>
-                <div class="stat-number">189</div>
+                <div class="stat-number"><%= stats.activeProducts %></div>
             </div>
         </div>
     </div>
@@ -62,11 +62,7 @@
                         <td><%= product.productName %></td>
                         <td><%= product.price ? product.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " VND" : "N/A" %></td>
                         <td><%= product.type %></td>
-                        <td>  <% if (product.createdAt) { %>
-                            <%= new Date(product.createdAt).toLocaleString('vi-VN') %>
-                        <% } else { %>
-                            N/A
-                        <% } %></td> 
+                    
                         <td>
                             <% if (product.status && product.status.toLowerCase() === "active") { %>
                                 <span class="status-badge approved">Đã Kiểm Duyệt</span>

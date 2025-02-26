@@ -30,10 +30,12 @@
         <span> ECO HAND </span>
       </div>
       <div class="search-bar">
-        <input placeholder="Tìm kiếm..." type="text" />
-        <button>
-          <i class="fas fa-search"> </i>
-        </button>
+        <form action="/search/products" method="GET">
+          <input placeholder="Tìm kiếm tên sản phẩm..." type="text" name="productname"/>
+          <button type="submit">
+            <i class="fas fa-search"> </i>
+          </button>
+        </form>
       </div>
       <div class="icons">
         <% if (session.user) { %>
@@ -55,12 +57,12 @@
       </div>
     </div>
     <div class="nav-bar">
-      <a href="#"> TRANG CHỦ </a>
+      <a href="/"> TRANG CHỦ </a>
       <div class="dropdown">
         <a href="#"> DANH MỤC </a>
         <div class="dropdown-content">
           <% categories.forEach(category => { %>
-            <a href="#"><%= category.name %></a>
+            <a href="/category/productsByCategory/<%= category._id %>"><%= category.name %></a>
           <% }); %>
         </div>
       </div>
