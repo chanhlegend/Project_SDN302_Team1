@@ -19,6 +19,12 @@ const OrderSchema = new Schema({
         required: true,
         default: 0
     },
+
+    status:{
+        type: String,
+        require: true,
+        default:'Pending'
+    }
     
 }, { timestamps: true });
 
