@@ -90,6 +90,29 @@ class testController {
         
         res.render('productsByCategory', { categories, products });
     }
+
+    async changePassword(req, res) {
+        const {email, password, repassword} = req.body;
+        try {
+            if (password !== repassword) {
+                return res.status(400).json({ message: 'Mật khẩu không trùng nhau.' });
+            }
+            const user = await User.findOne({ email });
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+            user.password = password;
+            await user.save();
+            res.status(200).json({ message: 'Đổi mật khẩu thành công' });
+        } catch (error) {
+            res.status(500).json({ message: 'Error changing password', error });
+        }
+    }
+
+    async menuAccount(req, res) {
+        const categories = await Category.find().sort({ createdAt: -1 });
+        res.render('menuAccount', { categories });
+    }
 }
 
 module.exports = new testController;
