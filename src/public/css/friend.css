@@ -1,0 +1,49 @@
+body {
+    background-color: #f0f0f0;
+}
+.friends-container {
+    background: white;
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.tab-header {
+    display: flex;
+    border-bottom: 2px solid #f1f1f1;
+}
+.tab-header div {
+    padding: 10px 20px;
+    cursor: pointer;
+}
+.tab-header .active {
+    border-bottom: 2px solid #f5b301;
+    font-weight: bold;
+}
+.friend-list {
+    margin-top: 15px;
+}
+.friend-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+.friend-item img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+.add-friend-btn {
+    background-color: #f7c5b5;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+.continue-shopping {
+    margin-top: 20px;
+    text-align: center;
+}

@@ -7,7 +7,8 @@
         description: { type: String, default: '' },
         image: [{ type: Schema.Types.ObjectId, ref: 'Image' }],
         sellerId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-        status: { type: String, enum: ['non_active', 'active', 'rejected'], default: 'non_active' },
+        type: { type: String, default: 'Sản Phẩm'},
+        status: { type: String, default: 'non-active' },
         category: { type: Schema.Types.ObjectId, ref: 'Category', required: true },
     }, { timestamps: true });
 

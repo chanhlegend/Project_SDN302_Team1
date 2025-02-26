@@ -1,0 +1,104 @@
+/* General Reset */
+body, h1, p {
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+/* Header Styles */
+.logo {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.logo img {
+    width: 50px; /* Adjust based on your logo's size */
+    height: auto;
+    margin-right: 10px;
+}
+
+h1 {
+    font-size: 24px;
+    color: #3E3E3E; /* Adjust based on your color choice */
+}
+
+/* Left Section */
+.left {
+    width: 30%; /* Adjust as needed */
+    float: left;
+}
+
+.left img {
+    width: 100%;
+    height: auto;
+}
+
+.left p {
+    font-size: 16px;
+    color: #666; /* Adjust based on your color choice */
+    margin-top: 10px;
+}
+
+/* Right Section */
+.right {
+    width: 70%; /* Adjust as needed */
+    float: right;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #f9f9f9; /* Table background color */
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+th {
+    background-color: #f2f2f2; /* Header background color */
+    color: #333;
+}
+
+tr:hover {
+    background-color: #f1f1f1; /* Row hover color */
+}
+
+/* Footer Styles */
+footer {
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 1px solid #ddd;
+    text-align: center;
+}
+
+/* Button Styles */
+button {
+    background-color: #ff5a5f; /* Button color */
+    color: white; /* Text color */
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px; /* Rounded borders */
+}
+
+button:hover {
+    background-color: #ff2e2f; /* Button hover color */
+}
+
+/* Clear floats */
+.container::after {
+    content: "";
+    display: table;
+    clear: both;
+}

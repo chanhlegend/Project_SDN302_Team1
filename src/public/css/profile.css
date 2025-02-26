@@ -1,0 +1,285 @@
+body {
+    background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+
+
+form {
+    width: 80%;
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+input {
+    display: block;
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+input[type="radio"], 
+input[type="checkbox"] {
+    display: inline;
+    width: auto;
+    margin-right: 5px;
+    margin-top: 14px;
+}
+
+.form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    gap: 20px;
+}
+
+.form-group label {
+    flex: 0 0 200px;
+    text-align: right;
+    margin-bottom: 0;
+}
+
+.form-group input {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.form-group .help-text {
+    margin-left: 220px; 
+    width: 100%;
+}
+
+.header-banner {
+    width: 100%;
+    text-align: center;
+}
+
+.header-banner img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+.radio-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    gap: 10px;
+}
+
+.radio-group label:first-child {
+    flex: 0 0 200px;
+    text-align: right;
+    margin-bottom: 0;
+}
+
+.password-field {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    gap: 20px;
+}
+
+.password-field label {
+    flex: 0 0 200px;
+    text-align: right;
+    margin-bottom: 0;
+}
+
+.password-field input {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.show-password {
+    position: absolute;
+    right: 154px;
+    /* top: 50%;
+    transform: translateY(-50%); */
+    background: #666;
+    color: white;
+    border: none;
+    padding: 8 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 12px;
+    height: 30px;
+}
+
+.help-text {
+    color: #666;
+    font-size: 0.9em;
+    margin-top: -5px;
+    margin-bottom: 15px;
+    margin-left: 220px;
+}
+
+.birthdate-format {
+    margin-left: 220px;
+    color: #666;
+    font-size: 0.9em;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    margin-left: 220px; 
+}
+
+.checkbox-group input[type="checkbox"] {
+    margin-right: 10px;
+    margin-top: 4px;
+}
+
+.checkbox-group label {
+    font-weight: normal; 
+}
+
+.newsletter-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+}
+
+.left-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.back-button, .home-button, .save-button {
+    background-color: #333;
+    color: white !important;
+    text-decoration: none;
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+    margin-top: 20px;
+}
+
+.save-button{
+    border:none;
+    cursor: pointer;
+}
+
+.arrow {
+    font-size: 16px;
+}
+
+.home-icon {
+    font-size: 16px;
+}
+
+.back-button:hover, .home-button:hover , .save-button:hover{
+    background-color: #444;
+}
+
+
+.privacy-text,
+.newsletter-text {
+    color: #666;
+    font-style: italic;
+    font-size: 0.9em;
+    margin-top: -5px;
+    margin-bottom: 15px;
+    margin-left: 25px;
+    margin-left: 220px;
+}
+
+.form-actions .links {
+    flex-grow: 1;
+}
+
+.form-actions a {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.form-actions button[type="submit"] {
+    background: #333;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.required {
+    color: red;
+}
+
+.alert {
+    width: 80%;
+    margin: 20px auto;
+    padding: 15px;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Style cho input date */
+.form-group input[type="text"]#birthdate {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 100%;
+}
+
+/* Style cho calendar popup */
+.flatpickr-calendar {
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.flatpickr-day.selected {
+    background: #333;
+    border-color: #333;
+}
+
+.flatpickr-day:hover {
+    background: #f0f0f0;
+}
+
+.flatpickr-current-month {
+    padding: 10px 0;
+}
+
+.flatpickr-monthDropdown-months {
+    padding: 5px;
+}

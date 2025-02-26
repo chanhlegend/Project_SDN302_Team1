@@ -1,0 +1,182 @@
+  .top-bar {
+    background-color: #1a1a1a;
+    color: #fff;
+    padding: 10px 0;
+    text-align: right;
+    font-size: 14px;
+  }
+
+  .top-bar a {
+    color: #fff;
+    margin: 0 10px;
+    text-decoration: none;
+  }
+
+  .top-bar a:hover {
+    text-decoration: none;
+  }
+
+  .top-bar span {
+    margin-right: 100px;
+  }
+
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: #fff;
+  }
+
+  .header .logo {
+    margin-left: 100px;
+    display: flex;
+    align-items: center;
+  }
+
+  .header .logo img {
+    height: 50px;
+    width: 60px;
+    margin-right: 10px;
+  }
+
+  .header .search-bar {
+    display: flex;
+    flex-grow: 1;
+    margin: 0 20px;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .header .search-bar form {
+    display: flex;
+    width: 60%;
+  }
+
+  .header .search-bar input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px 0 0 5px;
+  }
+
+  .header .search-bar button {
+    width: 40px;
+    height: 45px;
+    padding: 10px;
+    border: none;
+    background-color: #d19b7f;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+  }
+
+  .header .search-bar button:hover {
+    background-color: #d26f13;
+    color: #ffffff;
+  }
+
+  .header .icons {
+    margin-right: 100px;
+    display: flex;
+    align-items: center;
+  }
+
+  .header .icons i {
+    font-size: 20px;
+    margin: 0 20px;
+    cursor: pointer;
+  }
+
+  .icons a {
+    position: relative;
+    display: inline-block;
+  }
+
+  .icons a:hover::after {
+    content: attr(data-title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 5px;
+    border-radius: 5px;
+    white-space: nowrap;
+    z-index: 10;
+    opacity: 1;
+    transition: opacity 0.3s;
+  }
+
+  .icons a::after {
+    margin-bottom: 3px;
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 5px;
+    border-radius: 5px;
+    white-space: nowrap;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 10px;
+  }
+
+  .nav-bar {
+    background-color: #d19b7f;
+    padding: 10px 0;
+    text-align: center;
+  }
+
+  .nav-bar a {
+    color: #fff;
+    margin: 0 15px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease, transform 0.3s ease;
+  }
+
+  .nav-bar a:hover {
+    text-decoration: none;
+    color: #ffcc00;
+    transform: scale(1.1);
+  }
+
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 300px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    column-count: 2;
+    /* Add this line to create two columns */
+    column-gap: 10px;
+    /* Optional: Adjust the gap between columns */
+  }
+
+  .dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    break-inside: avoid;
+    /* Prevents breaking inside columns */
+  }
+
+  .dropdown-content a:hover {
+    color: #d19b7f;
+  }
+
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }

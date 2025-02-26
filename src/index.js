@@ -3,8 +3,9 @@ const morgan = require('morgan')
 const path = require('path')
 const app = express()
 const route = require('./routes')
-require('dotenv').config({ path: './src/.env' });
+require('dotenv').config({ path: './.env' });
 const bodyParser = require('body-parser');
+const flash = require('express-flash')
 const session = require('express-session');
 
 const db = require('./config/db')
@@ -26,7 +27,12 @@ app.use(session({
   saveUninitialized: true,
   cookie: { secure: false } // Set to true if using HTTPS
 }));
+app.use((req, res, next) => {
+  res.locals.session = req.session;
+  next();
+});
 
+app.use(flash())
 // Thiết lập view engine là EJS
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'resources/views')); // Đường dẫn tới thư mục chứa file EJS

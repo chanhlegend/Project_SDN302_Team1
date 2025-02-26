@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= product.productName %></title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <!-- Gán file CSS riêng nếu cần -->
+    <style>
+      body {
+        font-family: "Roboto", sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #fff;
+        color: #333;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .breadcrumb {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 20px;
+      }
+      .breadcrumb a {
+        color: #666;
+        text-decoration: none;
+      }
+      .breadcrumb a:hover {
+        text-decoration: underline;
+      }
+      .product {
+        display: flex;
+        flex-wrap: wrap;
+      }
+      .product img {
+        max-width: 100%;
+        height: auto;
+      }
+      .product-details {
+        flex: 1;
+        padding: 20px;
+      }
+      .product-title {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 10px;
+      }
+      .product-rating {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 10px;
+      }
+      .product-rating i {
+        color: #f5c518;
+      }
+      .product-price {
+        font-size: 24px;
+        font-weight: 700;
+        color: #333;
+        margin-top: 20px;
+        margin-bottom: 20px;
+      }
+      .product-description {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 20px;
+        margin-top: 20px;
+      }
+      .product-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 20px;
+        margin-top: 50px;
+      }
+      .product-actions button {
+        padding: 10px;
+        font-size: 14px;
+        border: none;
+        cursor: pointer;
+      }
+      .add-to-cart {
+        width: 100%;
+        background-color: #333;
+        color: #fff;
+        transition: background-color 0.3s ease;
+      }
+      .add-to-cart:hover {
+        background-color: #555;
+      }
+      .buy-now {
+        width: 100%;
+        background-color: #d4a373;
+        color: #fff;
+        transition: background-color 0.3s ease;
+      }
+      .buy-now:hover {
+        background-color: #b5835a;
+      }
+      .product-info {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        font-size: 14px;
+        color: #666;
+        margin-top: 50px;
+      }
+      .product-info i {
+        margin-right: 10px;
+      }
+      .tabs {
+        display: flex;
+        margin-top: 20px;
+        border-bottom: 1px solid #ccc;
+      }
+      .tab {
+        padding: 10px 20px;
+        cursor: pointer;
+        font-size: 14px;
+        color: #333;
+      }
+      .tab.active {
+        border-bottom: 2px solid #007bff;
+        color: #007bff;
+      }
+      .tab-content {
+        padding: 20px 0;
+        font-size: 14px;
+        color: #666;
+      }
+      @media (max-width: 768px) {
+        .product {
+          flex-direction: column;
+        }
+        .product-details {
+          padding: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Include Header -->
+    <%- include('partials/header') %>
+
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="/">Trang chủ</a> / <a href=""><%= product.productName %></a>
+      </div>
+      <div class="product">
+        <div class="product-image">
+          <!-- Bootstrap Carousel -->
+          <div id="productCarousel" class="carousel slide" data-ride="carousel" style="height: 400px; width: 600px;">
+            <div class="carousel-inner">
+              <% product.image.forEach((img, index) => { %>
+              <div class="carousel-item <%= index === 0 ? 'active' : '' %>" >
+                <img
+                  src="<%= img.url %>"
+                  class="d-block"
+                  alt="<%= product.productName %>"
+                  width="600"
+                  height="400"
+                />
+              </div>
+              <% }) %>
+            </div>
+            <a
+              class="carousel-control-prev"
+              href="#productCarousel"
+              role="button"
+              data-slide="prev"
+            >
+              <span
+                class="carousel-control-prev-icon"
+                aria-hidden="true"
+              ></span>
+              <span class="sr-only">Previous</span>
+            </a>
+            <a
+              class="carousel-control-next"
+              href="#productCarousel"
+              role="button"
+              data-slide="next"
+            >
+              <span
+                class="carousel-control-next-icon"
+                aria-hidden="true"
+              ></span>
+              <span class="sr-only">Next</span>
+            </a>
+          </div>
+        </div>
+        <div class="product-details">
+          <div class="product-title"><%= product.productName %></div>
+          <div class="product-rating">
+            <% for(let i = 0; i < 4; i++) { %>
+            <i class="fas fa-star"></i>
+            <% } %>
+            <i class="fas fa-star-half-alt"></i>
+            <span>| <%= product.sellerId.name %></span>
+          </div>
+          <div class="product-price"><%= product.price %> VND</div>
+          <div class="product-description"><%= product.description %></div>
+
+          <div class="product-info">
+            <div><i class="fas fa-truck"></i> Miễn phí vận chuyển</div>
+            <div>
+              <i class="fas fa-clock"></i> Dự kiến giao hàng: Thường được gửi đi
+              trong vòng 24 giờ
+            </div>
+            <div>
+              <i class="fas fa-shield-alt"></i> Chính sách bảo mật: Đảm bảo an
+              toàn cho hệ thống, tổ chức hoặc thực thể khác
+            </div>
+          </div>
+
+          <div class="product-actions">
+            <form action="/cart/addToCart" method="Post">
+              <input type="hidden" value="<%= product._id%>" name="id"/>
+              <button class="add-to-cart">Thêm vào giỏ hàng</button>
+
+            </form>
+            <form action="/order" method="Post">
+              <input type="hidden" value="<%= product._id%>" name="id"/>
+              <button class="buy-now">Mua ngay</button>
+            </form>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Include Footer -->
+    <%- include('partials/footer') %>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>
