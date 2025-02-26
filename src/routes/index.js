@@ -13,5 +13,6 @@ function route(app) {
     app.use('/register', registerRouter)
     app.use('/category', categoryRouter)
     app.use('/order', orderRouter)
+    app.use('/admin', productRouter)
 }
 module.exports = route
