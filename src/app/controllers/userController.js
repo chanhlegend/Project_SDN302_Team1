@@ -90,11 +90,9 @@ class UserController {
             res.status(500).send('Lỗi khi bỏ ban người dùng');
         }
     }
-}
 
-module.exports = new UserController();
 
-class UserProfileController {
+
 
     getUserProfile(req, res, next) {
 
@@ -124,12 +122,7 @@ class UserProfileController {
             })
             .catch(next);
     }
-}
-
-
-
-
-class updateUserProfileController{
+           
     async updateUserProfile (req, res, next){
         try{
             const userId = req.params.id || req.user?._id;
@@ -143,7 +136,7 @@ class updateUserProfileController{
             if(req.body.new_password){
                 if(req.body.password){
                     updateData.password = req.body.new_password
-                }else{
+                } else {
                     req.session.message = {
                         type: 'error',
                         content: 'Current password is required to set new password'
@@ -151,13 +144,9 @@ class updateUserProfileController{
                     return res.redirect(`/user/${userId}`);
                 }
             }
-
-            const updatedUser = await User.findByIdAndUpdate(
-                userId,
-                {$set: updateData},
-                {new: true , runValidators: true}
-            )
-
+    
+            const updatedUser = await User.findByIdAndUpdate(userId, updateData, { new: true });
+    
             if(!updatedUser){
                 req.session.message = {
                     type: 'error',
@@ -165,24 +154,21 @@ class updateUserProfileController{
                 };
                 return res.redirect(`/user/${userId}`);
             }
-
+    
             req.session.message = {
                 type: 'success',
                 content: 'Profile updated successfully!'
             };
             res.redirect(`/user/${userId}`)
-        }catch (error){
+        } catch (error){
             console.error('Update error:', error);
             req.session.message = {
                 type: 'error',
                 content: 'Failed to update profile'
             };
+            res.redirect(`/user/${userId}`);
         } 
     }
 }
 
-module.exports ={ 
-    userController: new userController(),
-    userProfileController: new UserProfileController(),
-    updateUserProfileController: new updateUserProfileController()
-}
+module.exports = new UserController;

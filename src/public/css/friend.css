@@ -47,3 +47,21 @@ body {
     margin-top: 20px;
     text-align: center;
 }
+
+
+.tab-header div {
+    cursor: pointer;
+    padding: 10px;
+    display: inline-block;
+}
+.tab-header .active {
+    font-weight: bold;
+    color: blue;
+    border-bottom: 2px solid blue;
+}
+.friend-list {
+    display: none;
+}
+.friend-list.active {
+    display: block;
+}

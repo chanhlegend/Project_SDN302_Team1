@@ -9,60 +9,118 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </head>
 <body>
-   
-
-    <% if (messages && messages.message) { %>
-        <div class="alert alert-<%= messages.message.type %>">
-            <%= messages.message.content %>
-        </div>
-    <% } %>
-
-    <form action="/user/update-profile/<%= user._id %>" method="POST">
-        <div class="radio-group">
-            <label>Social title</label>
-            <input type="radio" 
-            name="social_title" 
-            value="Mr." 
-            <%= user.social_title === 'Mr.' ? 'checked' : '' %> 
-            disabled> Mr.
-     <input type="radio" 
-            name="social_title" 
-            value="Mrs." 
-            <%= user.social_title === 'Mrs.' ? 'checked' : '' %> 
-            disabled> Mrs.
-        </div>
-    
-        <div class="form-group">
-            <label>First name<span class="required"></span></label>
-            <input type="text" name="first_name" value="<%= user.first_name %>" disabled>
-        </div>
-        <div class="form-group">
-            <label>Last name<span class="required"></span></label>
-            <input type="text" name="last_name" value="<%= user.last_name %>" disabled>
-        </div>
-
-    
-        <div class="form-group">
-            <label>Email<span class="required"></span></label>
-            <input type="email" name="email" value="<%= user.email %>" disabled>
-        </div>
-
-        <div class="form-group">
-            <label>Birthdate</label>
-            <input type="text" id="birthdate" name="birthdate" 
-            value="<%= user.dob ? user.dob.toLocaleDateString('en-US') : '' %>"
-            disabled>      
-        </div>
-        
-
-        <div class="form-actions">
-            <div class="left-buttons">
-                <a href="/" class="back-button">
-                    <span class="arrow">←</span> BACK TO YOUR ACCOUNT
-                </a>
+    <div class="container">
+        <div class="left-section">
+            <div class="header">
+                <div class="logo">
+                    <img src="/img/avatar.png" alt="Logo">
+                    <span class="badge">Hoạt động 2 giờ trước</span>
+                </div>
+            </div>
+            <div class="actions">
+                <button>Chia sẻ</button>
+                <button id="followBtn">Theo dõi</button>
+            </div>
+            <div class="title">Toyota Đông Sài Gòn | CN Gò Vấp</div>
+            <div class="rating">
+                <span class="stars">★★★★★</span>
+                <span>4.8</span>
+                <span>(6 nhận xét)</span>
+                <span>Đã xác thực</span>
+            </div>
+            <div class="address">📍 Địa chỉ: @@@@@@@@@@@@@@@@</div>
+            <div class="stats">
+                <div>Đã bán <br> 25</div>
+                <div>Người theo dõi <br> 21</div>
+                <div>Xe đang bán <br> 18</div>
+            </div>
+            <div class="contact">
+                <span>📞 0909******</span>
+                <span>Bấm để hiện số</span>
             </div>
         </div>
-    </form>
-
+        
+        
+        <div class="right-section">
+            <form action="/user/update-profile/<%= user._id %>" method="POST">
+                <div class="form-group">
+                    <label>First name</label>
+                    <input type="text" name="first_name" value="<%= user.first_name %>" disabled>
+                </div>
+                <div class="form-group">
+                    <label>Last name</label>
+                    <input type="text" name="last_name" value="<%= user.last_name %>" disabled>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" value="<%= user.email %>" disabled>
+                </div>
+                <div class="form-group">
+                    <label>Birthdate</label>
+                    <input type="text" id="birthdate" name="birthdate" value="<%= user.dob ? user.dob.toLocaleDateString('en-US') : '' %>" disabled>      
+                </div>
+                <div class="form-actions">
+                    <div class="left-buttons">
+                        <a href="/" class="back-button">
+                            <span class="arrow">←</span> BACK TO YOUR ACCOUNT
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 </body>
+<script>
+document.getElementById("followBtn").addEventListener("click", async function () {
+    try {
+        const pathArray = window.location.pathname.split("/");
+        const followingId = pathArray[pathArray.length - 1]; 
+
+        if (!followingId) {
+            alert("Không tìm thấy ID người theo dõi");
+            return;
+        }
+
+        const response = await fetch("/follow/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ followingId }),
+        });
+
+        if (response.ok) {
+            this.textContent = "Đã theo dõi";
+            this.disabled = true; 
+        } else {
+            alert("Có lỗi xảy ra, vui lòng thử lại.");
+        }
+    } catch (error) {
+        console.error("Lỗi:", error);
+    }
+});
+
+
+document.addEventListener("DOMContentLoaded", async function () {
+    try {
+        const pathArray = window.location.pathname.split("/");
+        const followingId = pathArray[pathArray.length - 1];
+
+        if (!followingId) return;
+
+        const response = await fetch(`/follow/check-follow/${followingId}`);
+        const data = await response.json();
+
+        if (data.isFollowing) {
+            const followBtn = document.getElementById("followBtn");
+            followBtn.textContent = "Đã theo dõi";
+            followBtn.disabled = true;
+            followBtn.classList.add("following");
+        }
+    } catch (error) {
+        console.error("Lỗi:", error);
+    }
+});
+</script>
 </html>

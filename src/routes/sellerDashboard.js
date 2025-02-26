@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const sellerDashboardController = require('../app/controllers/sellerDashboardController');
+const sellerProductController = require('../app/controllers/sellerProductController');
 
-router.get('/myStatics', sellerDashboardController.getMyProducts);
+router.get('/myStatics', sellerProductController.getMyProducts);
 
 module.exports = router;
