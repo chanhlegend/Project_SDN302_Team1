@@ -1,5 +1,7 @@
 const Product = require('../models/Product');
 const Image = require('../models/Image');
+const Category = require('../models/Category')
+const mongoose = require('mongoose');
 class ProductController {
     // Lấy danh sách sản phẩm
     async listProduct(req, res, next) {
@@ -11,51 +13,25 @@ class ProductController {
         }
     }
 
-        // Lấy thông tin chi tiết sản phẩm
-        async getProductDetail(req, res, next) {
-            try {
-                const productId = req.params.productId;
-                const product = await Product.findById(productId)
-                    .populate('sellerId', 'name email') // Populate thông tin người bán
-                   .populate('image','url'); // Populate thông tin hình ảnh
-        
-                if (!product) {
-                    return res.status(404).json({ message: "Sản phẩm không tồn tại" });
-                }
-        
-                res.json(product);
-            } catch (err) {
-                res.status(500).json({ message: "Lỗi server" });
+    // Lấy thông tin chi tiết sản phẩm
+    async getProductDetail(req, res, next) {
+        try {
+            const productId = req.params.productId;
+            const product = await Product.findById(productId)
+                .populate('sellerId', 'name email') // Populate thông tin người bán
+                .populate('image', 'url'); // Populate thông tin hình ảnh
+
+            if (!product) {
+                return res.status(404).json({ message: "Sản phẩm không tồn tại" });
             }
+
+            res.json(product);
+        } catch (err) {
+            res.status(500).json({ message: "Lỗi server" });
         }
-
-
-    
-    // Tạo sản phẩm
-    async createProduct(req, res, next) {
-        const { productName, price, description, sellerId, category } = req.body;
-const Product = require('../models/Product')
-const Category = require('../models/Category')
-const mongoose = require('mongoose');
-
-class productController {
-    listProduct(req, res, next) {
-        Product.find({})
-            .then(products => {
-                res.json({
-                    message: 'success',
-                    data: products
-                })
-            })
-            .catch(err => {
-                res.json({
-                    message: 'failure',
-                    data: []
-                })
-            })
     }
-  
-    createProduct = (req, res, next) => {
+
+    async createProduct(req, res, next) {
         const { productName, price, description, sellerId, status, category } = req.body
         const product = new Product({
             productName,
@@ -109,17 +85,16 @@ class productController {
                 { _id: { $in: productIds } },
                 { $set: { status: status } }
             );
-            res.json({ message: "Cập nhật ${productIds.length} sản phẩm thành ${status} "});
+            res.json({ message: "Cập nhật ${productIds.length} sản phẩm thành ${status} " });
         } catch (err) {
             res.status(500).json({ message: 'Lỗi khi cập nhật trạng thái' });
         }
     }
-}
-module.exports = new ProductController();
+
 
     async getProduct(req, res, next) {
-        const { id } = req.params;
-        Product.findById(id)
+    const { id } = req.params;
+    Product.findById(id)
         .populate({
             path: 'image',
         })
@@ -132,25 +107,25 @@ module.exports = new ProductController();
                 },
             },
         })
-            .then(async product => {
-                if (product) {
-                    const categories = await Category.find().sort({ createdAt: -1 });
-                    res.render('productDetail', {product, categories});
-                } else {
-                    res.json({
-                        message: 'failure',
-                        data: 'Product not found'
-                    });
-                }
-            })
-            .catch(err => {
+        .then(async product => {
+            if (product) {
+                const categories = await Category.find().sort({ createdAt: -1 });
+                res.render('productDetail', { product, categories });
+            } else {
                 res.json({
                     message: 'failure',
-                    data: err.message
+                    data: 'Product not found'
                 });
+            }
+        })
+        .catch(err => {
+            res.json({
+                message: 'failure',
+                data: err.message
             });
-    }
+        });
+}
 }
 
-module.exports = new productController;
+module.exports = new ProductController;
 

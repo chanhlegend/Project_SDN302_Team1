@@ -9,7 +9,6 @@ router.get('/:id', UserProfileController.getUserProfile);
 router.get('/customers', userController.getCustomers);
 router.put('/customers/ban/:id', userController.banCustomer);
 router.put('/customers/unban/:id', userController.unbanCustomer);
-router.get('/:id', userProfileController.getUserProfile);
 router.post('/update-profile/:id',updateUserProfileController.updateUserProfile)
 router.get('/view/:id' , UserProfileController.viewUserProfile)
 
