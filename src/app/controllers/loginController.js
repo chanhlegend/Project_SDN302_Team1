@@ -1,50 +1,56 @@
-const User = require('../models/User')
-const nodemailer = require('nodemailer')
+const User = require('../models/User');
+const nodemailer = require('nodemailer');
+const bcrypt = require('bcrypt');
 require('dotenv').config({ path: './src/.env' });
 
 class loginController {
     postLogin(req, res, next) {
-        const { username, password } = req.body
+        const { username, password } = req.body;
         User.findOne({ username: username })
             .then(user => {
                 if (!user) {
-                    res.render('login', { err: 'Tên đăng nhập hoặc mật khẩu không đúng!' })
+                    res.render('login', { err: 'Tên đăng nhập hoặc mật khẩu không đúng!' });
                 } else {
-                    if (user.password === password) {
-                        req.session.user = user;
-                        console.log('Session after login:', req.session); // Thêm dòng này để in ra thông tin session
-                        res.redirect('/')
-                    } else {
-                        res.render('login', { err: 'Tên đăng nhập hoặc mật khẩu không đúng!' })
-                    }
+                    bcrypt.compare(password, user.password, (err, isMatch) => {
+                        if (err) {
+                            return next(err);
+                        }
+                        if (isMatch) {
+                            req.session.user = user;
+                            console.log('Session after login:', req.session); // Thêm dòng này để in ra thông tin session
+                            res.redirect('/');
+                        } else {
+                            res.render('login', { err: 'Tên đăng nhập hoặc mật khẩu không đúng!' });
+                        }
+                    });
                 }
             })
             .catch(err => {
                 res.json({
                     message: 'failure',
                     data: 'Server error'
-                })
-            })
+                });
+            });
     }
 
     login(req, res, next) {
         if (req.session.user) {
-            res.redirect('/')
+            res.redirect('/');
         } else {
-            res.render('login')
+            res.render('login');
         }
     }
 
     forgotPassword(req, res, next) {
-        res.render('forgotPassword')
+        res.render('forgotPassword');
     }
 
     postForgotPassword(req, res, next) {
-        const { email } = req.body
+        const { email } = req.body;
         User.findOne({ email: email })
             .then(user => {
                 if (!user) {
-                    res.render('forgotPassword', { err: 'Email không tồn tại!' })
+                    res.render('forgotPassword', { err: 'Email không tồn tại!' });
                 } else {
                     // Lấy email người dùng
                     let emailSentTo = email;
@@ -78,7 +84,7 @@ class loginController {
                     res.render('verifyOTPForgotPassword', { email, otp });
                 }
             })
-            .catch(next)
+            .catch(next);
     }
 
     submitOTP(req, res, next) {
@@ -104,15 +110,19 @@ class loginController {
                     if (!user) {
                         res.render('resetPassword', { email, err: 'Email không tồn tại' });
                     } else {
-                        user.password = newPassword;
-                        user.save();
-                        res.render('login', { mess: 'Đổi mật khẩu thành công' });
+                        bcrypt.hash(newPassword, 10, (err, hashedPassword) => {
+                            if (err) {
+                                return next(err);
+                            }
+                            user.password = hashedPassword;
+                            user.save();
+                            res.render('login', { mess: 'Đổi mật khẩu thành công' });
+                        });
                     }
                 })
                 .catch(next);
-
         }
     }
 }
 
-module.exports = new loginController
+module.exports = new loginController;

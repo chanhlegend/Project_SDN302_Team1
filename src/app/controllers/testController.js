@@ -91,27 +91,40 @@ class testController {
         res.render('productsByCategory', { categories, products });
     }
 
-    async changePassword(req, res) {
-        const {email, password, repassword} = req.body;
+    async menuAccount(req, res) {
+        const categories = await Category.find().sort({ createdAt: -1 });
+        res.render('menuAccount', { categories });
+    }
+
+    async changePassword(req, res, next) {
+        const categories = await Category.find().sort({ createdAt: -1 });
+        res.render('changePassword', { categories });
+    }
+
+    async postChangePassword(req, res, next) {
+        const email = req.session.user.email;
+        const { oldpassword, newpassword, repassword} = req.body;
+
         try {
-            if (password !== repassword) {
+            if(password.length <= 6) {
+                return res.status(400).json({ message: 'Mật khẩu phải trên 6 kí tự.' });
+            }
+            if (newpassword !== repassword) {
                 return res.status(400).json({ message: 'Mật khẩu không trùng nhau.' });
             }
             const user = await User.findOne({ email });
             if (!user) {
                 return res.status(404).json({ message: 'User not found' });
             }
-            user.password = password;
+            if (oldpassword !== user.password) {
+                return res.status(400).json({ message: 'Mật khẩu cũ không đúng.' });
+            }
+            user.password = newpassword;
             await user.save();
             res.status(200).json({ message: 'Đổi mật khẩu thành công' });
         } catch (error) {
             res.status(500).json({ message: 'Error changing password', error });
         }
-    }
-
-    async menuAccount(req, res) {
-        const categories = await Category.find().sort({ createdAt: -1 });
-        res.render('menuAccount', { categories });
     }
 }
 

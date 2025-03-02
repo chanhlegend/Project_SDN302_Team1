@@ -67,12 +67,12 @@
     </style>
   </head>
   <body>
-     <!-- Include Header -->
-     <%- include('partials/header') %>
+    <!-- Include Header -->
+    <%- include('partials/header') %>
     <div class="header-page">
-      <h1> MENU TÀI KHOẢN </h1>
+      <h1>MENU TÀI KHOẢN</h1>
     </div>
-    <div class="container" style="margin-bottom: 50px;">
+    <div class="container" style="margin-bottom: 50px">
       <div class="grid">
         <div class="grid-item">
           <i class="fas fa-user"></i>
@@ -94,10 +94,12 @@
           <i class="fas fa-heart"></i>
           <p>My Wishlists</p>
         </div>
-        <div class="grid-item">
-          <i class="fas fa-sign-out-alt"></i>
-          <p>Đăng xuất</p>
-        </div>
+        <a href="/logout" style="text-decoration: none;">
+          <div class="grid-item">
+            <i class="fas fa-sign-out-alt"></i>
+            <p>Đăng xuất</p>
+          </div>
+        </a>
       </div>
     </div>
     <!-- Include Footer -->
