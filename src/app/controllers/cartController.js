@@ -52,21 +52,24 @@ class cartController {
             const cart = await Cart.findOne({ userId });
     
             if (!cart || cart.products.length === 0) {
-                // Giỏ hàng trống, thiết lập các giá trị mặc định cho cart
                 const message = "Giỏ hàng của bạn hiện tại đang trống!";
                 return res.render('cart', { cart: { quantity: 0, message }, cartItems: [], message });
             }
-            
-            const categories = await Category.find().sort({ createdAt: -1 });
-            
-            const cartItems = await Product.find({ _id: { $in: cart.products } }).populate('sellerId', 'name');
+    
+            // const categories = await Category.find().sort({ createdAt: -1 });
+    
+            const cartItems = await Product.find({ 
+                _id: { $in: cart.products },
+                status: { $ne: "sold" }  
+            }).populate('sellerId', 'name');
             // res.json(cartItems);
-            res.render('cart', { cart, cartItems ,categories });
+            res.render('cart', { cart, cartItems });
         } catch (err) {
             console.error("Lỗi khi lấy giỏ hàng:", err);
             res.status(500).json({ error: "Lỗi server, thử lại sau" });
         }
     }
+    
 
     async removeFromCart(req, res, next) {
         try {
@@ -75,28 +78,39 @@ class cartController {
             }
     
             const userId = req.session.user._id;
-            const { id } = req.body;
+            let { productIds } = req.body; 
+            if (!productIds) {
+                return res.status(400).json({ error: "Không có sản phẩm nào được chọn để xóa!" });
+            }
     
-            // Tìm giỏ hàng của người dùng
+            if (typeof productIds === "string") {
+                try {
+                    productIds = JSON.parse(productIds);
+                } catch (error) {
+                    return res.status(400).json({ error: "Dữ liệu không hợp lệ!" });
+                }
+            }
+    
+            if (!Array.isArray(productIds) || productIds.length === 0) {
+                return res.status(400).json({ error: "Danh sách sản phẩm cần xóa không hợp lệ!" });
+            }
+    
             const cart = await Cart.findOne({ userId });
     
             if (!cart || cart.products.length === 0) {
                 return res.status(404).json({ error: "Giỏ hàng không có sản phẩm!" });
             }
     
-            // Loại bỏ sản phẩm khỏi mảng products
-            cart.products.pull(id);
-            cart.quantity -= 1;
+            cart.products = cart.products.filter(productId => !productIds.includes(productId.toString()));
+            cart.quantity = cart.products.length;
     
-            // Nếu giỏ hàng còn sản phẩm, lưu lại giỏ hàng
             if (cart.products.length > 0) {
                 await cart.save();
-                return res.redirect('/cart'); // Sau khi xóa sản phẩm, điều hướng về giỏ hàng
+                return res.redirect('cart'); 
             } else {
-                // Nếu giỏ hàng trống, không xóa giỏ hàng mà hiển thị thông báo
                 cart.message = "Giỏ hàng của bạn hiện tại đang trống!";
-                await cart.save(); // Cập nhật trạng thái giỏ hàng
-                return res.redirect('/cart'); // Chuyển hướng về trang giỏ hàng với thông báo
+                await cart.save(); 
+                return res.redirect('cart'); 
             }
     
         } catch (err) {
@@ -104,9 +118,6 @@ class cartController {
             res.status(500).json({ error: "Lỗi server, thử lại sau" });
         }
     }
-
-    
-    
 }
 
 module.exports = new cartController;
