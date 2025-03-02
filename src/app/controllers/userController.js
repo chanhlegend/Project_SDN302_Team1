@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const Product = require('../models/Product');
 const Category = require('../models/Category');
+const bcrypt = require('bcrypt');
 const { mutipleMongoeseToObject, mongoeseToObject } = require('../../util/Mongoese');
 
 class UserController {
@@ -145,8 +146,49 @@ class UserController {
     }
 
     //Hiển thị trang đổi mật khẩu
-    changePassword(req, res, next) {
-        res.render('changePassword')
+    async changePassword(req, res, next) {
+        if (!req.session.user) {
+            return res.redirect('/login');
+        }
+        const userId = req.session.user._id;
+        const user = await
+            User.findById(userId)
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        const categories = await Category.find().sort({ createdAt: -1 });
+        res.render('changePassword', { categories, user });
+    }
+
+    async postChangePassword(req, res, next) {
+        if(!req.session.user) {
+            return res.redirect('/login');
+        }
+        const email = req.session.user.email;
+        const { oldpassword, newpassword, repassword } = req.body;
+        
+        try {
+            const user = await User.findOne({ email });
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+            const isMatch = await bcrypt.compare(oldpassword, user.password);
+            if (!isMatch) {
+                return res.status(400).json({ message: 'Mật khẩu cũ không đúng.' });
+            }
+            if (newpassword.length <= 6) {
+                return res.status(400).json({ message: 'Mật khẩu phải trên 6 kí tự.' });
+            }
+            if (newpassword !== repassword) {
+                return res.status(400).json({ message: 'Mật khẩu không trùng nhau.' });
+            }            
+            const salt = await bcrypt.genSalt(10);
+            user.password = await bcrypt.hash(newpassword, salt);
+            await user.save();
+            res.status(200).json({ message: 'Đổi mật khẩu thành công' });
+        } catch (error) {
+            res.status(500).json({ message: 'Error changing password', error });
+        }
     }
 }
 
