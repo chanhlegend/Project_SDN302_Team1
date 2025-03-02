@@ -11,5 +11,8 @@ router.put('/customers/unban/:id', userController.unbanCustomer);
 router.post('/update-profile/:id',updateUserProfileController.updateUserProfile)
 router.get('/view/:id' , UserProfileController.viewUserProfile)
 router.get('/account/menu', userController.menuAccount);
+router.get('/account/changePassword', userController.changePassword);
+router.post('/account/changePassword', userController.postChangePassword);
+
 
 module.exports = router;
