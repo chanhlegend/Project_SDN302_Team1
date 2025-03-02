@@ -60,14 +60,14 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            background-color: #abb2c0; 
+            background-color: #abb2c0;
             padding: 10px 0;
             box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
         }
 
         .footer-content {
             display: flex;
-            justify-content: end;
+            justify-content: start;
             align-items: center;
         }
 
@@ -84,7 +84,7 @@
 
 <body class="bg-white text-black">
     <!-- Include Header -->
-    <%- include('partials/header') %>
+    
         <div class="container mx-auto p-4">
             <div class="overflow-x-auto">
                 <% if (cartItems.length===0 && message) { %>
@@ -125,7 +125,7 @@
                                             </div>
                                         </td>
                                         <td class="py-4 px-4">
-                                            <img alt="Apple Watch SE" class="w-16 h-16 mr-4" height="100"
+                                            <img alt="<%= cartItem.productName %>" class="w-16 h-16 mr-4" height="100"
                                                 src="<%= cartItem.image %>" width="100" />
                                             <div>
                                                 <div>
@@ -147,127 +147,119 @@
                             <% }) %>
                         </table>
             </div>
-            
+
             <div class="flex justify-between items-center mt-4">
                 <button class="bg-black text-white py-2 px-4">
                     <a href="/">CONTINUE SHOPPING</a>
                 </button>
-                <div class="w-1/3">
-                    <div class="border p-4">
-                        <div class="flex justify-between mb-2">
-                            <div>
-                                <p>Số lượng sản phẩm đã chọn: <span id="total-count">0</span></p>
-                            </div>
 
-                        </div>
-                        <div class="flex justify-between mb-2">
-                            <span>
-                                Shipping
-                            </span>
-                            <span>
-                                7.000 đ
-                            </span>
-                        </div>
+            </div>
+        </div>
 
-                        <div class="flex justify-between mb-2">
-                            <div class="mt-4">
-                                <strong>Tổng tiền: <span id="total-price">0 VND</span></strong>
-                            </div>
-                        </div>
 
-                        <button class="bg-black text-white w-full py-2">
-                            PROCEED TO CHECKOUT
-                        </button>
-                    </div>
-                    <div class="mt-4">
-                        <div class="flex items-center mb-2">
-                            <i class="fas fa-shipping-fast mr-2">
-                            </i>
-                            <span>
-                                Free Shipping &amp; Returns : On all orders over $99
-                            </span>
-                        </div>
-                        <div class="flex items-center mb-2">
-                            <i class="fas fa-clock mr-2">
-                            </i>
-                            <span>
-                                Estimated Delivery : Usually dispatched within 24 hours
-                            </span>
-                        </div>
-                        <div class="flex items-center mb-2">
-                            <i class="fas fa-shield-alt mr-2">
-                            </i>
-                            <span>
-                                Security Policy : Be secure for a system, organization or other entity
-                            </span>
-                        </div>
-                    </div>
+        <div class="footer-fixed bg-gray-100 p-4">
+            <div class="footer-content container mx-auto flex justify-between gap-4">
+
+                <!-- Cột 1: Checkbox Chọn Tất Cả -->
+                <div class="w-1/3 bg-white p-4 shadow rounded flex items-center">
+                    <input type="checkbox" id="select-all" class="checkbox-item w-5 h-5 mr-2">
+                    <label for="select-all" class="font-semibold text-lg">Chọn tất cả</label>
                 </div>
-            </div>
-        </div>
 
-
-        <div class="footer-fixed">
-            <div class="footer-content">
-                <td class="py-4 px-4">
-                    <form action="/cart/remove" method="POST">
-                        <input type="hidden" name="productId" value="" />
-                        <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded">Xóa</button>
+                <!-- Cột 2: Nút Xóa Sản Phẩm -->
+                <div class="w-1/5 bg-white p-4 shadow rounded">
+                    <form action="/cart/remove" method="POST" id="delete-form">
+                        <input type="hidden" name="productIds" id="selected-products" value="" />
+                        <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded w-full">
+                            Xóa
+                        </button>
                     </form>
-                </td>
+                </div>
+
+                <!-- Cột 3: Tổng tiền và Thanh toán -->
+                <div class="w-1/3 bg-white p-4 shadow rounded">
+                    <div class="border-b pb-2 mb-2">
+                        <p>Số lượng sản phẩm đã chọn: <span id="total-count">0</span></p>
+                    </div>
+                    <div class="flex justify-between mb-2">
+                        <span>Shipping</span>
+                        <span>7.000 đ</span>
+                    </div>
+                    <div class="flex justify-between mb-2">
+                        <strong>Tổng tiền: <span id="total-price">0 VND</span></strong>
+                    </div>
+                    <button class="bg-black text-white w-full py-2 mt-2">
+                        PROCEED TO CHECKOUT
+                    </button>
+                </div>
+
             </div>
         </div>
-        
+
+
 
         <script>
-            let addedBonus = false;
-            const checkboxes = document.querySelectorAll('.checkbox-item');
-            const totalPriceElement = document.getElementById('total-price');
-            const totalElement = document.getElementById('total-item');
-            let totalPrice = 0;
-            const totalItem = 0;
+            document.addEventListener("DOMContentLoaded", function () {
+                const selectAllCheckbox = document.getElementById("select-all");
+                const itemCheckboxes = document.querySelectorAll(".checkbox-item:not(#select-all)");
+                const totalPriceElement = document.getElementById("total-price");
+                const totalCountElement = document.getElementById("total-count");
+                const deleteForm = document.getElementById("delete-form");
+                const selectedProductsInput = document.getElementById("selected-products");
 
-            
+                function updateTotal() {
+                    let selectedProducts = [];
+                    let totalPrice = 0;
+                    let totalCount = 0;
+                    let addedBonus = false;
 
-            function updateTotalPrice() {
-                totalPrice = 0; 
-                checkboxes.forEach(checkbox => {
-                    if (checkbox.checked) {
-                        const price = parseFloat(checkbox.getAttribute('data-price'));
-                        const quantity = parseInt(checkbox.closest('tr').querySelector('td:nth-child(4)').innerText);
+                    itemCheckboxes.forEach((checkbox) => {
+                        if (checkbox.checked) {
+                            selectedProducts.push(checkbox.value);
+                            const price = parseFloat(checkbox.getAttribute("data-price")) || 0;
+                            totalPrice += price;
+                            totalCount += 1;
 
-                        totalPrice += price ;
-
-                        if (!addedBonus) {
-                            totalPrice += 7000;
-                            addedBonus = true; 
+                            if (!addedBonus) {
+                                totalPrice += 7000; // Chỉ cộng phí ship một lần nếu có ít nhất một sản phẩm
+                                addedBonus = true;
+                            }
                         }
-                    }
+                    });
+
+                    // Cập nhật giá trị input ẩn với danh sách productId đã chọn (dạng JSON)
+                    selectedProductsInput.value = JSON.stringify(selectedProducts);
+
+                    // Cập nhật tổng tiền và số lượng sản phẩm
+                    totalPriceElement.innerText = totalPrice.toLocaleString() + " VND";
+                    totalCountElement.innerText = totalCount.toLocaleString();
+                }
+
+                // Khi nhấn "Chọn tất cả", chọn hoặc bỏ chọn tất cả sản phẩm
+                selectAllCheckbox.addEventListener("change", function () {
+                    itemCheckboxes.forEach((checkbox) => {
+                        checkbox.checked = selectAllCheckbox.checked;
+                    });
+                    updateTotal();
                 });
 
-                totalPriceElement.innerText = totalPrice.toLocaleString() + ' VND';
-            }
-
-            function countItem() {
-                let totalItem = 0;
-                const checkboxes = document.querySelectorAll('.checkbox-item');
-                const totalElement = document.getElementById('total-count');
-
-                checkboxes.forEach(checkbox => {
-                    if (checkbox.checked) {
-                        totalItem += 1;
-                    }
+                // Khi một checkbox sản phẩm thay đổi, kiểm tra trạng thái "Chọn tất cả"
+                itemCheckboxes.forEach((checkbox) => {
+                    checkbox.addEventListener("change", function () {
+                        selectAllCheckbox.checked = [...itemCheckboxes].every((cb) => cb.checked);
+                        updateTotal();
+                    });
                 });
 
-                totalElement.innerText = totalItem.toLocaleString();
-            }
-
-            checkboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', updateTotalPrice);
-                checkbox.addEventListener('change', countItem);
-
-
+                // Kiểm tra giá trị trước khi submit form
+                deleteForm.addEventListener("submit", function (event) {
+                    if (!selectedProductsInput.value || selectedProductsInput.value === "[]") {
+                        event.preventDefault(); // Ngăn submit nếu không có sản phẩm nào được chọn
+                        alert("Vui lòng chọn ít nhất một sản phẩm để xóa!");
+                    }
+                });
             });
+
         </script>
 </body>
 
