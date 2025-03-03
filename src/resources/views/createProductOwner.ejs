@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Product</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <h1>Create a New Product</h1>
+  <form action="/productOwner/create/<%= userId %>" method="POST" enctype="multipart/form-data">
+    <div>
+        <label for="productName">Product Name:</label>
+        <input type="text" id="productName" name="productName" required>
+    </div>
+    
+    <div>
+        <label for="price">Price:</label>
+        <input type="number" id="price" name="price" required>
+    </div>
+
+    <div>
+        <label for="category">Category:</label>
+        <select id="category" name="category" required>
+            <option value="">--Select Category--</option>
+            <% categories.forEach(category => { %>
+                <option value="<%= category._id %>"><%= category.name %></option>
+            <% }); %>
+        </select>
+    </div>
+    
+    <div>
+        <label for="images">Upload Images (Max 5):</label>
+        <input type="file" id="images" name="images" accept="image/*" multiple required>
+    </div>
+
+    <button type="submit">Create Product</button>
+  </form>
+</body>
+</html>
+

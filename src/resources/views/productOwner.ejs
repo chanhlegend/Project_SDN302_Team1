@@ -4,37 +4,89 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Danh Sách Sản Phẩm</title>
-    <link rel="stylesheet" href="/css/style.css"> <!-- Liên kết file CSS nếu có -->
+    <link rel="stylesheet" href="/css/productOwner.css"> <!-- Liên kết file CSS nếu có -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+
 </head>
 <body>
         <!-- Include Header -->
         <%- include('partials/header') %>
-    <h1>Danh Sách Sản Phẩm Của Bạn</h1>
+    <h1>Sale Detail</h1>
 
     <% if (products.length > 0) { %>
-        <table border="1">
+        <table>
             <thead>
                 <tr>
-                    <th>Tên Sản Phẩm</th>
-                    <th>Giá</th>
+                    <th>Sản Phẩm</th>
                     <th>Mô Tả</th>
-                    <th>Trạng Thái</th>
+                    <th>Giá</th>
+                    <th>Thời Gian</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
                 <% products.forEach(product => { %>
                     <tr>
-                        <td><%= product.productName %></td>
-                        <td><%= product.price %> VND</td>
-                        <td><%= product.description %></td>
-                        <td><%= product.status %></td>
+                        <td class="product-info">
+                            <img src="<%= product.image %>" alt="" class="product-image">
+                            <div>
+                                <span class="product-name"><%= product.productName %></span>
+                                <br>
+                                <span class="seller-info">NGƯỜI BÁN C</span>
+                            </div>
+                        </td>     
+                        <td class="product-description"><%= product.description %></td>                   
+                        <td class="product-price">
+                            <span class="price-text"><%= product.price %> VND</span>
+                        </td>
+                        <td class="product-time"> <%= product.createAt %></td>
+                        <td class="options-container">
+                            <i onclick="handleOpenMenu(event)" class="fa-solid fa-ellipsis-vertical options-icon"></i>
+                            <div class="options-menu" id="options-menu">
+                                <div class="option-item delete-option">
+                                    <i class="fa-solid fa-xmark"></i> Xóa
+                                </div>
+                                <div class="option-item edit-option">
+                                    <i class="fa-solid fa-pen"></i> Chỉnh sửa
+                                </div>
+                            </div>
+                        </td>                                                                                            
                     </tr>
                 <% }) %>
             </tbody>
-        </table>
+        </table>                       
     <% } else { %>
         <p>Không có sản phẩm nào.</p>
     <% } %>
-
+    <script>
+        function handleOpenMenu(event) {
+            event.stopPropagation(); // Ngăn sự kiện lan truyền lên trên
+    
+            // Đóng tất cả các menu đang mở
+            document.querySelectorAll(".options-menu").forEach(menu => {
+                menu.style.display = "none";
+            });
+    
+            // Hiển thị menu của phần tử được nhấp vào
+            let menu = event.target.nextElementSibling;
+            if (menu) {
+                menu.style.display = "block";
+            }
+        }
+    
+        // Ẩn menu khi click ra ngoài
+        document.addEventListener("click", function () {
+            document.querySelectorAll(".options-menu").forEach(menu => {
+                menu.style.display = "none";
+            });
+        });
+    </script>    
 </body>
 </html>
