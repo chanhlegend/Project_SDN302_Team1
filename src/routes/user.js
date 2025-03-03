@@ -13,6 +13,8 @@ router.get('/view/:id' , UserProfileController.viewUserProfile)
 router.get('/account/menu', userController.menuAccount);
 router.get('/account/changePassword', userController.changePassword);
 router.post('/account/changePassword', userController.postChangePassword);
+router.get('/account/salesRegistration', userController.salesRegistation);
+router.post('/account/salesRegistration', userController.postSalesRegistation);
 
 
 module.exports = router;
