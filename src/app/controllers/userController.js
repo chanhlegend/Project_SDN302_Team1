@@ -1,23 +1,53 @@
 const User = require('../models/User');
 const Product = require('../models/Product');
 const Category = require('../models/Category');
+const Report = require('../models/Report');
+const Image = require('../models/Image');
 const bcrypt = require('bcrypt');
 const RegistrationForm = require('../models/RegistrationForm');
 const { mutipleMongoeseToObject, mongoeseToObject } = require('../../util/Mongoese');
 
 class UserController {
+// Hiển thị danh sách người dùng cho admin
+async getCustomers(req, res, next) {
+    try {
+        const users = await User.find({}).lean();
+        
+        // Lấy số lượng báo cáo cho từng người dùng
+        const usersWithReportCount = await Promise.all(
+            users.map(async (user) => {
+                const reportCount = await Report.countDocuments({ sellerId: user._id });
+                return { ...user, reportCount }; // Thêm số lượng báo cáo vào object user
+            })
+        );
 
-    // Hiển thị danh sách người dùng cho admin
-    async getCustomers(req, res, next) {
-        try {
-            const users = await User.find({});
-            console.log('Danh sách người dùng:', users);
-            res.render('customers', { users });
-        } catch (error) {
-            res.status(500).send('Lỗi lấy danh sách người dùng');
-        }
+        res.render('customers', { users: usersWithReportCount });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Lỗi lấy danh sách người dùng');
     }
+}
 
+// Hiển thị chi tiết reports của một user dưới dạng JSON
+async getUserReports(req, res, next) {
+    try {
+        const sellerId = req.params.sellerId;
+        const user = await User.findById(sellerId).lean();
+        if (!user) {
+            return res.status(404).json({ error: 'Người dùng không tồn tại' });
+        }
+
+        const reports = await Report.find({ sellerId: sellerId })
+            .populate('reporterId', 'username email')
+            .populate('image', 'url')
+            .lean();
+
+        res.json({ reports });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Lỗi khi lấy chi tiết báo cáo' });
+    }
+}
     // Ban người dùng
     async banCustomer(req, res) {
         try {
@@ -182,7 +212,8 @@ class UserController {
             }
             if (newpassword !== repassword) {
                 return res.status(400).json({ message: 'Mật khẩu không trùng nhau.' });
-            }
+            }            
+
             const salt = await bcrypt.genSalt(10);
             user.password = await bcrypt.hash(newpassword, salt);
             await user.save();

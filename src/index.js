@@ -8,6 +8,37 @@ const bodyParser = require('body-parser');
 const flash = require('express-flash')
 const session = require('express-session');
 
+const socketIo = require('socket.io');
+const PORT = process.env.PORT || 3000;
+const server = app.listen(PORT, () => {
+  console.log(`Ứng dụng đang chạy trên cổng ${PORT}`);
+});
+
+
+const io = socketIo(server);
+
+// Lưu io vào app để sử dụng trong các controller
+app.set('io', io);
+
+// Xử lý kết nối Socket.IO
+io.on('connection', (socket) => {
+  console.log('Người dùng đã kết nối:', socket.id);
+
+  // Khi client gửi sự kiện "join" với userId
+  socket.on('join', (userId) => {
+    if (userId) {
+      socket.join(userId); // Tham gia phòng dựa trên userId
+      console.log(`User ${userId} joined room`);
+    }
+  });
+
+  socket.on('disconnect', () => {
+    console.log('Người dùng đã ngắt kết nối:', socket.id);
+  });
+});
+app.use(express.static('public'));
+
+
 const db = require('./config/db')
 
 //connect DB
@@ -49,10 +80,26 @@ app.use(express.json())
 //HTTP logger
 app.use(morgan('combined'));
 
+const Notification = require('./app/models/Notification'); 
+
+app.use(async (req, res, next) => {
+    if (req.session.user) {
+        try {
+            const notifications = await Notification.find({ userId: req.session.user._id })
+                .sort({ createdAt: -1 }) // Sắp xếp theo thời gian
+                .limit(10); // Giới hạn 10 thông báo
+
+            res.locals.notifications = notifications;
+        } catch (error) {
+            console.error('Lỗi khi lấy thông báo:', error);
+            res.locals.notifications = [];
+        }
+    } else {
+        res.locals.notifications = [];
+    }
+    next();
+});
+
 // Routes init
 route(app);
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`app listening on port ${PORT}`);
-});
