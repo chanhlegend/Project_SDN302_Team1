@@ -10,6 +10,7 @@ const UserSchema = new Schema({
     avatar: { type: String, default: '' },
     address: { type: String, default: '' },
     phone: { type: String },
+    bankNumber:{type: String},
     email: { type: String, required: true },
     status: { type: String, default: 'active' },
     evaluate: [{ type: Schema.Types.ObjectId, ref: 'Evaluate' }],

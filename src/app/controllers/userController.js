@@ -4,6 +4,7 @@ const Category = require('../models/Category');
 const Report = require('../models/Report');
 const Image = require('../models/Image');
 const bcrypt = require('bcrypt');
+const RegistrationForm = require('../models/RegistrationForm');
 const { mutipleMongoeseToObject, mongoeseToObject } = require('../../util/Mongoese');
 
 class UserController {
@@ -191,12 +192,12 @@ async getUserReports(req, res, next) {
     }
 
     async postChangePassword(req, res, next) {
-        if(!req.session.user) {
+        if (!req.session.user) {
             return res.redirect('/login');
         }
         const email = req.session.user.email;
         const { oldpassword, newpassword, repassword } = req.body;
-        
+
         try {
             const user = await User.findOne({ email });
             if (!user) {
@@ -212,6 +213,7 @@ async getUserReports(req, res, next) {
             if (newpassword !== repassword) {
                 return res.status(400).json({ message: 'Mật khẩu không trùng nhau.' });
             }            
+
             const salt = await bcrypt.genSalt(10);
             user.password = await bcrypt.hash(newpassword, salt);
             await user.save();
@@ -220,6 +222,37 @@ async getUserReports(req, res, next) {
             res.status(500).json({ message: 'Error changing password', error });
         }
     }
+
+    async salesRegistation(req, res) {
+        const categories = await Category.find().sort({ createdAt: -1 });
+        if (!req.session.user) {
+            return res.redirect('/login');
+        }
+        const user = req.session.user;
+        res.render('salesRegistration', { categories, user });
+    }
+
+    async postSalesRegistation(req, res) {
+            if (!req.session.user) {
+                return res.redirect('/login');
+            }
+            const userId = req.session.user._id;
+    
+            const registrationForm = await RegistrationForm.find({ userId });
+            const categories = await Category.find().sort({ createdAt: -1 });
+    
+            if (registrationForm.length > 0) {
+                return res.render('menuAccount', { err: 'Đơn đăng kí của bạn đang được duyệt!', categories });
+            }
+    
+            try {
+                const newRegistrationForm = new RegistrationForm({ userId });
+                await newRegistrationForm.save();
+                res.render('menuAccount', { message: 'Đăng kí thành công!', categories });
+            } catch (error) {
+                res.status(500).json({ message: 'Error creating registration form', error });
+            }
+        }
 }
 
 module.exports = new UserController;

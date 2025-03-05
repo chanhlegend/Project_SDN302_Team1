@@ -9,6 +9,11 @@ router.get('/reports/:sellerId', userController.getUserReports);
 router.put('/customers/ban/:id', userController.banCustomer);
 router.put('/customers/unban/:id', userController.unbanCustomer);
 router.get('/account/menu', userController.menuAccount);
+router.get('/account/changePassword', userController.changePassword);
+router.post('/account/changePassword', userController.postChangePassword);
+router.get('/account/salesRegistration', userController.salesRegistation);
+router.post('/account/salesRegistration', userController.postSalesRegistation);
+
 
 router.get('/:id', UserProfileController.getUserProfile);
 router.post('/update-profile/:id', updateUserProfileController.updateUserProfile);

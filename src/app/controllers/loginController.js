@@ -5,7 +5,8 @@ require('dotenv').config({ path: './src/.env' });
 
 class loginController {
     postLogin(req, res, next) {
-        const { username, password } = req.body;
+        const username = req.body.username.trim();
+        const password  = req.body.password.trim();
         User.findOne({ username: username })
             .then(user => {
                 if (!user) {
@@ -104,23 +105,33 @@ class loginController {
         } else {
             if (newPassword.length <= 6) {
                 res.render('resetPassword', { email, err: 'Mật khẩu phải trên 6 kí tự' });
+            } else {
+                User.findOne({ email: email })
+                    .then(user => {
+                        if (!user) {
+                            res.render('resetPassword', { email, err: 'Email không tồn tại' });
+                        } else {
+                            bcrypt.compare(newPassword, user.password, (err, isMatch) => {
+                                if (err) {
+                                    return next(err);
+                                }
+                                if (isMatch) {
+                                    res.render('resetPassword', { email, err: 'Mật khẩu mới không được giống mật khẩu cũ' });
+                                } else {
+                                    bcrypt.hash(newPassword, 10, (err, hashedPassword) => {
+                                        if (err) {
+                                            return next(err);
+                                        }
+                                        user.password = hashedPassword;
+                                        user.save();
+                                        res.render('login', { mess: 'Đổi mật khẩu thành công' });
+                                    });
+                                }
+                            });
+                        }
+                    })
+                    .catch(next);
             }
-            User.findOne({ email: email })
-                .then(user => {
-                    if (!user) {
-                        res.render('resetPassword', { email, err: 'Email không tồn tại' });
-                    } else {
-                        bcrypt.hash(newPassword, 10, (err, hashedPassword) => {
-                            if (err) {
-                                return next(err);
-                            }
-                            user.password = hashedPassword;
-                            user.save();
-                            res.render('login', { mess: 'Đổi mật khẩu thành công' });
-                        });
-                    }
-                })
-                .catch(next);
         }
     }
 }
