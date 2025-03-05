@@ -13,7 +13,8 @@ const testRouter = require('./test')
 const cartRouter = require('./cartRouter')
 const searchRouter = require('./search')
 const logoutRouter = require('./logout')
-
+const notificationRouter = require('./notificationRouter')
+const registrationRoutes = require('./registrationRoutes');
 function route(app) {
     app.use('/', siteRouter)
     app.use('/login', loginRouter)
@@ -31,5 +32,7 @@ function route(app) {
     app.use('/cart', cartRouter)
     app.use('/search', searchRouter)
     app.use('/logout', logoutRouter)
+    app.use('/notification', notificationRouter)
+    app.use('/registration', registrationRoutes);
 }
 module.exports = route

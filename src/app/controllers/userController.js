@@ -1,21 +1,52 @@
 const User = require('../models/User');
 const Product = require('../models/Product');
 const Category = require('../models/Category');
+const Report = require('../models/Report');
+const Image = require('../models/Image');
+const bcrypt = require('bcrypt');
 const { mutipleMongoeseToObject, mongoeseToObject } = require('../../util/Mongoese');
 
 class UserController {
+// Hiển thị danh sách người dùng cho admin
+async getCustomers(req, res, next) {
+    try {
+        const users = await User.find({}).lean();
+        
+        // Lấy số lượng báo cáo cho từng người dùng
+        const usersWithReportCount = await Promise.all(
+            users.map(async (user) => {
+                const reportCount = await Report.countDocuments({ sellerId: user._id });
+                return { ...user, reportCount }; // Thêm số lượng báo cáo vào object user
+            })
+        );
 
-    // Hiển thị danh sách người dùng cho admin
-    async getCustomers(req, res, next) {
-        try {
-            const users = await User.find({});
-            console.log('Danh sách người dùng:', users);
-            res.render('customers', { users });
-        } catch (error) {
-            res.status(500).send('Lỗi lấy danh sách người dùng');
-        }
+        res.render('customers', { users: usersWithReportCount });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Lỗi lấy danh sách người dùng');
     }
+}
 
+// Hiển thị chi tiết reports của một user dưới dạng JSON
+async getUserReports(req, res, next) {
+    try {
+        const sellerId = req.params.sellerId;
+        const user = await User.findById(sellerId).lean();
+        if (!user) {
+            return res.status(404).json({ error: 'Người dùng không tồn tại' });
+        }
+
+        const reports = await Report.find({ sellerId: sellerId })
+            .populate('reporterId', 'username email')
+            .populate('image', 'url')
+            .lean();
+
+        res.json({ reports });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Lỗi khi lấy chi tiết báo cáo' });
+    }
+}
     // Ban người dùng
     async banCustomer(req, res) {
         try {
@@ -145,8 +176,49 @@ class UserController {
     }
 
     //Hiển thị trang đổi mật khẩu
-    changePassword(req, res, next) {
-        res.render('changePassword')
+    async changePassword(req, res, next) {
+        if (!req.session.user) {
+            return res.redirect('/login');
+        }
+        const userId = req.session.user._id;
+        const user = await
+            User.findById(userId)
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        const categories = await Category.find().sort({ createdAt: -1 });
+        res.render('changePassword', { categories, user });
+    }
+
+    async postChangePassword(req, res, next) {
+        if(!req.session.user) {
+            return res.redirect('/login');
+        }
+        const email = req.session.user.email;
+        const { oldpassword, newpassword, repassword } = req.body;
+        
+        try {
+            const user = await User.findOne({ email });
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+            const isMatch = await bcrypt.compare(oldpassword, user.password);
+            if (!isMatch) {
+                return res.status(400).json({ message: 'Mật khẩu cũ không đúng.' });
+            }
+            if (newpassword.length <= 6) {
+                return res.status(400).json({ message: 'Mật khẩu phải trên 6 kí tự.' });
+            }
+            if (newpassword !== repassword) {
+                return res.status(400).json({ message: 'Mật khẩu không trùng nhau.' });
+            }            
+            const salt = await bcrypt.genSalt(10);
+            user.password = await bcrypt.hash(newpassword, salt);
+            await user.save();
+            res.status(200).json({ message: 'Đổi mật khẩu thành công' });
+        } catch (error) {
+            res.status(500).json({ message: 'Error changing password', error });
+        }
     }
 }
 
