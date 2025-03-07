@@ -16,6 +16,7 @@ const logoutRouter = require('./logout')
 const notificationRouter = require('./notificationRouter')
 const registrationRoutes = require('./registrationRoutes');
 const checkout = require ('./checkout')
+const authRouter = require('./auth')
 
 function route(app) {
     app.use('/', siteRouter)
@@ -37,5 +38,6 @@ function route(app) {
     app.use('/notification', notificationRouter)
     app.use('/registration', registrationRoutes);
     app.use('/checkout', checkout)
+    app.use('/auth/google', authRouter)
 }
 module.exports = route

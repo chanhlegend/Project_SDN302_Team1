@@ -7,6 +7,7 @@ require('dotenv').config({ path: './.env' });
 const bodyParser = require('body-parser');
 const flash = require('express-flash')
 const session = require('express-session');
+const passport = require('../src/config/passport/passport-config');
 
 const socketIo = require('socket.io');
 const PORT = process.env.PORT || 3000;
@@ -60,6 +61,17 @@ app.use(session({
 }));
 app.use((req, res, next) => {
   res.locals.session = req.session;
+  next();
+});
+
+// Khởi tạo Passport và session
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Middleware kiểm tra session (debug)
+app.use((req, res, next) => {
+  console.log('Session:', req.session);
+  console.log('User:', req.user);
   next();
 });
 
