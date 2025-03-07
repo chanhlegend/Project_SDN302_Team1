@@ -8,10 +8,11 @@ const bodyParser = require('body-parser');
 const flash = require('express-flash')
 const session = require('express-session');
 const passport = require('../src/config/passport/passport-config');
+const MongoStore = require('connect-mongo');
 
 const socketIo = require('socket.io');
 const PORT = process.env.PORT || 3000;
-const server = app.listen(PORT, () => {
+const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`Ứng dụng đang chạy trên cổng ${PORT}`);
 });
 
@@ -54,10 +55,14 @@ app.use(methodOverride('_method'));
 
 // Sử dụng session
 app.use(session({
-  secret: 'your_secret_key',
+  secret: 'your-secret-key',
   resave: false,
-  saveUninitialized: true,
-  cookie: { secure: false } // Set to true if using HTTPS
+  saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/myDatabase',
+    collectionName: 'sessions'
+  }),
+  cookie: { secure: false } // Đặt secure: true nếu dùng HTTPS
 }));
 app.use((req, res, next) => {
   res.locals.session = req.session;
