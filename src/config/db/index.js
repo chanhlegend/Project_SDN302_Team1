@@ -14,8 +14,7 @@ async function connect() {
     try {
         mongoose.set('strictQuery', false); // Tùy chọn: giảm cảnh báo trong phiên bản mới
         await mongoose.connect(MONGO_URI, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
+
         });
         console.log('Connected to MongoDB successfully');
     } catch (error) {
