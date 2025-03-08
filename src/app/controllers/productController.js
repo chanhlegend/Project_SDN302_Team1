@@ -170,18 +170,28 @@ class ProductController {
 
             for (const [sellerId, data] of Object.entries(sellerProductCount)) {
                 const { count, productNames, sellerName } = data;
+                
+                // Xác định nội dung thông báo dựa trên status
+                let actionMessage;
+                if (status === 'active') {
+                    actionMessage = 'duyệt';
+                } else if (status === 'rejected') {
+                    actionMessage = 'từ chối';
+                } else {
+                    actionMessage = `cập nhật thành "${status}"`; 
+                }
 
                 // Thông báo cho người bán
                 const sellerNotification = new Notification({
                     userId: sellerId,
                     title: 'Cập nhật trạng thái sản phẩm',
-                    message: `${count} sản phẩm của bạn (${productNames.join(', ')}) đã được cập nhật thành "${status}".`,
+                    message: `${count} sản phẩm của bạn (${productNames.join(', ')}) đã được "${actionMessage}".`,
                 });
                 await sellerNotification.save();
 
                 io.to(sellerId).emit('notification', {
                     title: 'Cập nhật trạng thái sản phẩm',
-                    message: `${count} sản phẩm (${productNames.join(', ')}) đã được cập nhật thành "${status}".`,
+                    message: `${count} sản phẩm (${productNames.join(', ')}) đã được "${actionMessage}".`,
                     createdAt: new Date()
                 });
 

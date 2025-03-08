@@ -1,46 +1,42 @@
 <html>
-  <head>
-    <title>EcoHand</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="/css/header.module.css" />
-    
-    <script src="/socket.io/socket.io.js"></script>
-  </head>
-  <body>
-    <div class="top-bar">
-      <a href="#">
-        <i class="fab fa-facebook-f"> </i>
-      </a>
-      <a href="#">
-        <i class="fab fa-twitter"> </i>
-      </a>
-      <a href="#">
-        <i class="fab fa-instagram"> </i>
-      </a>
-      <span>Welcome you to Market </span>
+
+<head>
+  <title>EcoHand</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/header.module.css" />
+
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+
+<body>
+  <div class="top-bar">
+    <a href="#">
+      <i class="fab fa-facebook-f"> </i>
+    </a>
+    <a href="#">
+      <i class="fab fa-twitter"> </i>
+    </a>
+    <a href="#">
+      <i class="fab fa-instagram"> </i>
+    </a>
+    <span>Welcome you to Market </span>
+  </div>
+  <div class="header">
+    <div class="logo">
+      <img alt="Eco Hand Logo" height="50" src="/img/logo.png" width="50" />
+      <span> ECO HAND </span>
     </div>
-    <div class="header">
-      <div class="logo">
-        <img alt="Eco Hand Logo" height="50" src="/img/logo.png" width="50" />
-        <span> ECO HAND </span>
-      </div>
-      <div class="search-bar">
-        <form action="/search/products" method="GET">
-          <input placeholder="Tìm kiếm tên sản phẩm..." type="text" name="productname"/>
-          <button type="submit">
-            <i class="fas fa-search"> </i>
-          </button>
-        </form>
-      </div>
-      <div class="icons">
-        <% if (session.user) { %>
+    <div class="search-bar">
+      <form action="/search/products" method="GET">
+        <input placeholder="Tìm kiếm tên sản phẩm..." type="text" name="productname" />
+        <button type="submit">
+          <i class="fas fa-search"> </i>
+        </button>
+      </form>
+    </div>
+    <div class="icons">
+      <% if (session.user) { %>
         <a href="#" data-title="Yêu thích">
           <i class="fas fa-heart" style="color: #551a8b"> </i>
         </a>
@@ -52,189 +48,136 @@
         </a>
         <a href="#" data-title="Thông báo" class="notification-icon" style="position: relative;">
           <i class="fas fa-bell" style="color: #551a8b"></i>
-          <% if (notifications && notifications.length > 0) { %>
-            <span class="notification-count"><%= notifications.length %></span>
-          <% } else { %>
-            <span class="notification-count" style="display: none;">0</span>
-          <% } %>
-          <div class="notification-dropdown">
-            <div class="notification-list">
-              <% if (notifications && notifications.length > 0) { %>
-                <% notifications.forEach(notification => { %>
-                  <div class="notification-item">
-                    <h3><%= notification.title || 'Thông báo mới' %></h3>
-                    <p><%= notification.message %></p>
-                    <small><%= new Date(notification.createdAt).toLocaleString() %></small>
-                  </div>
-                <% }); %>
+          <% if (notifications && notifications.length> 0) { %>
+            <span class="notification-count">
+              <%= notifications.length %>
+            </span>
+            <% } else { %>
+              <span class="notification-count" style="display: none;">0</span>
               <% } %>
-            </div>
-          </div>
+                <div class="notification-dropdown">
+                  <div class="notification-list">
+                    <% if (notifications && notifications.length> 0) { %>
+                      <% notifications.forEach(notification=> { %>
+                        <div class="notification-item">
+                          <h3>
+                            <%= notification.title || 'Thông báo mới' %>
+                          </h3>
+                          <p>
+                            <%= notification.message %>
+                          </p>
+                          <small>
+                            <%= new Date(notification.createdAt).toLocaleString() %>
+                          </small>
+                        </div>
+                        <% }); %>
+                          <% } %>
+                  </div>
+                </div>
         </a>
-        
+
         <% } else { %>
-        <a href="/login" data-title="Đăng nhập">
-          <i class="fas fa-right-to-bracket" style="color: #551a8b"></i>
-        </a>
-        <% } %> 
-        <% console.log('Session after login:', session.user); %>
-      </div>
+          <a href="/login" data-title="Đăng nhập">
+            <i class="fas fa-right-to-bracket" style="color: #551a8b"></i>
+          </a>
+          <% } %>
+            <% console.log('Session after login:', session.user); %>
     </div>
-    <div class="nav-bar">
-      <a href="/"> TRANG CHỦ </a>
-      <div class="dropdown">
-        <a href="#"> DANH MỤC </a>
-        <div class="dropdown-content">
-          <% categories.forEach(category => { %>
-            <a href="/category/productsByCategory/<%= category._id %>"><%= category.name %></a>
+  </div>
+  <div class="nav-bar">
+    <a href="/"> TRANG CHỦ </a>
+    <div class="dropdown">
+      <a href="#"> DANH MỤC </a>
+      <div class="dropdown-content">
+        <% categories.forEach(category=> { %>
+          <a href="/category/productsByCategory/<%= category._id %>">
+            <%= category.name %>
+          </a>
           <% }); %>
-        </div>
-      </div>
-      <a href="#"> TIN NHẮN </a>
-      <a href="#"> GIỚI THIỆU </a>
-      <a href="#"> LIÊN HỆ HỖ TRỢ </a>
-      
-    </div>
-    <div id="notificationModal" class="modal">
-      <div class="modal-content">
-        <span class="close">×</span>
-        <h2 id="notificationTitle"></h2>
-        <p id="notificationMessage"></p>
-        <small id="notificationTime"></small>
       </div>
     </div>
-  </body>
+    <a href="/chat">TIN NHẮN</a>
+    <a href="#"> GIỚI THIỆU </a>
+    <a href="#"> LIÊN HỆ HỖ TRỢ </a>
+
+  </div>
+  <div id="notificationModal" class="modal">
+    <div class="modal-content">
+      <span class="close">×</span>
+      <h2 id="notificationTitle"></h2>
+      <p id="notificationMessage"></p>
+      <small id="notificationTime"></small>
+    </div>
+  </div>
   <script>
+    // public/js/socket.js
+document.addEventListener('DOMContentLoaded', () => {
     const socket = io();
-    const userId = '<%= session.user ? session.user._id : null %>';
-  
-    socket.on('connect', () => {
-      console.log('Connected to server with socket ID:', socket.id);
-      if (userId) {
-        socket.emit('join', userId); // Tham gia phòng của userId
-      }
-    });
-  
+    const userId = '<%= session.user ? session.user._id : "" %>'; // Lấy từ session trong header
+
+    if (userId) {
+        socket.emit('join', userId);
+    }
+
+    // Xử lý thông báo toàn cục
     socket.on('notification', (data) => {
-      console.log('Received notification:', data);
-  
-      // Hiển thị modal
-      const modal = document.getElementById('notificationModal');
-      const title = document.getElementById('notificationTitle');
-      const message = document.getElementById('notificationMessage');
-      const time = document.getElementById('notificationTime');
-      const closeBtn = document.getElementsByClassName('close')[0];
-  
-      title.textContent = data.title || 'Thông báo mới';
-      message.textContent = data.message;
-      time.textContent = new Date(data.createdAt).toLocaleString();
-      modal.style.display = 'none';
-  
-      setTimeout(() => {
-        modal.style.display = 'none';
-      }, 5000);
-  
-      closeBtn.onclick = () => {
-        modal.style.display = 'none';
-      };
-  
-      window.onclick = (event) => {
-        if (event.target === modal) {
-          modal.style.display = 'none';
+        console.log('Received notification:', data);
+        const modal = document.getElementById('notificationModal');
+        const title = document.getElementById('notificationTitle');
+        const message = document.getElementById('notificationMessage');
+        const time = document.getElementById('notificationTime');
+        const closeBtn = document.getElementsByClassName('close')[0];
+
+        if (modal && title && message && time) {
+            title.textContent = data.title || 'Thông báo mới';
+            message.textContent = data.message;
+            time.textContent = new Date(data.createdAt).toLocaleString();
+            modal.style.display = 'none';
+
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 5000);
+
+            closeBtn.onclick = () => {
+                modal.style.display = 'none';
+            };
+
+            window.onclick = (event) => {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            };
         }
-      };
-  
-      // Cập nhật danh sách thông báo trong dropdown
-      const notificationList = document.querySelector('.notification-list');
-      const notificationCount = document.querySelector('.notification-count');
-      const newNotification = document.createElement('div');
-      newNotification.className = 'notification-item';
-      newNotification.innerHTML = `
-        <h3>${data.title || 'Thông báo mới'}</h3>
-        <p>${data.message}</p>
-        <small>${new Date(data.createdAt).toLocaleString()}</small>
-      `;
-      notificationList.insertBefore(newNotification, notificationList.firstChild);
-  
-      // Cập nhật số lượng thông báo
-      let count = parseInt(notificationCount.textContent) || 0;
-      count += 1;
-      notificationCount.textContent = count;
-      notificationCount.style.display = 'block';
+
+        const notificationList = document.querySelector('.notification-list');
+        const notificationCount = document.querySelector('.notification-count');
+        if (notificationList && notificationCount) {
+            const newNotification = document.createElement('div');
+            newNotification.className = 'notification-item';
+            newNotification.innerHTML = `
+                <h3>${data.title || 'Thông báo mới'}</h3>
+                <p>${data.message}</p>
+                <small>${new Date(data.createdAt).toLocaleString()}</small>
+            `;
+            notificationList.insertBefore(newNotification, notificationList.firstChild);
+
+            let count = parseInt(notificationCount.textContent) || 0;
+            count += 1;
+            notificationCount.textContent = count;
+            notificationCount.style.display = 'block';
+            const notificationItems = notificationList.querySelectorAll('.notification-item');
+            if (notificationItems.length > 5) {
+                notificationList.style.overflowY = 'auto';
+            } else {
+                notificationList.style.overflowY = 'visible'; // hoặc 'hidden' nếu không muốn cuộn khi ít hơn 5
+            }
+        }
     });
-  
-    socket.on('disconnect', () => {
-      console.log('Disconnected from server');
-    });
+
+    // Lưu socket vào window để tái sử dụng ở các trang khác
+    window.appSocket = socket;
+});
   </script>
-  <style> .modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.5);
-  }
-  .modal-content {
-    background-color: #fff;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 400px;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-  }
-  .close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-  }
-  .close:hover {
-    color: #000;
-  }
-  .notification-count {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    background: red;
-    color: white;
-    border-radius: 50%;
-    padding: 2px 6px;
-    font-size: 12px;
-  }
-  .notification-dropdown {
-    position: absolute;
-    right: 0;
-    top: 100%;
-    background: white;
-    border: 1px solid #ddd;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    display: none;
-    min-width: 300px;
-    z-index: 10;
-  }
-  .notification-icon:hover .notification-dropdown {
-    display: block;
-  }
-  .notification-item {
-    padding: 10px;
-    border-bottom: 1px solid #eee;
-  }
-  .notification-item h3 {
-    margin: 0;
-    font-size: 16px;
-  }
-  .notification-item p {
-    margin: 5px 0;
-    font-size: 14px;
-  }
-  .notification-item small {
-    color: #777;
-    font-size: 12px;
-  }</style>
+</body>
+
 </html>

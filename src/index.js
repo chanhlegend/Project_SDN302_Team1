@@ -24,22 +24,73 @@ app.set('io', io);
 
 // Xử lý kết nối Socket.IO
 io.on('connection', (socket) => {
-  console.log('Người dùng đã kết nối:', socket.id);
+    console.log('Người dùng đã kết nối:', socket.id);
 
-  // Khi client gửi sự kiện "join" với userId
-  socket.on('join', (userId) => {
-    if (userId) {
-      socket.join(userId); // Tham gia phòng dựa trên userId
-      console.log(`User ${userId} joined room`);
-    }
-  });
+    socket.on('join', (userId) => {
+        if (userId) {
+            socket.join(userId);
+            console.log(`User ${userId} joined room`);
+        }
+    });
 
-  socket.on('disconnect', () => {
-    console.log('Người dùng đã ngắt kết nối:', socket.id);
-  });
+    socket.on('sendMessage', async (data) => {
+        try {
+            const { conversationId, senderId, receiverId, messageContent } = data;
+            const Messages = require('./app/models/Messages');
+            const User = require('./app/models/User');
+
+            // Lưu tin nhắn vào database
+            const message = new Messages({
+                conversation_id: conversationId,
+                senderId,
+                messageContent
+            });
+            await message.save();
+
+            // Lấy tên người gửi
+            const sender = await User.findById(senderId);
+
+            // Gửi tin nhắn lại cho sender để hiển thị ngay lập tức
+            socket.emit('receiveMessage', {
+                conversationId,
+                senderId,
+                senderName: sender.name,
+                messageContent,
+                createdAt: message.createdAt
+            });
+
+            // Nếu receiver online, gửi tin nhắn đến receiver
+            const receiverSocket = io.sockets.adapter.rooms.get(receiverId);
+            if (receiverSocket) {
+                io.to(receiverId).emit('receiveMessage', {
+                    conversationId,
+                    senderId,
+                    senderName: sender.name,
+                    messageContent,
+                    createdAt: message.createdAt
+                });
+
+                // Gửi thông báo đến receiver
+                io.to(receiverId).emit('notification', {
+                    title: 'Tin nhắn mới',
+                    message: `Bạn nhận được tin nhắn từ ${sender.name}`,
+                    createdAt: new Date()
+                });
+            } else {
+                console.log(`Receiver ${receiverId} is offline. Message saved to database.`);
+            }
+        } catch (error) {
+            console.error('Lỗi khi gửi tin nhắn:', error);
+            socket.emit('error', { message: 'Không thể gửi tin nhắn. Vui lòng thử lại.' });
+        }
+    });
+
+    socket.on('disconnect', () => {
+        console.log('Người dùng đã ngắt kết nối:', socket.id);
+    });
 });
-app.use(express.static('public'));
 
+app.use(express.static('public'));
 
 const db = require('./config/db')
 
