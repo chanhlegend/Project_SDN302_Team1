@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #F7F8FC; display: flex; }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px; background: #FFF; color: #A4A6B3; height: 100vh; padding: 20px;
+            position: fixed; box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+        }
+        .sidebar h1 { color: #252733; font-size: 24px; margin-bottom: 30px; }
+        .menu-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none; 
+    color: inherit; 
+}
+        .menu-item i { margin-right: 12px; color: #E7B9A6; }
+        .menu-item span { flex: 1; text-align: center; }
+        .menu-item:hover, .menu-item.active { background: #E7B9A6; color: #FFF; }
+        .menu-item:hover i, .menu-item.active i { color: #FFF; }
+        .submenu { display: none; margin-left: 20px; flex-direction: column; }
+        .submenu a { padding: 6px 0; color: #252733; text-decoration: none; }
+        .submenu a:hover { color: #3751FF; }
+        .profile {
+            position: absolute; bottom: 20px; display: flex; align-items: center;
+        }
+        .profile img { border-radius: 50%; margin-right: 10px; }
+        .profile .name { font-size: 14px; color: #252733; }
+        .profile .role { font-size: 12px; color: #9FA2B4; }
+
+        /* Main Content */
+        .main-content { flex: 1; padding: 20px; margin-left: 250px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .header h2 { font-size: 24px; color: #252733; }
+        .search { position: relative; }
+        .search input { padding: 10px 35px 10px 15px; border: 1px solid #DFE0EB; border-radius: 8px; outline: none; }
+        .search i { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #9FA2B4; }
+
+        /* Stats */
+        .stats { display: flex; gap: 20px; margin-bottom: 20px; }
+        .stat {
+            background: #FFF; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            flex: 1; text-align: center; position: relative;
+        }
+        .stat i { font-size: 32px; color: #E7B9A6; position: absolute; left: 20px; top: 50%; transform: translateY(-50%); }
+        .stat h3 { font-size: 16px; color: #9FA2B4; margin-bottom: 8px; }
+        .stat p { font-size: 24px; color: #252733; margin: 0; }
+        .stat .change { font-size: 12px; color: #F7685B; margin-top: 5px; }
+
+        /* Table Container */
+        .table-container { background: #FFF; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); }
+        .table-container h3 { font-size: 18px; color: #252733; margin-bottom: 15px; }
+        .table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .table-header select { padding: 8px 12px; border: 1px solid #DFE0EB; border-radius: 8px; outline: none; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: center; border-bottom: 1px solid #DFE0EB; }
+        th { color: #9FA2B4; font-weight: 600; }
+        td { color: #252733; }
+        .status { padding: 6px 12px; border-radius: 20px; font-size: 12px; color: #FFF; }
+        .status.pending { background: #F7B500; }
+        .status.approved { background: #29CC97; }
+        .status.rejected { background: #F12B2C; }
+        .actions button { padding: 8px 16px; margin-right: 10px; border: none; border-radius: 5px; cursor: pointer; }
+
+        /* Modal */
+        #productDetailModal .modal-content { border-radius: 15px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); }
+        #productDetailModal .modal-header { background: #007bff; color: #FFF; border-radius: 15px 15px 0 0; }
+        #productDetailModal .modal-body { padding: 20px; font-size: 16px; }
+        #productDetailModal .modal-body p { margin-bottom: 12px; }
+        #productDetailModal .modal-body strong { color: #007bff; }
+        #productDetailModal .modal-footer { background: #f8f9fa; border-radius: 0 0 15px 15px; }
+        .img-thumbnail { max-width: 120px; margin: 5px; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h1>ADMIN</h1>
+        <div class="menu-item active"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></div>
+        <div class="menu-item" onclick="toggleSubmenu()"><i class="fas fa-box"></i><span>Sản Phẩm</span></div>
+        <div class="submenu" id="submenu">
+            <a href="#">Chưa kiểm duyệt</a>
+            <a href="#">Đã kiểm duyệt</a>
+        </div>
+        <a class="menu-item" href="/user/customers">
+            <i class="fas fa-users"></i><span>Customers</span>
+        </a>
+        <div class="profile">
+            <img src="https://storage.googleapis.com/a1aa/image/TD024PUWIiib9Zio94kV2WgkuTWpKalS5ibKpVZtcKE.jpg" alt="Profile" width="40" height="40">
+            <div><div class="name">Evano</div><div class="role">Project Manager</div></div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h2>Hello ADMIN <span>👋</span></h2>
+            <div class="search"><input type="text" placeholder="Search"><i class="fas fa-search"></i></div>
+        </div>
+
+        <div class="stats">
+            <div class="stat"><i class="fas fa-users"></i><h3>Total Customers</h3><p>5,423</p><div class="change">16% this month</div></div>
+            <div class="stat"><i class="fas fa-user"></i><h3>Members</h3><p>1,893</p><div class="change">↓ 7% this month</div></div>
+            <div class="stat"><i class="fas fa-desktop"></i><h3>Active Now</h3><p>189</p></div>
+        </div>
+
+        <div class="table-container">
+            <h3>Tất Cả Sản Phẩm</h3>
+            <div class="table-header">
+                <div class="search"><input type="text" placeholder="Search"><i class="fas fa-search"></i></div>
+                <div class="sort"><select><option>Sort by: Newest</option></select></div>
+            </div>
+            <h2>Quản lý sản phẩm</h2>
+            <div class="actions">
+                <button onclick="updateStatus('active')">✔ Duyệt</button>
+                <button onclick="updateStatus('rejected')">✖ Từ chối</button>
+                <button onclick="updateStatus('non_active')">⏳ Chờ duyệt</button>
+            </div>
+            <table>
+                <thead><tr><th><input type="checkbox" id="selectAll"></th><th>ID</th><th>Tên sản phẩm</th><th>Người bán</th><th>Email</th><th>Trạng thái</th></tr></thead>
+                <tbody>
+                    <% products.forEach(product => { %>
+                        <tr class="product-row" data-id="<%= product._id %>">
+                            <td><input type="checkbox" class="productCheckbox" value="<%= product._id %>"></td>
+                            <td><%= product._id %></td>
+                            <td><%= product.productName %></td>
+                            <td><%= product.sellerId ? product.sellerId.name : 'Không có' %></td>
+                            <td><%= product.sellerId ? product.sellerId.email : 'Không có' %></td>
+                            <td>
+                                <% if (product.status === 'non_active') { %>
+                                    <span class="status pending">Chờ duyệt</span>
+                                <% } else if (product.status === 'active') { %>
+                                    <span class="status approved">Đã duyệt</span>
+                                <% } else { %>
+                                    <span class="status rejected">Bị từ chối</span>
+                                <% } %>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="productDetailModal" tabindex="-1" aria-labelledby="productDetailModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="productDetailModalLabel">Chi tiết sản phẩm</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p><strong>ID:</strong> <span id="product-id"></span></p>
+                        <p><strong>Tên sản phẩm:</strong> <span id="product-name"></span></p>
+                        <p><strong>Giá:</strong> <span id="product-price"></span></p>
+                        <p><strong>Mô tả:</strong> <span id="product-description"></span></p>
+                        <p><strong>Người bán:</strong> <span id="product-seller"></span></p>
+                        <p><strong>Email:</strong> <span id="product-email"></span></p>
+                        <p><strong>Trạng thái:</strong> <span id="product-status"></span></p>
+                        <p><strong>Hình ảnh:</strong></p>
+                        <div id="product-images" class="d-flex flex-wrap"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('selectAll').addEventListener('change', function() {
+            document.querySelectorAll('.productCheckbox').forEach(cb => cb.checked = this.checked);
+        });
+
+        function updateStatus(status) {
+            const selected = Array.from(document.querySelectorAll('.productCheckbox:checked')).map(cb => cb.value);
+            if (!selected.length) return alert('Vui lòng chọn ít nhất một sản phẩm!');
+            fetch('/admin/products/updateStatus', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ productIds: selected, status })
+            }).then(res => res.json()).then(() => location.reload());
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.product-row').forEach(row => {
+                row.addEventListener('click', async (e) => {
+                    if (e.target.type === 'checkbox') return;
+                    const productId = row.dataset.id;
+                    try {
+                        const res = await fetch(`/admin/products/${productId}`);
+                        const product = await res.json();
+                        if (res.ok) {
+                            document.getElementById('product-id').textContent = product._id;
+                            document.getElementById('product-name').textContent = product.productName;
+                            document.getElementById('product-price').textContent = product.price;
+                            document.getElementById('product-description').textContent = product.description;
+                            document.getElementById('product-seller').textContent = product.sellerId?.name || 'Không có';
+                            document.getElementById('product-email').textContent = product.sellerId?.email || 'Không có';
+                            document.getElementById('product-status').textContent = product.status;
+
+                            const imagesContainer = document.getElementById('product-images');
+                            imagesContainer.innerHTML = '';
+                            if (product.image?.length) {
+                                product.image.forEach(img => {
+                                    const imgEl = document.createElement('img');
+                                    imgEl.src = img.url; imgEl.alt = 'Product Image'; imgEl.className = 'img-thumbnail';
+                                    imagesContainer.appendChild(imgEl);
+                                });
+                            } else {
+                                imagesContainer.textContent = 'Không có hình ảnh';
+                            }
+                            new bootstrap.Modal(document.getElementById('productDetailModal')).show();
+                        } else alert('Lỗi khi tải dữ liệu sản phẩm!');
+                    } catch (err) {
+                        console.error(err); alert('Không thể tải dữ liệu sản phẩm!');
+                    }
+                });
+            });
+        });
+
+        function toggleSubmenu() {
+            const submenu = document.getElementById('submenu');
+            submenu.style.display = submenu.style.display === 'flex' ? 'none' : 'flex';
+        }
+    </script>
+</body>
+</html>

@@ -11,53 +11,124 @@
     <div class="friends-container">
         <h2 class="text-center">Bạn Bè</h2>
         <div class="tab-header">
-            <div>ĐƯỢC THEO DÕI (<%= followers.length %>)</div>
-            <div class="active">ĐANG THEO DÕI (1)</div>
+            <div id="followersTab" class="tab active">ĐƯỢC THEO DÕI (<%= followers.length %>)</div>
+            <div id="followingTab" class="tab">ĐANG THEO DÕI (<%= following.length %>)</div>
         </div>
         <button class="add-friend-btn mt-3">➕ THÊM BẠN BÈ</button>
-        <div class="friend-list">
+
+        <!-- Danh sách người theo dõi -->
+        <div id="followersContent" class="friend-list active">
             <% if (followers.length === 0) { %>
                 <p class="text-center">Không có người theo dõi nào.</p>
             <% } else { %>
                 <% followers.forEach(follower => { %>
-                    <div class="friend-item" id="<%= follower.followerId._id %>">
+                    <div class="friend-item" id="follower-<%= follower.followerId._id %>">
                         <img src="<%= follower.followerId.avatar || '/img/avatar.png' %>" alt="User">
                         <span><%= follower.followerId.username %></span>
-                        <span class="ms-auto">
+                        <!-- <span class="ms-auto">
                             <button class="btn btn-outline-warning btn-sm" onclick="unfollow('<%= follower.followerId._id %>')">✔️👤</button>
+                        </span> -->
+                    </div>
+                <% }) %>
+            <% } %>
+        </div>
+
+        <!-- Danh sách người đang theo dõi -->
+        <div id="followingContent" class="friend-list">
+            <% if (following.length === 0) { %>
+                <p class="text-center">Bạn chưa theo dõi ai.</p>
+            <% } else { %>
+                <% following.forEach(follow => { %>
+                    <div class="friend-item" id="following-<%= follow.followingId._id %>">
+                        <img src="<%= follow.followingId.avatar || '/img/avatar.png' %>" alt="User">
+                        <span><%= follow.followingId.username %></span>
+                        <span class="ms-auto">
+                            <button class="btn btn-outline-danger btn-sm" onclick="removeFollowing('<%= follow.followingId._id %>')">❌ Hủy theo dõi</button>
                         </span>
                     </div>
                 <% }) %>
             <% } %>
         </div>
     </div>
-    <div class="continue-shopping">
-        <button class="btn btn-dark">CONTINUE SHOPPING</button>
-    </div>
-</body>
 
-<script>
-    function unfollow(followerId) {
-    
-        fetch(`/follow/unfollow`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ followerId: followerId, followingId: '<%= userId %>' }) 
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert("Hủy follow thành công!");
-                document.getElementById(followerId).remove(); 
-            } else {
-                alert("Có lỗi xảy ra khi hủy follow!");
-            }
-        })
-        .catch(error => {
-            console.error("Error:", error);
+    <!-- Nút tiếp tục mua sắm -->
+    <div class="continue-shopping text-center mt-3">
+        <a href="/" class="btn btn-dark">CONTINUE SHOPPING</a>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const followersTab = document.getElementById("followersTab");
+            const followingTab = document.getElementById("followingTab");
+            const followersContent = document.getElementById("followersContent");
+            const followingContent = document.getElementById("followingContent");
+
+            // Mặc định hiển thị danh sách followers
+            followersContent.style.display = "block";
+            followingContent.style.display = "none";
+
+            // Xử lý khi click vào tab "Được theo dõi"
+            followersTab.addEventListener("click", function () {
+                followersTab.classList.add("active");
+                followingTab.classList.remove("active");
+
+                followersContent.style.display = "block";
+                followingContent.style.display = "none";
+            });
+
+            // Xử lý khi click vào tab "Đang theo dõi"
+            followingTab.addEventListener("click", function () {
+                followingTab.classList.add("active");
+                followersTab.classList.remove("active");
+
+                followingContent.style.display = "block";
+                followersContent.style.display = "none";
+            });
         });
-    }
-</script>
+
+        function unfollow(followerId) {
+            fetch(`/follow/unfollower`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ followerId }) 
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Hủy follow thành công!");
+                    document.getElementById(`follower-${followerId}`).remove(); 
+                } else {
+                    alert(data.message || "Có lỗi xảy ra khi hủy follow!");
+                }
+            })
+            .catch(error => {
+                console.error("Lỗi:", error);
+            });
+        }
+
+        function removeFollowing(followingId) {
+            fetch(`/follow/unfollower`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ followingId }) 
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Hủy theo dõi thành công!");
+                    document.getElementById(`following-${followingId}`).remove();
+                } else {
+                    alert(data.message || "Có lỗi xảy ra khi hủy theo dõi!");
+                }
+            })
+            .catch(error => {
+                console.error("Lỗi:", error);
+            });
+        }
+    </script>
+</body>
 </html>

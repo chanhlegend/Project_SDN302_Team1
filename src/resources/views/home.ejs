@@ -59,23 +59,25 @@
             <div class="row">
               <% for (let j = i; j < i + 4 && j < products.length; j++) { %>
               <div class="col-md-3 mb-3">
-                <div class="card">
-                  <img
-                    src="<%= products[j].image.length > 0 ? products[j].image[0].url : '' %>"
-                    class="card-img-top"
-                    alt="<%= products[j].name %>"
-                  />
-                  <div class="card-body">
-                    <h5 class="card-title"><%= products[j].productName %></h5>
-                    <p class="seller-name"><%= products[j].sellerId.name %></p>
-                    <p class="card-text"><%= products[j].price %> VND</p>
-                    <a
-                      href="/product/<%= products[j].id %>"
-                      class="btn btn-primary"
-                      >Xem chi tiết</a
-                    >
+                <a
+                  href="/product/<%= products[j].id %>"
+                  style="text-decoration: none"
+                >
+                  <div class="card">
+                    <img
+                      src="<%= products[j].image.length > 0 ? products[j].image[0].url : '' %>"
+                      class="card-img-top"
+                      alt="<%= products[j].name %>"
+                    />
+                    <div class="card-body">
+                      <h5 class="card-title"><%= products[j].productName %></h5>
+                      <p class="seller-name">
+                        <%= products[j].sellerId.name %>
+                      </p>
+                      <p class="card-text"><%= products[j].price %> VND</p>
+                    </div>
                   </div>
-                </div>
+                </a>
               </div>
               <% } %>
             </div>
@@ -111,23 +113,23 @@
             <div class="row">
               <% for (let j = i; j < i + 4 && j < laptops.length; j++) { %>
               <div class="col-md-3 mb-3">
-                <div class="card">
-                  <img
-                    src="<%= laptops[j].image.length > 0 ? laptops[j].image[0].url : '' %>"
-                    class="card-img-top"
-                    alt="<%= laptops[j].name %>"
-                  />
-                  <div class="card-body">
-                    <h5 class="card-title"><%= laptops[j].productName %></h5>
-                    <p class="seller-name"><%= laptops[j].sellerId.name %></p>
-                    <p class="card-text"><%= laptops[j].price %> VND</p>
-                    <a
-                      href="/product/<%= laptops[j].id %>"
-                      class="btn btn-primary"
-                      >Xem chi tiết</a
-                    >
+                <a
+                  href="/product/<%= laptops[j].id %>"
+                  style="text-decoration: none"
+                >
+                  <div class="card">
+                    <img
+                      src="<%= laptops[j].image.length > 0 ? laptops[j].image[0].url : '' %>"
+                      class="card-img-top"
+                      alt="<%= laptops[j].name %>"
+                    />
+                    <div class="card-body">
+                      <h5 class="card-title"><%= laptops[j].productName %></h5>
+                      <p class="seller-name"><%= laptops[j].sellerId.name %></p>
+                      <p class="card-text"><%= laptops[j].price %> VND</p>
+                    </div>
                   </div>
-                </div>
+                </a>
               </div>
               <% } %>
             </div>
@@ -163,23 +165,20 @@
             <div class="row">
               <% for (let j = i; j < i + 4 && j < phones.length; j++) { %>
               <div class="col-md-3 mb-3">
-                <div class="card">
-                  <img
-                    src="<%= phones[j].image.length > 0 ? phones[j].image[0].url : '' %>"
-                    class="card-img-top"
-                    alt="<%= phones[j].name %>"
-                  />
-                  <div class="card-body">
-                    <h5 class="card-title"><%= phones[j].productName %></h5>
-                    <p class="seller-name"><%= phones[j].sellerId.name %></p>
-                    <p class="card-text"><%= phones[j].price %> VND</p>
-                    <a
-                      href="/product/<%= phones[j].id %>"
-                      class="btn btn-primary"
-                      >Xem chi tiết</a
-                    >
+                <a href="/product/<%= phones[j].id %>" style="text-decoration: none;">
+                  <div class="card">
+                    <img
+                      src="<%= phones[j].image.length > 0 ? phones[j].image[0].url : '' %>"
+                      class="card-img-top"
+                      alt="<%= phones[j].name %>"
+                    />
+                    <div class="card-body">
+                      <h5 class="card-title"><%= phones[j].productName %></h5>
+                      <p class="seller-name"><%= phones[j].sellerId.name %></p>
+                      <p class="card-text"><%= phones[j].price %> VND</p>
+                    </div>
                   </div>
-                </div>
+                </a>
               </div>
               <% } %>
             </div>

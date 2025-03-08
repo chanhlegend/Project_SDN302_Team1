@@ -45,10 +45,16 @@
     flex-grow: 1;
     margin: 0 20px;
     justify-content: center;
+    width: 100%;
+  }
+
+  .header .search-bar form {
+    display: flex;
+    width: 60%;
   }
 
   .header .search-bar input {
-    width: 60%;
+    width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px 0 0 5px;
@@ -152,8 +158,10 @@
     min-width: 300px;
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     z-index: 1;
-    column-count: 2; /* Add this line to create two columns */
-    column-gap: 10px; /* Optional: Adjust the gap between columns */
+    column-count: 2;
+    /* Add this line to create two columns */
+    column-gap: 10px;
+    /* Optional: Adjust the gap between columns */
   }
 
   .dropdown-content a {
@@ -161,7 +169,8 @@
     padding: 12px 16px;
     text-decoration: none;
     display: block;
-    break-inside: avoid; /* Prevents breaking inside columns */
+    break-inside: avoid;
+    /* Prevents breaking inside columns */
   }
 
   .dropdown-content a:hover {
