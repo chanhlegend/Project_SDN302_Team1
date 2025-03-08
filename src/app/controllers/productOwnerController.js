@@ -3,25 +3,33 @@ const { mutipleMongoeseToObject, mongoeseToObject } = require('../../util/Mongoe
 const mongoose = require('mongoose');
 const Category = require('../models/Category');
 const cloudinary = require('../../config/cloudinary');
+const Image = require('../models/Image'); // Adjust the path as needed
+const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
-const stream = require("stream");
-
-
 class productOwnerController {
-
-    async listProductowner(req, res, next) {
-        const userId = req.params.userid; // Giả sử ID người dùng được lưu trong req.user
-        //req.session.user.userId//req.params.userId
-        const categories = await Category.find().sort({ createdAt: -1 });
+    async listProductOwner(req, res, next) {
+        try {
+            const userId = req.params.userid; // Lấy userId từ params
     
-        Product.find({ sellerId: userId }) // Lọc sản phẩm theo sellerId      
-            .then(products => res.render('productOwner', { products, categories}))
-            .catch(err => next(err));
+            // Lấy danh sách các danh mục sản phẩm
+            const categories = await Category.find().sort({ createdAt: -1 });
+    
+            // Lấy sản phẩm của người bán và populate trường image
+            let products = await Product.find({ sellerId: userId })
+                .populate('image') // Populate để lấy dữ liệu từ collection Image
+                .sort({ createdAt: -1 }); // Sắp xếp theo thời gian tạo mới nhất
+    
+            // Kiểm tra và log dữ liệu để debug (tùy chọn)
+            console.log('userId:', userId); // Thêm log để debug
+    
+            // Render trang EJS và truyền cả userId vào view
+            res.render('productOwner', { products, categories, userId });
+        } catch (err) {
+            next(err); // Nếu có lỗi, gọi next để chuyển đến middleware xử lý lỗi
+        }
     }
-    
-
-// Hiển thị form tạo sản phẩm
+// GET /create/:userid
 createProduct(req, res, next) {
     Category.find()
         .then(categories => {
@@ -29,80 +37,174 @@ createProduct(req, res, next) {
         })
         .catch(next);
 }
-create = async (req, res, next) => {
-    try {
-      const productData = req.body;
-      const userId = req.params.userid;
-      productData.sellerId = userId;
+// POST /create/:userid
+async create(req, res, next) {
+    console.log("Dữ liệu nhận được từ form:", req.body);
+    console.log("User ID from params:", req.params.userid);
 
-      if (!productData.category) {
-        return res.status(400).send("Category is required.");
-      }
+    const productData = req.body;
+    const userId = req.params.userid;
 
-      // Xử lý upload ảnh lên Cloudinary nếu có file ảnh
-      if (req.file) {
-        const result = await new Promise((resolve, reject) => {
-          const uploadStream = cloudinary.uploader.upload_stream(
-            {
-              folder: "ProjectSDN302",
-              public_id: `product_${Date.now()}`,
-              overwrite: true,
-            },
-            (error, result) => {
-              if (error) reject(error);
-              else resolve(result);
-            }
-          );
-
-          uploadStream.write(req.file.buffer);
-          uploadStream.end();
-        });
-
-        productData.imageUrl = result.secure_url; // Lưu URL ảnh vào dữ liệu sản phẩm
-      }
-
-      // Tạo và lưu sản phẩm vào database
-      const product = new Product(productData);
-      await product.save();
-
-      console.log("Product saved successfully!");
-      res.redirect(`/productOwner/product/${userId}`);
-    } catch (error) {
-      console.error("Error saving product:", error);
-      res.status(500).send("Failed to create product: " + error.message);
+    // Đảm bảo category được cung cấp
+    if (!productData.category) {
+        return res.status(400).send('Category is required.');
     }
-  };
 
-// Xử lý tạo sản phẩm
+    // Validate userId
+    if (!userId || userId.trim() === '') {
+        console.error('Seller ID is missing or empty in request params');
+        return res.status(400).send('Seller ID is required.');
+    }
 
+    // Xử lý mảng các URL ảnh từ form
+    let imageIds = [];
+    if (productData.imageUrls) {
+        try {
+            // Parse mảng imageUrls từ JSON
+            const imageUrls = JSON.parse(productData.imageUrls);
+
+            // Giới hạn tối đa 6 ảnh
+            if (imageUrls.length > 6) {
+                return res.status(400).send('Maximum 6 images allowed per product.');
+            }
+
+            // Tạo document Image cho từng URL
+            const imagePromises = imageUrls.map(async (url) => {
+                const newImage = new Image({
+                    url: url
+                });
+                const savedImage = await newImage.save();
+                return savedImage._id;
+            });
+
+            // Chờ tất cả document Image được lưu
+            imageIds = await Promise.all(imagePromises);
+        } catch (error) {
+            console.error('Error parsing image URLs or saving images:', error);
+            return res.status(500).send('Failed to save images: ' + error.message);
+        }
+    }
+
+    // Lưu sản phẩm
+    saveProduct(imageIds);
+
+    // Hàm lưu sản phẩm
+    function saveProduct(imageIds) {
+        productData.sellerId = userId; // Gán sellerId từ userId
+        productData.image = imageIds; // Gán mảng imageIds vào trường image
+
+        const product = new Product(productData);
+        product.save()
+            .then(() => {
+                console.log("Product saved successfully!");
+                res.redirect(`/productOwner/product/${userId}`);
+            })
+            .catch(error => {
+                console.error('Error saving product:', error);
+                res.status(500).send('Failed to create product: ' + error.message);
+            });
+    }
+}
 editProduct(req, res, next) {
-    Product.findById(req.params.productid)  // Sửa lại findById
+    Promise.all([
+        Product.findById(req.params.productid).populate('image'),
+        Category.find()
+    ])
+    .then(([product, categories]) => {
+        if (!product) {
+            return res.status(404).send("Product not found");
+        }
+        if (product.sellerId.toString() !== req.params.userid) {
+            return res.status(403).send("You are not authorized to edit this product");
+        }
+        console.log("Product.image:", product.image);
+        console.log("Categories from DB:", categories);
+        res.render('updateProduct', { 
+            product: product, 
+            userId: req.params.userid,
+            categories: categories
+        });
+    })
+    .catch(next);
+}
+
+update(req, res, next) {
+    console.log("Received request method:", req.method); // Kiểm tra phương thức
+    console.log("Received params:", req.params);        // Kiểm tra productid
+    console.log("Received body:", req.body);            // Kiểm tra dữ liệu gửi lên
+    const userId = req.body.userId;
+    Product.findById(req.params.productid)
+        .populate('image')
         .then(product => {
             if (!product) {
-                return res.status(404).send("Product not found"); // Xử lý khi không tìm thấy sản phẩm
-            }
-            res.render('updateProduct', { 
-                product: product,   // Truyền dữ liệu sản phẩm vào trang EJS
-                userId: req.params.userid 
-            });
-        })
-        .catch(next);
-}
-update(req, res, next) {
-    Product.findByIdAndUpdate(req.params.productid, req.body, { new: true })
-        .then(updatedProduct => {
-            if (!updatedProduct) {
                 return res.status(404).send("Product not found");
             }
-            res.redirect('/listProductowner'); // Điều hướng về danh sách sản phẩm
+            if (product.sellerId.toString() !== userId) {
+                return res.status(403).send("You are not authorized to update this product");
+            }
+
+            const { productName, price, description, category, currentImageUrls, newImageUrls } = req.body;
+            if (!productName || !price || !category) {
+                return res.status(400).send("Product name, price, and category are required");
+            }
+            if (price <= 0) {
+                return res.status(400).send("Price must be greater than 0");
+            }
+
+            return (async () => {
+                let imageIds = [];
+                if (currentImageUrls && Array.isArray(currentImageUrls)) {
+                    imageIds = product.image
+                        .filter(img => currentImageUrls.includes(img.url))
+                        .map(img => img._id);
+                }
+
+                if (newImageUrls) {
+                    const newUrls = JSON.parse(newImageUrls);
+                    if ((imageIds.length + newUrls.length) > 6) {
+                        return res.status(400).send("Maximum 6 images allowed.");
+                    }
+
+                    const newImagePromises = newUrls.map(async (url) => {
+                        const newImage = new Image({ url });
+                        const savedImage = await newImage.save();
+                        return savedImage._id;
+                    });
+                    const newImageIds = await Promise.all(newImagePromises);
+                    imageIds = [...imageIds, ...newImageIds];
+                }
+
+                if (imageIds.length === 0) {
+                    return res.status(400).send("At least one image is required.");
+                }
+
+                const updateData = {
+                    productName,
+                    price,
+                    description,
+                    category,
+                    image: imageIds
+                };
+                return Product.findByIdAndUpdate(req.params.productid, updateData, { new: true })
+                    .then(updatedProduct => {
+                        if (!updatedProduct) {
+                            return res.status(404).send("Product not found");
+                        }
+                        res.redirect(`/productOwner/product/${userId}`);
+                    });
+            })();
         })
+        .catch(err => {
+            console.error("Error in update:", err); // Log lỗi nếu có
+            next(err);
+        });
+}
+delete(req, res, next) {
+    const userId = req.params.userid; // Lấy userId từ req.params
+    Product.deleteOne({ _id: req.params.productid })
+        .then(() => res.redirect(`/productOwner/product/${userId}`))
         .catch(next);
 }
-    delete(req, res, next) {
-        Product.deleteOne({ productid: req.params.roductid })
-            .then(() => res.redirect('/listProductowner'))
-            .catch(next)
-    }
 }
 
 module.exports = new productOwnerController();
