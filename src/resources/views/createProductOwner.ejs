@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Product</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+  <link rel="stylesheet" href="/css/createProduct.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <%- include('partials/header') %>
+  <h1>Create a New Product</h1>
+  <form action="/productOwner/create/<%= userId %>" method="POST" id="productForm">
+    <div>
+        <label for="productName">Product Name:</label>
+        <input type="text" id="productName" name="productName" required>
+    </div>
+    
+    <div>
+        <label for="price">Price:</label>
+        <input type="number" id="price" name="price" required>
+    </div>
+
+    <div>
+      <label for="category">Category:</label>
+      <select id="category" name="category" required>
+        <option value="">--Chọn danh mục--</option>
+        <% categories.forEach(category => { %>
+            <option value="<%= category._id %>"><%= category.name %></option>
+        <% }); %>
+      </select>    
+    </div>
+
+    <input type="hidden" id="imageUrls" name="imageUrls" value="">
+
+    <button type="submit">Tạo sản phẩm</button>
+  </form>
+
+  <!-- Nút mở Cloudinary Upload Widget với biểu tượng camera -->
+  <button onclick="openCloudinaryWidget()" style="background: none; border: none; font-size: 24px; cursor: pointer;">
+    <i class="fa-solid fa-camera"></i>
+  </button>
+
+  <p>Ảnh xem trước: <div id="imagePreview" style="display: flex; gap: 10px;"></div></p>
+
+  <p id="debugOutput"></p>
+
+  <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
+  <script>
+    let imageUrls = [];
+
+    function openCloudinaryWidget() {
+      if (typeof cloudinary === 'undefined') {
+        alert('Cloudinary script is not loaded. Please check the script URL or network issues.');
+        return;
+      }
+
+      cloudinary.openUploadWidget({ 
+        cloud_name: 'dqncabikk', 
+        upload_preset: 'test123',
+        theme: 'minimal',
+        sources: ['local', 'url', 'camera'],
+        multiple: true,
+        max_files: 6 
+      }, function(error, result) { 
+        if (!error && result && result.event === "success") {
+          imageUrls.push(result.info.secure_url);
+          updateImagePreview();
+          document.getElementById("imageUrls").value = JSON.stringify(imageUrls);
+        } else if (error) {
+          alert("Có lỗi xảy ra khi upload ảnh: " + (error.message || 'Unknown error'));
+        }
+      });
+    }
+
+    function updateImagePreview() {
+      const previewContainer = document.getElementById("imagePreview");
+      previewContainer.innerHTML = '';
+      imageUrls.forEach((url, index) => {
+        const imgElement = document.createElement('div');
+        imgElement.innerHTML = `
+          <div style="position: relative; display: inline-block;">
+            <img src="${url}" alt="Uploaded image ${index + 1}" style="max-width: 100px; margin-right: 10px;">
+            <button onclick="removeImage(${index})" style="position: absolute; top: 0; right: 0; background: red; color: white; border: none; cursor: pointer;">X</button>
+          </div>
+        `;
+        previewContainer.appendChild(imgElement);
+      });
+    }
+
+    function removeImage(index) {
+      imageUrls.splice(index, 1);
+      updateImagePreview();
+      document.getElementById("imageUrls").value = JSON.stringify(imageUrls);
+    }
+  </script>
+</body>
+</html>

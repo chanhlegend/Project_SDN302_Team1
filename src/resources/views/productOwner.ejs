@@ -4,37 +4,189 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Danh Sách Sản Phẩm</title>
-    <link rel="stylesheet" href="/css/style.css"> <!-- Liên kết file CSS nếu có -->
+    <link rel="stylesheet" href="/css/productOwner.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+    <style>
+        /* CSS cho modal */
+        .modal {
+            display: none; /* Ẩn modal ban đầu */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Lớp nền mờ */
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            width: 300px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-content p {
+            margin: 0 0 20px;
+            font-size: 16px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .modal-buttons button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .modal-buttons .ok-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .modal-buttons .ok-btn:hover {
+            background-color: #45a049;
+        }
+
+        .modal-buttons .cancel-btn {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .modal-buttons .cancel-btn:hover {
+            background-color: #da190b;
+        }
+    </style>
 </head>
 <body>
-        <!-- Include Header -->
-        <%- include('partials/header') %>
-    <h1>Danh Sách Sản Phẩm Của Bạn</h1>
+    <!-- Include Header -->
+    <%- include('partials/header') %>
+    <h1>Sale Detail</h1>
 
     <% if (products.length > 0) { %>
-        <table border="1">
+        <table>
             <thead>
                 <tr>
-                    <th>Tên Sản Phẩm</th>
-                    <th>Giá</th>
+                    <th>Sản Phẩm</th>
                     <th>Mô Tả</th>
-                    <th>Trạng Thái</th>
+                    <th>Giá</th>
+                    <th>Thời Gian</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
                 <% products.forEach(product => { %>
                     <tr>
-                        <td><%= product.productName %></td>
-                        <td><%= product.price %> VND</td>
-                        <td><%= product.description %></td>
-                        <td><%= product.status %></td>
+                        <td class="product-info">
+                            <img 
+                                src="<%= product.image && product.image.length > 0 ? product.image[0].url : '/default-image.jpg' %>" 
+                                alt="<%= product.productName %>" 
+                                class="product-image"
+                            >
+                            <div>
+                                <span class="product-name"><%= product.productName %></span>
+                                <br>
+                            </div>
+                        </td>     
+                        <td class="product-description"><%= product.description %></td>                   
+                        <td class="product-price">
+                            <span class="price-text"><%= product.price.toLocaleString() %> VND</span>
+                        </td>
+                        <td class="product-time"> 
+                            <%= new Date(product.createdAt).toLocaleString('vi-VN') %>
+                        </td>
+                        <td class="options-container">
+                            <i onclick="handleOpenMenu(event)" class="fa-solid fa-ellipsis-vertical options-icon"></i>
+                            <div class="options-menu" id="options-menu">
+                                <div class="option-item delete-option">
+                                    <i class="fa-solid fa-xmark"></i> 
+                                    <button type="button" onclick="openDeleteModal('<%= userId %>', '<%= product._id %>')">Xóa</button>
+                                </div>
+                                <div class="option-item edit-option">
+                                    <i class="fa-solid fa-pen"></i> 
+                                    <a href="/productOwner/edit/<%= userId %>/<%= product._id %>">Chỉnh sửa</a>
+                                </div>
+                            </div>
+                        </td>                                                                  
                     </tr>
                 <% }) %>
             </tbody>
-        </table>
+        </table>                       
     <% } else { %>
         <p>Không có sản phẩm nào.</p>
     <% } %>
 
+    <!-- Modal xác nhận xóa -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <p>Bạn có muốn xóa sản phẩm này không?</p>
+            <div class="modal-buttons">
+                <button class="ok-btn" onclick="confirmDelete()">OK</button>
+                <button class="cancel-btn" onclick="closeModal()">Hủy</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function handleOpenMenu(event) {
+            event.stopPropagation();
+
+            document.querySelectorAll(".options-menu").forEach(menu => {
+                menu.style.display = "none";
+            });
+
+            let menu = event.target.nextElementSibling;
+            if (menu) {
+                menu.style.display = "block";
+            }
+        }
+
+        document.addEventListener("click", function () {
+            document.querySelectorAll(".options-menu").forEach(menu => {
+                menu.style.display = "none";
+            });
+        });
+
+        // Biến toàn cục để lưu userId và productId
+        let currentUserId = '';
+        let currentProductId = '';
+
+        // Mở modal khi nhấp vào "Xóa"
+        function openDeleteModal(userId, productId) {
+            currentUserId = userId;
+            currentProductId = productId;
+            document.getElementById('deleteModal').style.display = 'flex';
+        }
+
+        // Đóng modal
+        function closeModal() {
+            document.getElementById('deleteModal').style.display = 'none';
+        }
+
+        // Xác nhận xóa và gửi yêu cầu
+        function confirmDelete() {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `/product/${currentUserId}/${currentProductId}?_method=DELETE`;
+            const methodInput = document.createElement('input');
+            methodInput.type = 'hidden';
+            methodInput.name = '_method';
+            methodInput.value = 'DELETE';
+            form.appendChild(methodInput);
+            document.body.appendChild(form);
+            form.submit();
+            closeModal(); // Đóng modal sau khi gửi
+        }
+    </script>    
 </body>
 </html>
