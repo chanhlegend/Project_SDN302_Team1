@@ -2,7 +2,6 @@ const Product = require('../models/Product')
 const Category = require('../models/Category')
 const { mutipleMongoeseToObject, mongoeseToObject } = require('../../util/Mongoese')
 const mongoose = require('mongoose');
-const Category = require('../models/Category');
 const cloudinary = require('../../config/cloudinary');
 const Image = require('../models/Image'); // Adjust the path as needed
 const path = require('path');

@@ -12,12 +12,12 @@ class siteController {
       .populate('image')
       .populate('sellerId'); 
 
-    const laptopCategory = await Category.findOne({ name: 'Laptop' });
+    const laptopCategory = await Category.findOne({ name: 'Máy Tính' });
     const laptops = laptopCategory ? await Product.find({ category: laptopCategory._id }).sort({ createdAt: -1 })
       .populate('image')
       .populate('sellerId') : [];
 
-    const phoneCategory = await Category.findOne({ name: 'Phone' });
+    const phoneCategory = await Category.findOne({ name: 'Điện Thoại' });
     const phones = phoneCategory ? await Product.find({ category: phoneCategory._id }).sort({ createdAt: -1 })
       .populate('image')
       .populate('sellerId') : [];
