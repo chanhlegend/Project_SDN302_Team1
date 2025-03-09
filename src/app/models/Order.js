@@ -20,11 +20,18 @@ const OrderSchema = new Schema({
         default: 0
     },
 
-    status:{
+    status: {
         type: String,
-        require: true,
-        default:'Pending'
-    }
+        required: true,
+        enum: ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'],
+        default: 'Pending'
+    },
+
+    isPaid: {
+        type: Boolean,
+        required: true,
+        default: false,
+    },
     
 }, { timestamps: true });
 
