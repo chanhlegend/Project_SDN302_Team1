@@ -1,66 +1,111 @@
-const Report = require('../models/Report');
-const User = require('../models/User');
+const Report = require("../models/Report");
+const User = require("../models/User");
+const cloudinary = require("cloudinary").v2;
 
 class ReportController {
+  static async reportSeller(req, res) {
+    try {
+      const reporterId = req.session.user?._id;
+      const { sellerId, reason, details } = req.body;
+      const file = req.file;
 
-    static async reportSeller(req, res) {
-        try {
-            const { reporterId, sellerId, reason, details } = req.body;
+      console.log("[DEBUG] Request:", {
+        reporterId,
+        sellerId,
+        reason,
+        file: !!file,
+      });
 
-            if (!reporterId || !sellerId || !reason) {
-                return res.status(400).json({ message: "Vui lòng nhập đầy đủ thông tin" });
-            }
+      // Validate
+      if (!reporterId) throw new Error("Phiên đăng nhập hết hạn");
+      if (!sellerId || !reason) throw new Error("Thiếu trường bắt buộc");
 
-            if (reporterId === sellerId) {
-                return res.status(400).json({ message: "Bạn không thể báo cáo chính mình" });
-            }
+      // Upload ảnh
+      let evidenceUrl = null;
+      if (file) {
+        const result = await new Promise((resolve, reject) => {
+          const uploadStream = cloudinary.uploader.upload_stream(
+            { folder: "reports" },
+            (error, result) => (error ? reject(error) : resolve(result))
+          );
+          uploadStream.end(file.buffer);
+        });
+        evidenceUrl = result.secure_url;
+      }
 
-            const seller = await User.findById(sellerId);
-            if (!seller) {
-                return res.status(404).json({ message: "Người bán hàng không tồn tại" });
-            }
+      // Tạo báo cáo
+      const reportData = {
+        reporterId,
+        sellerId,
+        reason: reason === "other" ? details : reason,
+        details: reason === "other" ? null : details,
+        evidenceUrl,
+        status: "pending",
+      };
 
-            const newReport = new Report({ reporterId, sellerId, reason, details });
-            await newReport.save();
+      console.log("[DEBUG] Report Data:", reportData);
 
-            return res.status(201).json({ message: "Báo cáo đã được gửi thành công", data: newReport });
-        } catch (error) {
-            return res.status(500).json({ message: "Lỗi server", error: error.message });
-        }
+      const newReport = new Report(reportData);
+      await newReport.save();
+
+      return res.status(201).json({
+        success: true,
+        data: newReport,
+      });
+    } catch (error) {
+      console.error("[ERROR] Report Error:", error);
+      return res.status(500).json({
+        success: false,
+        message: error.message,
+      });
     }
+  }
 
-    static async getReports(req, res) {
-        try {
-            const reports = await Report.find()
-                .populate('reporterId', 'username email')
-                .populate('sellerId', 'username email');
-            return res.status(200).json({ message: "Danh sách báo cáo", data: reports });
-        } catch (error) {
-            return res.status(500).json({ message: "Lỗi server", error: error.message });
-        }
+  static async getReports(req, res) {
+    try {
+      const reports = await Report.find()
+        .populate("reporterId", "username email")
+        .populate("sellerId", "username email");
+      return res
+        .status(200)
+        .json({ message: "Danh sách báo cáo", data: reports });
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ message: "Lỗi server", error: error.message });
     }
+  }
 
-    static async updateReportStatus(req, res) {
-        console.log("alooo");
-        try {
-            const { reportId } = req.params;
-            console.log(reportId);
-            const { status } = req.body;
+  static async updateReportStatus(req, res) {
+    console.log("alooo");
+    try {
+      const { reportId } = req.params;
+      console.log(reportId);
+      const { status } = req.body;
 
-            if (!['pending', 'reviewed', 'resolved'].includes(status)) {
-                return res.status(400).json({ message: "Trạng thái không hợp lệ" });
-            }
+      if (!["pending", "reviewed", "resolved"].includes(status)) {
+        return res.status(400).json({ message: "Trạng thái không hợp lệ" });
+      }
 
-            const updatedReport = await Report.findByIdAndUpdate(reportId, { status }, { new: true });
-            if (!updatedReport) {
-                return res.status(404).json({ message: "Không tìm thấy báo cáo" });
-            }
+      const updatedReport = await Report.findByIdAndUpdate(
+        reportId,
+        { status },
+        { new: true }
+      );
+      if (!updatedReport) {
+        return res.status(404).json({ message: "Không tìm thấy báo cáo" });
+      }
 
-            return res.status(200).json({ message: "Cập nhật trạng thái thành công", data: updatedReport });
-        } catch (error) {
-            return res.status(500).json({ message: "Lỗi server", error: error.message });
-        }
+      return res.status(200).json({
+        message: "Cập nhật trạng thái thành công",
+        data: updatedReport,
+      });
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ message: "Lỗi server", error: error.message });
     }
+  }
 }
 
 module.exports = ReportController;

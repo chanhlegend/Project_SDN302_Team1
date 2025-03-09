@@ -5,9 +5,8 @@ class FollowController {
     static async followUser(req, res) {
         try {
             const followerId = req.session.user ? req.session.user._id : null;
-            console.log(followerId);
             const { followingId } = req.body;
-            console.log("Following ID nhận được:", followingId);
+            console.log("followingId: ",followingId);
             if (!followerId) {
                 return res.status(401).json({ message: "Bạn cần đăng nhập để theo dõi" });
             }
@@ -26,7 +25,7 @@ class FollowController {
                 return res.status(404).json({ message: "Người được theo dõi không tồn tại" });
             }
     
-            if (following.role !== "sale") {
+            if (following.role !== "seller") {
                 return res.status(400).json({ message: "Người này không thể có người theo dõi" });
             }
     

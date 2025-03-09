@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your personal information</title>
+    <title>Thông tin cá nhân của bạn</title>
     <link rel="stylesheet" href="/css/profile.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </head>
 <body>
     <div class="header-banner">
-        <img src="/img/brg.png" alt="Personal Information Banner" width="1899" height="176">
+        <img src="/img/brg.png" alt="Biểu ngữ thông tin cá nhân" width="1899" height="176">
     </div>
 
     <% if (messages && messages.message) { %>
@@ -21,22 +21,16 @@
 
     <form action="/user/update-profile/<%= user._id %>" method="POST">
         <div class="radio-group">
-            <label>Social title</label>
-            <input type="radio" name="social_title" value="Mr." <%= user.social_title === 'Mr.' ? 'checked' : '' %>> Mr.
-            <input type="radio" name="social_title" value="Mrs." <%= user.social_title === 'Mrs.' ? 'checked' : '' %>> Mrs.
+            <label>Danh xưng</label>
+            <input type="radio" name="social_title" value="Mr." <%= user.social_title === 'Mr.' ? 'checked' : '' %>> Ông
+            <input type="radio" name="social_title" value="Mrs." <%= user.social_title === 'Mrs.' ? 'checked' : '' %>> Bà
         </div>
     
         <div class="form-group">
-            <label>First name<span class="required">*</span></label>
-            <input type="text" name="first_name" value="<%= user.first_name %>" required>
+            <label>Tên<span class="required">*</span></label>
+            <input type="text" name="first_name" value="<%= user.name %>" required>
         </div>
-        <p class="help-text">Only letters and the dot (.) character, followed by a space, are allowed.</p>
-    
-        <div class="form-group">
-            <label>Last name<span class="required">*</span></label>
-            <input type="text" name="last_name" value="<%= user.last_name %>" required>
-        </div>
-        <p class="help-text">Only letters and the dot (.) character, followed by a space, are allowed.</p>
+        <p class="help-text">Chỉ cho phép chữ cái và ký tự chấm (.), theo sau là khoảng trắng.</p>
     
         <div class="form-group">
             <label>Email<span class="required">*</span></label>
@@ -44,60 +38,60 @@
         </div>
     
         <div class="password-field">
-            <label>Password<span class="required">*</span></label>
+            <label>Mật khẩu<span class="required">*</span></label>
             <input type="password" name="password" value="<%=user.password %>">
-            <button type="button" class="show-password">SHOW</button>
+            <button type="button" class="show-password">HIỂN THỊ</button>
         </div>
     
         <div class="password-field">
-            <label>New password</label>
+            <label>Mật khẩu mới</label>
             <input type="password" name="new_password">
-            <button type="button" class="show-password">SHOW</button>
+            <button type="button" class="show-password">HIỂN THỊ</button>
         </div>
     
         <div class="form-group">
-            <label>Birthdate</label>
+            <label>Ngày sinh</label>
             <input type="text" id="dob" name="dob" 
             value="<%= user.dob ? user.dob.toLocaleDateString('en-US') : '' %>"
-            placeholder="Select Date...">        </div>
-        <p class="birthdate-format">(E.g. 05/31/1970)</p>
+            placeholder="Chọn ngày...">        </div>
+        <p class="birthdate-format">(Ví dụ: 31/05/1970)</p>
     
         <div class="checkbox-group">
             <input type="checkbox" name="offers" id="offers">
-            <label for="offers">Receive offers from our partners</label>
+            <label for="offers">Nhận ưu đãi từ các đối tác của chúng tôi</label>
         </div>
         
         <div class="checkbox-group">
             <input type="checkbox" name="privacy" id="privacy">
-            <label for="privacy">Customer data privacy</label>
+            <label for="privacy">Quyền riêng tư dữ liệu khách hàng</label>
         </div>
         <p class="privacy-text">
-            The personal data you provide is used to answer queries, process orders or allow access to specific information. You have the right to modify and delete all the personal information found in the "My Account" page.
+            Dữ liệu cá nhân bạn cung cấp được sử dụng để trả lời các yêu cầu, xử lý đơn hàng hoặc cho phép truy cập vào thông tin cụ thể. Bạn có quyền sửa đổi và xóa tất cả thông tin cá nhân có trong trang "Tài khoản của tôi".
         </p>
         
         <div class="checkbox-group">
             <input type="checkbox" name="newsletter" id="newsletter">
-            <label for="newsletter">Sign up for our newsletter</label>
+            <label for="newsletter">Đăng ký nhận bản tin của chúng tôi</label>
         </div>
         <p class="newsletter-text">
-            You may unsubscribe at any moment. For that purpose, please find our contact info in the legal notice.
+            Bạn có thể hủy đăng ký bất cứ lúc nào. Để làm điều đó, vui lòng xem thông tin liên hệ của chúng tôi trong phần thông báo pháp lý.
         </p>
         
         <div class="checkbox-group">
             <input type="checkbox" name="terms" id="terms">
-            <label for="terms">I agree to the terms and conditions and the privacy policy</label>
+            <label for="terms">Tôi đồng ý với các điều khoản và điều kiện và chính sách bảo mật</label>
         </div>
 
         <div class="form-actions">
             <div class="left-buttons">
                 <a href="/" class="back-button">
-                    <span class="arrow">←</span> BACK TO YOUR ACCOUNT
+                    <span class="arrow">←</span> QUAY LẠI TÀI KHOẢN CỦA BẠN
                 </a>
                 <a href="/" class="home-button">
-                    <span class="home-icon">⌂</span> HOME
+                    <span class="home-icon">⌂</span> TRANG CHỦ
                 </a>
             </div>
-            <button type="submit" class="save-button">SAVE</button>
+            <button type="submit" class="save-button">LƯU</button>
         </div>
     </form>
 
@@ -107,10 +101,10 @@
                 const passwordField = this.previousElementSibling;
                 if (passwordField.type === 'password') {
                     passwordField.type = 'text';
-                    this.textContent = 'HIDE';
+                    this.textContent = 'ẨN';
                 } else {
                     passwordField.type = 'password';
-                    this.textContent = 'SHOW';
+                    this.textContent = 'HIỂN THỊ';
                 }
             });
         });

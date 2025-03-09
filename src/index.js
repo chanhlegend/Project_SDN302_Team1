@@ -7,6 +7,7 @@ require('dotenv').config({ path: './.env' });
 const bodyParser = require('body-parser');
 const flash = require('express-flash')
 const session = require('express-session');
+const cloudinary = require('cloudinary').v2;
 const passport = require('../src/config/passport/passport-config');
 const MongoStore = require('connect-mongo');
 
@@ -96,6 +97,13 @@ const db = require('./config/db')
 
 //connect DB
 db.connect()
+
+cloudinary.config({ 
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_API_KEY,
+  api_secret: process.env.CLOUD_API_SECRET
+});
+
 
 app.use(bodyParser.urlencoded({ extended: true }));
 

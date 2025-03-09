@@ -1,126 +1,546 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your personal information</title>
-    <link rel="stylesheet" href="/css/profile.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-</head>
-<body>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sản phẩm</title>
+    <link rel="stylesheet" href="/css/viewProfile.css" />
+    <script defer src="https://kit.fontawesome.com/a076d05399.js"></script>
+  </head>
+
+  <body>
     <div class="container">
-        <div class="left-section">
-            <div class="header">
-                <div class="logo">
-                    <img src="/img/avatar.png" alt="Logo">
-                    <span class="badge">Hoạt động 2 giờ trước</span>
+      <div class="shop-header">
+        <div class="shop-container">
+          <div class="shop-left">
+            <img
+              id="shop-avatar"
+              src="<%= user.avatar || '/img/avatar.png' %>"
+              alt="Shop avatar"
+            />
+            <div class="shop-name" id="shop-name">
+              <%= user.username || 'Chưa có tên' %>
+            </div>
+            <div class="shop-address" id="shop-address">
+              <%= user.address || 'Chưa có địa chỉ' %>
+            </div>
+            <div class="shop-actions">
+              <button
+                class="btn-follow"
+                id="follow-button"
+                data-id="<%= user._id %>"
+              >
+                <i class="fas fa-heart"></i> Theo dõi
+              </button>
+              <button class="btn-report" onclick="openUserReportModal()">
+                <i class="fas fa-flag"></i> Báo cáo
+              </button>
+            </div>
+          </div>
+
+          <div class="shop-right">
+            <div class="nav-tabs">
+              <a href="#" class="tab-item active" data-tab="overview"
+                >TỔNG QUAN</a
+              >
+              <a href="#" class="tab-item" data-tab="sold">ĐÃ BÁN</a>
+              <a href="#" class="tab-item" data-tab="selling">ĐANG BÁN</a>
+              <a href="#" class="tab-item" data-tab="reviews">ĐÁNH GIÁ</a>
+            </div>
+           
+
+            <div class="tab-content" id="overview">
+              <div class="shop-intro">
+                <div class="intro-text">
+                  <h2>Giới thiệu</h2>
+                  <p>
+                    Chào mừng bạn đến với cửa hàng của chúng tôi! Chúng tôi chuyên
+                    cung cấp các sản phẩm chất lượng cao với giá cả phải chăng.
+                    Với nhiều năm kinh nghiệm trong ngành, chúng tôi tự hào mang
+                    đến cho khách hàng những trải nghiệm mua sắm tuyệt vời nhất.
+                  </p>
+                  <p>
+                    Hãy khám phá các sản phẩm đang bán và đừng ngần ngại liên hệ
+                    với chúng tôi nếu bạn có bất kỳ câu hỏi nào.
+                  </p>
                 </div>
+                <div class="intro-images">
+                  <img
+                    src="/img/slide1.jpg"
+                    alt="Giới thiệu 1"
+                    class="intro-image"
+                  />
+                  <img
+                    src="/img/slide2.jpg"
+                    alt="Giới thiệu 2"
+                    class="intro-image"
+                  />
+                  <img
+                    src="/img/slide3.jpg"
+                    alt="Giới thiệu 3"
+                    class="intro-image"
+                  />
+                </div>
+              </div>
+              <h2 style="margin-top: 20px;">Sản phẩm đang bán</h2>
+              <div class="product-list"></div>
+              <a href="#" class="view-more">Xem thêm sản phẩm</a>
+
+              <!-- THÊM PHẦN ĐÁNH GIÁ VÀO TỔNG QUAN -->
+              <div class="reviews-section">
+                <h2>Đánh giá từ khách hàng</h2>
+                <div class="reviews-list"></div>
+              </div>
             </div>
-            <div class="actions">
-                <button>Chia sẻ</button>
-                <button id="followBtn">Theo dõi</button>
+
+            <div class="tab-content" id="sold" style="display: none">
+              <h2>Sản phẩm đã bán</h2>
+              <div class="sold-products"></div>
             </div>
-            <div class="title">Toyota Đông Sài Gòn | CN Gò Vấp</div>
-            <div class="rating">
-                <span class="stars">★★★★★</span>
-                <span>4.8</span>
-                <span>(6 nhận xét)</span>
-                <span>Đã xác thực</span>
+
+            <div class="tab-content" id="selling" style="display: none">
+              <h2>Sản phẩm đang bán</h2>
+              <div class="selling-products"></div>
             </div>
-            <div class="address">📍 Địa chỉ: @@@@@@@@@@@@@@@@</div>
-            <div class="stats">
-                <div>Đã bán <br> 25</div>
-                <div>Người theo dõi <br> 21</div>
-                <div>Xe đang bán <br> 18</div>
+
+            <div class="tab-content" id="reviews" style="display: none">
+              <h2>Đánh giá từ khách hàng</h2>
+              <div class="reviews-list"></div>
             </div>
-            <div class="contact">
-                <span>📞 0909******</span>
-                <span>Bấm để hiện số</span>
-            </div>
+          </div>
         </div>
-        
-        
-        <div class="right-section">
-            <form action="/user/update-profile/<%= user._id %>" method="POST">
-                <div class="form-group">
-                    <label>First name</label>
-                    <input type="text" name="first_name" value="<%= user.first_name %>" disabled>
-                </div>
-                <div class="form-group">
-                    <label>Last name</label>
-                    <input type="text" name="last_name" value="<%= user.last_name %>" disabled>
-                </div>
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" name="email" value="<%= user.email %>" disabled>
-                </div>
-                <div class="form-group">
-                    <label>Birthdate</label>
-                    <input type="text" id="birthdate" name="birthdate" value="<%= user.dob ? user.dob.toLocaleDateString('en-US') : '' %>" disabled>      
-                </div>
-                <div class="form-actions">
-                    <div class="left-buttons">
-                        <a href="/" class="back-button">
-                            <span class="arrow">←</span> BACK TO YOUR ACCOUNT
-                        </a>
-                    </div>
-                </div>
-            </form>
+      </div>
+    </div>
+
+    <div id="userReportModal" class="modal-container">
+      <div class="modal-box">
+        <span class="modal-close-btn" onclick="closeUserReportModal()"
+          >&times;</span
+        >
+        <h2 class="modal-title">Báo Cáo Người Dùng</h2>
+        <form id="userReportForm">
+          <label for="reportReason" class="modal-label">Lý do báo cáo:</label>
+          <select id="reportReason" name="reason" class="modal-select" required>
+            <option value="" disabled selected>Chọn lý do</option>
+            <option value="spam">Spam</option>
+            <option value="fraud">Lừa đảo</option>
+            <option value="harassment">Quấy rối</option>
+            <option value="fake_profile">Hồ sơ giả</option>
+            <option value="other">Khác</option>
+          </select>
+
+          <label
+            for="customReportReason"
+            id="customReportLabel"
+            class="modal-label"
+            style="display: none"
+          >
+            Nhập lý do khác:
+          </label>
+          <div id="customReasonSection" style="display: none">
+            <label class="modal-label">Nhập lý do khác:</label>
+            <textarea name="details" class="modal-textarea"></textarea>
+          </div>
+
+          <label for="reportEvidence" class="modal-label"
+            >Tải lên ảnh minh chứng (tùy chọn):</label
+          >
+          <input
+            type="file"
+            id="reportEvidence"
+            name="evidence"
+            class="modal-file-input"
+            accept="image/*"
+          />
+
+          <button type="submit" class="modal-submit-btn">Gửi Báo Cáo</button>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        const userId = window.location.pathname.split("/").pop();
+        const followButton = document.getElementById("follow-button");
+        followButton.addEventListener("click", handleFollowAction);
+        const followingId = followButton.dataset.id;
+        const reviewsList = document.querySelectorAll(".reviews-list");
+
+        await fetchUserProfile(userId);
+        await fetchProducts(userId);
+        await fetchReviews(userId);
+        await checkFollowStatus(followingId);
+
+        setupTabs(userId);
+
+        function setupTabs(userId) {
+          document.querySelectorAll(".tab-item").forEach((tab) => {
+            tab.addEventListener("click", async function (e) {
+              e.preventDefault();
+
+              // Xóa active các tab
+              document
+                .querySelectorAll(".tab-item")
+                .forEach((t) => t.classList.remove("active"));
+              this.classList.add("active");
+
+              // Ẩn tất cả nội dung tab
+              document.querySelectorAll(".tab-content").forEach((content) => {
+                content.style.display = "none";
+              });
+
+              const tabId = this.dataset.tab;
+              const activeTab = document.getElementById(tabId);
+              if (activeTab) {
+                activeTab.style.display = "block";
+              }
+
+              // Load dữ liệu tương ứng
+              if (tabId === "overview") {
+                await fetchProducts(userId); // Tải sản phẩm cho tab Tổng quan
+                await fetchReviews(userId); // Tải đánh giá
+              } else if (tabId === "sold") {
+                await fetchProductsByStatus(userId, "sold");
+              } else if (tabId === "selling") {
+                await fetchProductsByStatus(userId, "active");
+              } else if (tabId === "reviews") {
+                await fetchReviews(userId);
+              }
+            });
+          });
+
+          const defaultTab = document.querySelector(".tab-item.active");
+          if (defaultTab) {
+            defaultTab.click();
+          }
+        }
+
+        function closeUserReportModal() {
+          document.getElementById("userReportModal").style.display = "none";
+        }
+
+        document
+          .getElementById("reportReason")
+          .addEventListener("change", function () {
+            const customReason = document.getElementById("customReportReason");
+            const customLabel = document.getElementById("customReportLabel");
+            if (this.value === "other") {
+              customReason.style.display = "block";
+              customLabel.style.display = "block";
+            } else {
+              customReason.style.display = "none";
+              customLabel.style.display = "none";
+            }
+          });
+
+        window.onclick = function (event) {
+          const modal = document.getElementById("userReportModal");
+          if (event.target === modal) {
+            closeUserReportModal();
+          }
+        };
+
+        async function fetchProductsByStatus(userId, status) {
+          try {
+            const response = await fetch(
+              `http://localhost:3000/productOwner/${userId}/status?status=${status}`
+            );
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+              throw new Error(`Lỗi khi lấy danh sách sản phẩm (${status})`);
+            }
+
+            // Tìm container dựa theo status
+            const containerClass =
+              status === "sold" ? ".sold-products" : ".selling-products";
+            const container = document.querySelector(containerClass);
+
+            if (!container) {
+              console.error("Không tìm thấy container:", containerClass);
+              return;
+            }
+
+            container.innerHTML = ""; // Xóa nội dung cũ
+
+            if (data.products.length === 0) {
+              container.innerHTML = `<p>Không có sản phẩm nào ${
+                status === "sold" ? "đã bán" : "đang bán"
+              }.</p>`;
+              return;
+            }
+
+            data.products.forEach((product) => {
+              const productItem = document.createElement("div");
+              productItem.classList.add("product-item");
+              productItem.innerHTML = `
+                            <div class="product-image">
+                                <img src="${
+                                  product.image.length > 0
+                                    ? product.image[0].url
+                                    : "/images/default.jpg"
+                                }" alt="${product.productName}">
+                            </div>
+                            <div class="product-info">
+                                <h3 class="product-name">${
+                                  product.productName
+                                }</h3>
+                                 <div class="price-container">
+                                    <div class="price">${product.price.toLocaleString()}₫</div>
+                                    <button class="favorite-btn" onclick="toggleFavorite(this)">🤍</button>
+                                 </div>
+                            </div>
+                        `;
+              container.appendChild(productItem);
+            });
+          } catch (error) {
+            console.error(`Lỗi khi lấy sản phẩm (${status}):`, error);
+          }
+        }
+
+        async function fetchUserProfile(userId) {
+          try {
+            const response = await fetch(`/user/profile/${userId}`);
+            const user = await response.json();
+            if (!response.ok) throw new Error(user.message);
+
+            document.getElementById("shop-avatar").src =
+              user.avatar || "/images/shop-avatar.jpg";
+            document.getElementById("shop-name").textContent =
+              user.username || "Chưa có tên";
+            document.getElementById("shop-address").textContent =
+              user.address || "Chưa có địa chỉ";
+          } catch (error) {
+            console.error("Lỗi khi lấy thông tin người dùng:", error);
+          }
+        }
+
+        async function fetchProducts(userId) {
+          try {
+            const response = await fetch(`/productOwner/${userId}`);
+            const data = await response.json();
+            if (!response.ok || !data.products.length)
+              throw new Error("Không có sản phẩm hoặc lỗi API");
+
+            const productListContainer =
+              document.querySelector(".product-list");
+            productListContainer.innerHTML = "";
+
+            data.products.forEach((product) => {
+              const productItem = document.createElement("div");
+              productItem.classList.add("product-item");
+              productItem.innerHTML = `
+                            <div class="product-image">
+                                <img src="${
+                                  product.image.length > 0
+                                    ? product.image[0].url
+                                    : "/images/default.jpg"
+                                }" alt="${product.productName}">
+                            </div>
+                            <div class="product-info">
+                                <h3 class="product-name">${
+                                  product.productName
+                                }</h3>
+                                 <div class="price-container">
+                                    <div class="price">${product.price.toLocaleString()}₫</div>
+                                    <button class="favorite-btn" onclick="toggleFavorite(this)">🤍</button>
+                                 </div>
+                            </div>
+                        `;
+              productListContainer.appendChild(productItem);
+            });
+          } catch (error) {
+            console.error("Lỗi khi lấy danh sách sản phẩm:", error);
+          }
+        }
+
+        async function fetchReviews(userId) {
+          try {
+            const response = await fetch(`/evaluate/${userId}`);
+            const data = await response.json();
+
+            if (!response.ok || !data || !Array.isArray(data.evaluates)) {
+              throw new Error(
+                "Dữ liệu đánh giá không hợp lệ hoặc không có đánh giá."
+              );
+            }
+
+            reviewsList.forEach((reviewContainer) => {
+              reviewContainer.innerHTML = "";
+
+              if (data.evaluates.length === 0) {
+                reviewContainer.innerHTML = "<p>Chưa có đánh giá nào.</p>";
+                return;
+              }
+
+              data.evaluates.forEach((review) => {
+                const reviewerName =
+                  review.evaluaterId?.username || "Người dùng ẩn danh";
+
+                const reviewItem = document.createElement("div");
+                reviewItem.classList.add("review-item");
+                reviewItem.innerHTML = `
+                    <div class="review-container">
+    <img class="review-avatar" src="${
+      review.avatar || "/img/avatar.png"
+    }" alt="Avatar">
+    <div class="review-content">
+        <div class="review-header">
+            <strong>${reviewerName}</strong>
+            <span class="rating">${"⭐".repeat(review.star || 0)}</span>
         </div>
+        <p class="review-comment">${review.comment || "Không có bình luận."}</p>
     </div>
 </div>
-</body>
-<script>
-document.getElementById("followBtn").addEventListener("click", async function () {
-    try {
-        const pathArray = window.location.pathname.split("/");
-        const followingId = pathArray[pathArray.length - 1]; 
-
-        if (!followingId) {
-            alert("Không tìm thấy ID người theo dõi");
-            return;
+                `;
+                reviewContainer.appendChild(reviewItem);
+              });
+            });
+          } catch (error) {
+            console.error("Lỗi khi lấy đánh giá:", error);
+          }
         }
 
-        const response = await fetch("/follow/", {
+        async function checkFollowStatus(followingId) {
+          try {
+            const response = await fetch(
+              `/follow/check-follow/${followingId}`,
+              {
+                credentials: "include",
+              }
+            );
+
+            if (!response.ok) throw new Error("Không thể kiểm tra trạng thái");
+
+            const data = await response.json();
+            updateFollowButton(data.isFollowing);
+          } catch (error) {
+            console.error("Lỗi khi kiểm tra trạng thái:", error);
+          }
+        }
+      });
+
+      function updateFollowButton(isFollowing) {
+        const followButton = document.getElementById("follow-button");
+        if (!followButton) return;
+
+        if (isFollowing) {
+          followButton.innerHTML = '<i class="fas fa-check"></i> Đang theo dõi';
+          followButton.classList.add("following");
+          followButton.style.backgroundColor = "#6c757d";
+        } else {
+          followButton.innerHTML = '<i class="fas fa-heart"></i> Theo dõi';
+          followButton.classList.remove("following");
+          followButton.style.backgroundColor = "#dc3545";
+        }
+      }
+
+      async function handleFollowAction() {
+        const followButton = document.getElementById("follow-button");
+        const followingId = followButton.dataset.id;
+        const isFollowing = followButton.classList.contains("following");
+
+        try {
+          followButton.disabled = true;
+          followButton.innerHTML =
+            '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
+
+          const endpoint = isFollowing ? "/follow/unfollower" : "/follow/";
+
+          const response = await fetch(endpoint, {
             method: "POST",
+            credentials: "include",
             headers: {
-                "Content-Type": "application/json",
+              "Content-Type": "application/json",
             },
             body: JSON.stringify({ followingId }),
+          });
+
+          const result = await response.json();
+
+          if (!response.ok) throw new Error(result.message || "Lỗi hệ thống");
+
+          // Cập nhật UI
+          updateFollowButton(!isFollowing);
+          alert(isFollowing ? "Bỏ theo dõi thành công" : "Theo dõi thành công");
+        } catch (error) {
+          alert(error.message);
+          console.error("Lỗi khi thao tác theo dõi:", error);
+        } finally {
+          followButton.disabled = false;
+        }
+      }
+
+      function toggleFavorite(button) {
+        if (button.textContent === "🤍") {
+          button.textContent = "❤️";
+        } else {
+          button.textContent = "🤍";
+        }
+      }
+
+      function openUserReportModal() {
+        document.getElementById("userReportModal").style.display = "flex";
+        const form = document.getElementById("userReportForm");
+        const customSection = document.getElementById("customReasonSection");
+        const reasonSelect = document.getElementById("reportReason");
+
+        // Xử lý hiển thị phần nhập lý do tùy chỉnh
+        reasonSelect.addEventListener("change", () => {
+          customSection.style.display =
+            reasonSelect.value === "other" ? "block" : "none";
         });
 
-        if (response.ok) {
-            this.textContent = "Đã theo dõi";
-            this.disabled = true; 
-        } else {
-            alert("Có lỗi xảy ra, vui lòng thử lại.");
+        form.onsubmit = async function (event) {
+          event.preventDefault();
+          const formData = new FormData(form);
+          const userId = window.location.pathname.split("/").pop();
+
+          formData.append("sellerId", userId);
+
+          try {
+            const response = await fetch(`/report/`, {
+              method: "POST",
+              body: formData,
+              credentials: "include",
+            });
+
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.message || "Lỗi hệ thống");
+
+            alert("Báo cáo thành công!");
+            form.reset();
+            closeUserReportModal();
+          } catch (error) {
+            alert(error.message);
+          }
+        };
+      }
+
+      function closeUserReportModal() {
+        document.getElementById("userReportModal").style.display = "none";
+      }
+
+      window.onclick = function (event) {
+        const modal = document.getElementById("userReportModal");
+        if (event.target === modal) {
+          closeUserReportModal();
         }
-    } catch (error) {
-        console.error("Lỗi:", error);
-    }
-});
+      };
 
-
-document.addEventListener("DOMContentLoaded", async function () {
-    try {
-        const pathArray = window.location.pathname.split("/");
-        const followingId = pathArray[pathArray.length - 1];
-
-        if (!followingId) return;
-
-        const response = await fetch(`/follow/check-follow/${followingId}`);
-        const data = await response.json();
-
-        if (data.isFollowing) {
-            const followBtn = document.getElementById("followBtn");
-            followBtn.textContent = "Đã theo dõi";
-            followBtn.disabled = true;
-            followBtn.classList.add("following");
-        }
-    } catch (error) {
-        console.error("Lỗi:", error);
-    }
-});
-</script>
+      document
+        .getElementById("reportReason")
+        .addEventListener("change", function () {
+          const customReason = document.getElementById("customReportReason");
+          const customLabel = document.getElementById("customReportLabel");
+          if (this.value === "other") {
+            customReason.style.display = "block";
+            customLabel.style.display = "block";
+          } else {
+            customReason.style.display = "none";
+            customLabel.style.display = "none";
+          }
+        });
+    </script>
+  </body>
 </html>
