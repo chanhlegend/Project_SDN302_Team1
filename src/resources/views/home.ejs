@@ -65,7 +65,7 @@
                 >
                   <div class="card">
                     <img
-                      src="<%= products[j].image.length > 0 ? products[j].image[0].url : '' %>"
+                    src="<%= products[j].image && products[j].image.length > 0 ? products[j].image[0].url : '/img/default.jpg' %>"
                       class="card-img-top"
                       alt="<%= products[j].name %>"
                     />

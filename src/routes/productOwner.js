@@ -8,5 +8,6 @@ router.get('/product/:userid',productOwnerController.listProductowner)
 router.get('/:userid/edit',productOwnerController.editProduct)
 router.put('/product/:productid',productOwnerController.update)
 router.delete('/product/:userid',productOwnerController.delete)
-
+router.get('/:userid' , productOwnerController.listProduct)
+router.get('/:userid/status', productOwnerController.listProductByStatus)
 module.exports = router;

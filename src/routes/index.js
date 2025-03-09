@@ -12,6 +12,8 @@ const productOwnerRouter = require('./productOwner')
 const testRouter = require('./test')
 const cartRouter = require('./cartRouter')
 const searchRouter = require('./search')
+const evaluateController = require('./evaluateRouter')
+
 
 function route(app) {
     app.use('/', siteRouter)
@@ -29,5 +31,6 @@ function route(app) {
     app.use('/test', testRouter)
     app.use('/cart', cartRouter)
     app.use('/search', searchRouter)
+    app.use('/evaluate', evaluateController)
 }
 module.exports = route

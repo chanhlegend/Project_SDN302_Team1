@@ -24,6 +24,11 @@ class UserProfileController {
                 if (!user) {
                     return res.status(404).json({ message: 'User not found' });
                 }
+    
+                if (req.xhr || req.headers["accept"].includes("application/json")) {
+                    return res.json(user); // Trả về toàn bộ thông tin user
+                }
+    
                 res.render('viewProfile', { 
                     user: mongoeseToObject(user),
                     messages: req.flash()
