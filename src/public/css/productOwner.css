@@ -52,7 +52,7 @@ thead {
 }
 
 .price-text {
-    color: red;
+    color: #666;
     font-weight: bold;
 }
 
@@ -75,4 +75,61 @@ thead {
     background-color: #a87252;
     color: white;
 }
+        /* CSS cho modal */
+        .modal {
+            display: none; /* Ẩn modal ban đầu */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Lớp nền mờ */
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
 
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            width: 300px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-content p {
+            margin: 0 0 20px;
+            font-size: 16px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .modal-buttons button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .modal-buttons .ok-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .modal-buttons .ok-btn:hover {
+            background-color: #45a049;
+        }
+
+        .modal-buttons .cancel-btn {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .modal-buttons .cancel-btn:hover {
+            background-color: #da190b;
+        }

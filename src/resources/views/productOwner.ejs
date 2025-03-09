@@ -66,13 +66,85 @@
         .modal-buttons .cancel-btn:hover {
             background-color: #da190b;
         }
+
+        /* Style cho liên kết Chỉnh sửa */
+        .edit-option a {
+            text-decoration: none;
+            color: #007BFF;
+        }
+
+        .edit-option a:hover {
+            text-decoration: underline;
+        }
+
+        /* CSS cho thanh điều hướng */
+        .navigation {
+            margin-bottom: 50px;
+            border-top: 2px solid #FFC107; /* Đường viền vàng trên cùng */
+        }
+
+        .grid {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            justify-content: center; /* Căn giữa các tab */
+            gap: 30px; /* Khoảng cách giữa các tab */
+        }
+
+        .grid-item {
+            padding: 10px 20px;
+            position: relative;
+            text-align: center;
+        }
+
+        .grid-item p {
+            margin: 0;
+            font-size: 16px;
+            color: #333; /* Màu chữ mặc định */
+            font-weight: 500;
+        }
+
+        .grid-item a {
+            text-decoration: none;
+        }
+
+        /* Tab đang được chọn (active) */
+        .grid-item.active {
+            border-bottom: 2px solid #FFC107; /* Đường viền vàng dưới tab đang chọn */
+        }
+
+        .grid-item.active p {
+            color: #000; /* Màu chữ của tab đang chọn */
+            font-weight: 700;
+        }
+
+        /* Hover effect */
+        .grid-item:hover p {
+            color: #000;
+        }
     </style>
 </head>
-<body>
+<body style="margin: 0;">
     <!-- Include Header -->
     <%- include('partials/header') %>
     <h1>Sale Detail</h1>
-
+    <div class="navigation" style="margin-bottom: 50px">
+        <div class="grid">
+            <a href="/productOwner/productSelled">
+                <div class="grid-item <%= currentTab === 'selled' ? 'active' : '' %>">
+                    <p>Đã Bán</p>
+                </div>
+            </a>
+            <a href="/productOwner/product" style="text-decoration: none">
+                <div class="grid-item <%= currentTab === 'active' ? 'active' : '' %>">
+                    <p>Đang Bán</p>
+                </div>
+            </a>
+            <div class="grid-item">
+                <p>Kiểm Duyệt</p>
+            </div>
+        </div>
+    </div>
     <% if (products.length > 0) { %>
         <table>
             <thead>
@@ -110,11 +182,11 @@
                             <div class="options-menu" id="options-menu">
                                 <div class="option-item delete-option">
                                     <i class="fa-solid fa-xmark"></i> 
-                                    <button type="button" onclick="openDeleteModal('<%= userId %>', '<%= product._id %>')">Xóa</button>
+                                    <button type="button" onclick="openDeleteModal('<%= product._id %>')">Xóa</button>
                                 </div>
                                 <div class="option-item edit-option">
                                     <i class="fa-solid fa-pen"></i> 
-                                    <a href="/productOwner/edit/<%= userId %>/<%= product._id %>">Chỉnh sửa</a>
+                                    <a href="/productOwner/edit/<%= product._id %>">Chỉnh sửa</a>
                                 </div>
                             </div>
                         </td>                                                                  
@@ -157,13 +229,11 @@
             });
         });
 
-        // Biến toàn cục để lưu userId và productId
-        let currentUserId = '';
+        // Biến toàn cục để lưu productId
         let currentProductId = '';
 
         // Mở modal khi nhấp vào "Xóa"
-        function openDeleteModal(userId, productId) {
-            currentUserId = userId;
+        function openDeleteModal(productId) {
             currentProductId = productId;
             document.getElementById('deleteModal').style.display = 'flex';
         }
@@ -177,7 +247,7 @@
         function confirmDelete() {
             const form = document.createElement('form');
             form.method = 'POST';
-            form.action = `/product/${currentUserId}/${currentProductId}?_method=DELETE`;
+            form.action = `/productOwner/delete/${currentProductId}?_method=DELETE`;
             const methodInput = document.createElement('input');
             methodInput.type = 'hidden';
             methodInput.name = '_method';
@@ -188,5 +258,6 @@
             closeModal(); // Đóng modal sau khi gửi
         }
     </script>    
+    <%- include('partials/footer') %>
 </body>
 </html>
