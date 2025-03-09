@@ -50,6 +50,7 @@
       .product img {
         max-width: 100%;
         height: auto;
+        max-height: 500px;
       }
       .product-details {
         flex: 1;
@@ -151,6 +152,19 @@
           padding: 10px;
         }
       }
+      .chat-with-seller {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        margin-top: 10px;
+      }
+      .chat-with-seller:hover {
+        background-color: #0056b3;
+        color: white;
+      }
     </style>
   </head>
   <body>
@@ -240,6 +254,11 @@
             </form>
             
           </div>
+          <div class="chat-section">
+            <!-- Trong productDetail.ejs -->
+            <a href="/chat/start/<%= product.sellerId._id %>" class="btn btn-primary">Chat với người bán</a>
+            </a>
+          </div>
         </div>
       </div>
     </div>
@@ -250,5 +269,10 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+      function startChat(sellerId) {
+          window.location.href = `/chat/start/${sellerId}`;
+      }
+  </script>
   </body>
 </html>

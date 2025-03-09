@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Tracking</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="bg-gray-100">
+    <%- include('partials/header') %>
+    <div class="bg-white shadow-sm">
+        <div class="flex justify-between items-center border-b border-gray-200">
+            <% let tabs = ["Tất cả", "Đang duyệt", "Đang đóng gói", "Vận chuyển", "Hoàn thành", "Đã hủy"]; %>
+            <% tabs.forEach((tab, index) => { %>
+                <a href="#" class="nav-link <%= select == index ? 'active' : '' %> py-4 flex-1 text-center"
+                   data-index="<%= index %>"><%= tab %></a>
+            <% }); %>
+        </div>
+    </div>
+
+    <div class="bg-gray-100 p-4">
+        <div class="bg-white flex items-center p-2 rounded shadow-sm mb-4">
+            <i class="fas fa-search text-gray-400 mr-2"></i>
+            <input type="text" id="search-input" placeholder="Tìm theo tên Shop, ID đơn hàng hoặc Tên Sản phẩm" 
+                   class="w-full border-none focus:outline-none text-gray-500">
+        </div>
+
+        <div class="bg-white p-4 rounded shadow-sm">
+            <table class="min-w-full bg-white">
+                <thead>
+                    <tr>
+                        <th class="py-2 px-4 border-b border-gray-200">ID</th>
+                        <th class="py-2 px-4 border-b border-gray-200">Sản phẩm</th>
+                        <th class="py-2 px-4 border-b border-gray-200">Đơn giá</th>
+                        <th class="py-2 px-4 border-b border-gray-200">Chi tiết</th>
+                    </tr>
+                </thead>
+                <tbody id="order-list">
+                    <tr><td colspan="4" class="text-center py-4 text-gray-500">Chọn trạng thái để xem đơn hàng</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <%- include('partials/footer') %>
+
+    <script src="/js/orderTracking.js"></script>
+</body>
+</html>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    const navLinks = document.querySelectorAll(".nav-link");
+
+    // Gán sự kiện cho tất cả các tab
+    navLinks.forEach(link => {
+        link.addEventListener("click", function (event) {
+            event.preventDefault();
+            const selectedIndex = this.getAttribute("data-index");
+            updateOrders(selectedIndex);
+        });
+    });
+
+    // Hàm gọi API để lấy danh sách đơn hàng
+    function updateOrders(select) {
+        fetch('/orderTracking/list', {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ select })
+        })
+        .then(response => response.json())
+        .then(data => {
+            const orderList = document.getElementById("order-list");
+            orderList.innerHTML = "";
+
+            if (data.orders.length === 0) {
+                orderList.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-gray-500">${data.message}</td></tr>`;
+                return;
+            }
+
+            data.orders.forEach(order => {
+                const products = order.product.map(p => `
+                    <div class="flex items-center space-x-2">
+                        <img src="${p.image}" alt="${p.productName}" class="w-12 h-12 object-cover">
+                        <span>${p.productName}</span>
+                    </div>
+                `).join("");
+
+                orderList.innerHTML += `
+                    <tr>
+                        <td class="py-2 px-4 border-b border-gray-200">${order._id}</td>
+                        <td class="py-2 px-4 border-b border-gray-200">${products}</td>
+                        <td class="py-2 px-4 border-b border-gray-200">${order.totalPrice.toLocaleString()} VND</td>
+                        <td class="py-2 px-4 border-b border-gray-200 text-center">
+                            <i class="fas fa-eye cursor-pointer" onclick="viewDetails('${order._id}')"></i>
+                        </td>
+                    </tr>
+                `;
+            });
+        })
+        .catch(error => console.error("Lỗi khi tải đơn hàng:", error));
+    }
+
+    // Hàm xem chi tiết đơn hàng
+    window.viewDetails = function (id) {
+        alert(`Xem chi tiết đơn hàng ID: ${id}`);
+    };
+});
+
+</script>

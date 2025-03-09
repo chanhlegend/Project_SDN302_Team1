@@ -48,24 +48,22 @@ class cartController {
         const userId = req.session.user._id;
         const cart = await Cart.findOne({ userId });
 
-        // Nếu giỏ hàng không có hoặc không có sản phẩm, hiển thị thông báo
-        if (!cart || !cart.products || cart.products.length === 0) {
-            const message = "Giỏ hàng của bạn hiện tại đang trống!";
-            return res.render('cart', { cart: { quantity: 0, message }, cartItems: [], message, categories: [] });
-        }
-
-        const categories = await Category.find().sort({ createdAt: -1 });
-
-        // Kiểm tra nếu có sản phẩm, mới truy vấn Product.find()
+        let message = "Giỏ hàng của bạn hiện tại đang trống!";
         let cartItems = [];
-        if (cart.products.length > 0) {
-            cartItems = await Product.find({ 
+        let categories = await Category.find().sort({ createdAt: -1 });
+
+        if (cart && cart.products && cart.products.length > 0) {
+            cartItems = await Product.find({
                 _id: { $in: cart.products },
                 status: { $ne: "sold" }  
             }).populate('sellerId', 'name');
+
+            if (cartItems.length > 0) {
+                message = "";
+            }
         }
 
-        res.render('cart', { cart, cartItems, categories });
+        res.render('cart', { cart, cartItems, message, categories });
     } catch (err) {
         console.error("Lỗi khi lấy giỏ hàng:", err);
         res.status(500).json({ error: "Lỗi server, thử lại sau" });

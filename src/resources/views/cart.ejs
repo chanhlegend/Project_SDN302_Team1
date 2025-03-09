@@ -87,11 +87,12 @@
     <%- include('partials/header') %>
         <div class="container mx-auto p-4">
             <div class="overflow-x-auto">
-                <% if (cartItems.length===0 && message) { %>
+                <% if (cartItems.length === 0) { %>
                     <div class="bg-yellow-200 text-yellow-700 p-4 rounded mb-4">
                         <%= message %>
                     </div>
-                    <% } %>
+                <% } %>
+                
                         <table class="min-w-full bg-white border">
                             <thead>
                                 <tr class="w-full bg-gray-100 border-b">
@@ -169,9 +170,9 @@
                 <!-- Cột 2: Nút Xóa Sản Phẩm -->
                 <div class="w-1/5 bg-white p-4 shadow rounded">
                     <form action="/cart/remove" method="POST" id="delete-form">
-                        <input type="hidden" name="productIds" id="selected-products" value="" />
+                        <input type="hidden" name="productIds" id="selected-products-delete" value="" />
                         <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded w-full">
-                            Xóa
+                            Xóa mục đã chọn
                         </button>
                     </form>
                 </div>
@@ -188,12 +189,12 @@
                     <div class="flex justify-between mb-2">
                         <strong>Tổng tiền: <span id="total-price">0 VND</span></strong>
                     </div>
-                    <form action="/checkout" method="POST" >
+                    <form action="/checkout" method="POST" id="checkout-form">
+                        <input type="hidden" name="productIds" id="selected-products-checkout" value="" />
                         <button type="submit" class="bg-black text-white w-full py-2 mt-2">
-                            PROCEED TO CHECKOUT
+                            Thanh toán mục đã chọn
                         </button>
                     </form>
-                    
                 </div>
 
             </div>
@@ -207,9 +208,11 @@
                 const itemCheckboxes = document.querySelectorAll(".checkbox-item:not(#select-all)");
                 const totalPriceElement = document.getElementById("total-price");
                 const totalCountElement = document.getElementById("total-count");
-                const deleteForm = document.getElementById("delete-form");
-                const selectedProductsInput = document.getElementById("selected-products");
 
+                const selectedProductsInputCheckout = document.getElementById("selected-products-checkout");
+                const selectedProductsInputDelete = document.getElementById("selected-products-delete");
+
+                // Hàm cập nhật giá trị cho cả hai form và hiển thị tổng tiền và số lượng
                 function updateTotal() {
                     let selectedProducts = [];
                     let totalPrice = 0;
@@ -220,25 +223,31 @@
                         if (checkbox.checked) {
                             selectedProducts.push(checkbox.value);
                             const price = parseFloat(checkbox.getAttribute("data-price")) || 0;
-                            totalPrice += price;
-                            totalCount += 1;
+                            totalPrice += price;  // Cộng dồn tổng tiền
+                            totalCount += 1;  // Cộng dồn số lượng sản phẩm đã chọn
 
                             if (!addedBonus) {
-                                totalPrice += 7000; 
+                                totalPrice += 7000;  // Giả sử có một khoản phí shipping
                                 addedBonus = true;
                             }
                         }
                     });
 
-                    // Cập nhật giá trị input ẩn với danh sách productId đã chọn (dạng JSON)
-                    selectedProductsInput.value = JSON.stringify(selectedProducts);
+                    // Cập nhật giá trị cho cả hai trường input ẩn
+                    selectedProductsInputCheckout.value = JSON.stringify(selectedProducts);
+                    selectedProductsInputDelete.value = JSON.stringify(selectedProducts);
 
-                    // Cập nhật tổng tiền và số lượng sản phẩm
+                    // Hiển thị tổng tiền và số lượng sản phẩm vào các phần tử HTML
                     totalPriceElement.innerText = totalPrice.toLocaleString() + " VND";
                     totalCountElement.innerText = totalCount.toLocaleString();
                 }
 
-                // Khi nhấn "Chọn tất cả", chọn hoặc bỏ chọn tất cả sản phẩm
+                // Cập nhật khi người dùng chọn hoặc bỏ chọn checkbox
+                itemCheckboxes.forEach((checkbox) => {
+                    checkbox.addEventListener("change", updateTotal);
+                });
+
+                // Cập nhật khi checkbox "Chọn tất cả" thay đổi
                 selectAllCheckbox.addEventListener("change", function () {
                     itemCheckboxes.forEach((checkbox) => {
                         checkbox.checked = selectAllCheckbox.checked;
@@ -246,18 +255,20 @@
                     updateTotal();
                 });
 
-                // Khi một checkbox sản phẩm thay đổi, kiểm tra trạng thái "Chọn tất cả"
-                itemCheckboxes.forEach((checkbox) => {
-                    checkbox.addEventListener("change", function () {
-                        selectAllCheckbox.checked = [...itemCheckboxes].every((cb) => cb.checked);
-                        updateTotal();
-                    });
+                // Kiểm tra trước khi submit form checkout
+                const checkoutForm = document.getElementById("checkout-form");
+                checkoutForm.addEventListener("submit", function (event) {
+                    if (!selectedProductsInputCheckout.value || selectedProductsInputCheckout.value === "[]") {
+                        event.preventDefault();
+                        alert("Vui lòng chọn ít nhất một sản phẩm để tiếp tục!");
+                    }
                 });
 
-                // Kiểm tra giá trị trước khi submit form
+                // Kiểm tra trước khi submit form xóa sản phẩm
+                const deleteForm = document.getElementById("delete-form");
                 deleteForm.addEventListener("submit", function (event) {
-                    if (!selectedProductsInput.value || selectedProductsInput.value === "[]") {
-                        event.preventDefault(); // Ngăn submit nếu không có sản phẩm nào được chọn
+                    if (!selectedProductsInputDelete.value || selectedProductsInputDelete.value === "[]") {
+                        event.preventDefault();
                         alert("Vui lòng chọn ít nhất một sản phẩm để xóa!");
                     }
                 });
