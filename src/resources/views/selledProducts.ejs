@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh Sách Sản Phẩm Đã Bán</title>
+    <link rel="stylesheet" href="/css/productOwner.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+    <!-- Include Header -->
+    <%- include('partials/header') %>
+    <h1>Danh Sách Sản Phẩm Đã Bán</h1>
+
+    <% if (products.length > 0) { %>
+        <table>
+            <thead>
+                <tr>
+                    <th>Sản Phẩm</th>
+                    <th>Mô Tả</th>
+                    <th>Giá</th>
+                    <th>Thời Gian</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% products.forEach(product => { %>
+                    <tr>
+                        <td class="product-info">
+                            <img 
+                                src="<%= product.image && product.image.length > 0 ? product.image[0].url : '/default-image.jpg' %>" 
+                                alt="<%= product.productName %>" 
+                                class="product-image"
+                            >
+                            <div>
+                                <span class="product-name"><%= product.productName %></span>
+                                <br>
+                            </div>
+                        </td>     
+                        <td class="product-description"><%= product.description %></td>                   
+                        <td class="product-price">
+                            <span class="price-text"><%= product.price.toLocaleString() %> VND</span>
+                        </td>
+                        <td class="product-time"> 
+                            <%= new Date(product.createdAt).toLocaleString('vi-VN') %>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>                       
+    <% } else { %>
+        <p>Không có sản phẩm nào đã bán.</p>
+    <% } %>
+</body>
+</html>
