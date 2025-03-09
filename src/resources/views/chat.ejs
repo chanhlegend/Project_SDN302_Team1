@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/header.module.css">
+    <style>
+       /* Container chính */
+.chat-container {
+    display: flex;
+    max-width: 1000px;
+    margin: 20px auto;
+    background-color: #e8d9b8; /* Parchment-like background */
+    border: 2px solid #8b6f47;
+    border-radius: 10px;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+/* Contact List (Bên trái) */
+.contact-list {
+    width: 30%; /* Chiếm 30% chiều rộng */
+    background-color: #d9c4a1;
+    border-right: 1px solid #8b6f47;
+    padding: 10px;
+    overflow-y: auto; /* Cuộn nếu danh sách dài */
+}
+
+.contact-list h5 {
+    font-family: 'Garamond', serif;
+    font-size: 1.5em;
+    color: #6b4e31;
+    border-bottom: 2px dashed #8b6f47;
+    padding-bottom: 5px;
+    text-align: center;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin: 5px 0;
+    background-color: #f0e4c9;
+    border: 1px solid #c9b489;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.contact-item:hover, .contact-item.active {
+    background-color: #d9b88b;
+}
+
+.contact-item img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #8b6f47;
+    margin-right: 10px;
+}
+
+.contact-item span {
+    font-family: 'Garamond', serif;
+    font-size: 1.1em;
+    color: #4a3c31;
+}
+
+/* Chat Area (Bên phải) */
+.chat-area {
+    width: 70%; /* Chiếm 70% chiều rộng */
+    background-color: #fff5e6;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-header h3 {
+    font-family: 'Garamond', serif;
+    font-size: 1.8em;
+    color: #6b4e31;
+    border-bottom: 1px solid #8b6f47;
+    padding-bottom: 10px;
+    text-align: center;
+}
+
+.chat-messages {
+    flex: 1;
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 10px;
+    background: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
+    border: 1px solid #c9b489;
+    border-radius: 5px;
+}
+
+.message {
+    margin: 10px 0;
+    padding: 10px;
+    max-width: 70%;
+    border-radius: 8px;
+    font-family: 'Garamond', serif;
+}
+
+.message.sent {
+    background-color: #d9b88b;
+    margin-left: auto;
+    border: 1px solid #8b6f47;
+}
+
+.message.received {
+    background-color: #e8d9b8;
+    margin-right: auto;
+    border: 1px solid #c9b489;
+}
+
+.message small {
+    font-size: 0.8em;
+    color: #8b6f47;
+    margin-top: 5px;
+}
+
+.chat-input {
+    display: flex;
+    margin-top: 20px;
+}
+
+#messageInput {
+    flex: 1;
+    background-color: #fff5e6;
+    border: 1px solid #8b6f47;
+    border-radius: 5px 0 0 5px;
+    padding: 10px;
+    font-family: 'Garamond', serif;
+    color: #4a3c31;
+}
+
+#sendMessage {
+    background-color: #6b4e31;
+    border: 1px solid #8b6f47;
+    border-radius: 0 5px 5px 0;
+    color: #fff5e6;
+    padding: 6px 20px;
+    font-family: 'Garamond', serif;
+}
+
+#sendMessage:hover {
+    background-color: #8b6f47;
+}
+
+.text-center.mt-5 {
+    font-family: 'Garamond', serif;
+    color: #8b6f47;
+    font-size: 1.2em;
+    font-style: italic;
+}
+    </style>
+</head>
+<body>
+    <%- include('partials/header') %>
+    <div class="chat-container">
+        <div class="contact-list" id="contactList">
+            <h5 class="p-2">Khách Hàng</h5>
+            <% if (conversations && Array.isArray(conversations)) { %>
+                <% conversations.forEach(conversation => { %>
+                    <% if (conversation.participants && Array.isArray(conversation.participants)) { %>
+                        <% conversation.participants.forEach(participant => { %>
+                            <% if (participant.userId && participant.userId._id && participant.userId._id.toString() !== currentUser._id.toString()) { %>
+                                <div class="contact-item <%= selectedConversationId && selectedConversationId === conversation._id.toString() ? 'active' : '' %>" data-conversation-id="<%= conversation._id %>">
+                                    <img src="<%= participant.userId.avatar || '/default-avatar.png' %>" alt="<%= participant.userId.name || 'User' %>">
+                                    <span><%= participant.userId.name || 'Unknown' %></span>
+                                </div>
+                            <% } %>
+                        <% }); %>
+                    <% } %>
+                <% }); %>
+            <% } else { %>
+                <div class="p-2 text-muted">Không có cuộc trò chuyện nào.</div>
+            <% } %>
+        </div>
+        <div class="chat-area">
+            <% if (selectedConversationId) { %>
+                <div class="chat-header">
+                    <h3>
+                        <% if (conversations && Array.isArray(conversations)) { %>
+                            <% conversations.forEach(conversation => { %>
+                                <% if (conversation._id.toString() === selectedConversationId) { %>
+                                    <% if (conversation.participants && Array.isArray(conversation.participants)) { %>
+                                        <% conversation.participants.forEach(participant => { %>
+                                            <% if (participant.userId && participant.userId._id && participant.userId._id.toString() !== currentUser._id.toString()) { %>
+                                                <%= participant.userId.name || 'Unknown' %>
+                                            <% } %>
+                                        <% }); %>
+                                    <% } %>
+                                <% } %>
+                            <% }); %>
+                        <% } %>
+                    </h3>
+                </div>
+                <div class="chat-messages" id="chatMessages">
+                    <% if (messages && Array.isArray(messages)) { %>
+                        <% messages.forEach(message => { %>
+                            <div class="message <%= message.senderId && message.senderId._id && message.senderId._id.toString() === currentUser._id.toString() ? 'sent' : 'received' %>">
+                                <div class="content"><%= message.messageContent || '' %></div>
+                                <small><%= message.createdAt ? new Date(message.createdAt).toLocaleString() : '' %></small>
+                            </div>
+                        <% }); %>
+                    <% } %>
+                </div>
+                <div class="chat-input">
+                    <input type="text" id="messageInput" class="form-control" placeholder="Write message...">
+                    <button id="sendMessage" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Send</button>
+                </div>
+                <div id="errorMessage" class="error-message"></div>
+            <% } else { %>
+                <div class="text-center mt-5">Chọn một khách hàng để bắt đầu trò chuyện</div>
+            <% } %>
+        </div>
+    </div>
+    <%- include('partials/footer') %>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const socket = window.appSocket; // Sử dụng socket từ socket.js
+            const userId = '<%= currentUser && currentUser._id ? currentUser._id : "" %>';
+            let currentConversationId = '<%= selectedConversationId || "" %>';
+
+            // Xử lý chat-specific
+            document.querySelectorAll('.contact-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    currentConversationId = item.getAttribute('data-conversation-id');
+                    if (currentConversationId) {
+                        window.location.href = `/chat/${currentConversationId}`;
+                    }
+                });
+            });
+
+            document.getElementById('sendMessage')?.addEventListener('click', () => {
+                const messageContent = document.getElementById('messageInput').value;
+                const errorMessageDiv = document.getElementById('errorMessage');
+                errorMessageDiv.textContent = '';
+
+                if (!messageContent.trim()) {
+                    errorMessageDiv.textContent = 'Vui lòng nhập nội dung tin nhắn.';
+                    return;
+                }
+
+                if (!currentConversationId) {
+                    errorMessageDiv.textContent = 'Không thể gửi tin nhắn: Cuộc trò chuyện không tồn tại.';
+                    return;
+                }
+
+                const receiverId = '<%= conversations && Array.isArray(conversations) && selectedConversationId ? (conversations.find(c => c._id && c._id.toString() === selectedConversationId)?.participants?.find(p => p.userId && p.userId._id && p.userId._id.toString() !== currentUser._id.toString())?.userId?._id || "") : "" %>';
+
+                if (!receiverId) {
+                    errorMessageDiv.textContent = 'Không thể gửi tin nhắn: Không tìm thấy người nhận.';
+                    return;
+                }
+
+                socket.emit('sendMessage', {
+                    conversationId: currentConversationId,
+                    senderId: userId,
+                    receiverId: receiverId,
+                    messageContent: messageContent
+                });
+                document.getElementById('messageInput').value = '';
+            });
+
+            socket.on('receiveMessage', (data) => {
+                if (data.conversationId === currentConversationId) {
+                    const chatMessages = document.getElementById('chatMessages');
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = `message ${data.senderId === userId ? 'sent' : 'received'}`;
+                    messageDiv.innerHTML = `
+                        <div class="content">${data.messageContent}</div>
+                        <small>${new Date(data.createdAt).toLocaleString()}</small>
+                    `;
+                    chatMessages.appendChild(messageDiv);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }
+            });
+
+            socket.on('error', (data) => {
+                const errorMessageDiv = document.getElementById('errorMessage');
+                errorMessageDiv.textContent = data.message;
+            });
+        });
+    </script>
+</body>
+</html>

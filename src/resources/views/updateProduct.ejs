@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Product</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+    <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <style>
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .image-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .image-item {
+            position: relative;
+            display: inline-block;
+        }
+        .image-item img {
+            max-width: 100px;
+            border-radius: 4px;
+        }
+        .image-item .delete-btn {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: red;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            text-align: center;
+            line-height: 20px;
+        }
+        .submit-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .submit-btn:hover {
+            background-color: #45a049;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 10px;
+            color: #007BFF;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Update Product</h2>
+        <form action="/productOwner/update/<%= product._id %>?_method=PUT" method="POST" id="productForm">
+            <!-- Sử dụng method-override để giả lập PUT -->
+            <input type="hidden" name="_method" value="PUT">
+            <input type="hidden" name="userId" value="<%= userId %>">
+            <!-- Lưu dữ liệu product.image vào data attribute -->
+            <div id="imageData" data-images="<%= JSON.stringify(product.image || []) %>" style="display: none;"></div>
+            
+            <div class="form-group">
+                <label for="productName">Product Name:</label>
+                <input type="text" id="productName" name="productName" value="<%= product.productName %>" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="price">Price:</label>
+                <input type="number" id="price" name="price" value="<%= product.price %>" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <textarea id="description" name="description"><%= product.description %></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="category">Category:</label>
+                <select id="category" name="category" required>
+                    <option value="">--Chọn danh mục--</option>
+                    <% categories.forEach(category => { %>
+                        <option value="<%= category._id %>" <%= product.category.toString() === category._id.toString() ? 'selected' : '' %>>
+                            <%= category.name %>
+                        </option>
+                    <% }); %>
+                </select>
+            </div>
+
+            <!-- Hiển thị ảnh hiện tại -->
+            <div class="form-group">
+                <label>Current Images:</label>
+                <div id="currentImages" class="image-container">
+                    <% if (product.image && product.image.length > 0) { %>
+                        <% product.image.forEach((img, index) => { %>
+                            <% if (img && img.url) { %>
+                                <div class="image-item" data-index="<%= index %>">
+                                    <img src="<%= img.url %>" alt="Current image">
+                                    <button type="button" class="delete-btn" onclick="deleteCurrentImage(this)">X</button>
+                                    <input type="hidden" name="currentImageUrls[]" value="<%= img.url %>">
+                                </div>
+                            <% } %>
+                        <% }); %>
+                    <% } else { %>
+                        <p>No images currently</p>
+                    <% } %>
+                </div>
+            </div>
+
+            <!-- Upload ảnh mới -->
+            <div class="form-group">
+                <label>Upload New Images (Max 6 total):</label>
+                <input type="hidden" id="newImageUrls" name="newImageUrls" value="">
+                <button type="button" onclick="openCloudinaryWidget()">Upload New Images</button>
+                <div id="imagePreview" class="image-container"></div>
+            </div>
+
+            <button type="submit" class="submit-btn">Update Product</button>
+        </form>
+        <a href="/productOwner/product/<%= userId %>" class="back-link">Back to Product List</a>
+    </div>
+
+    <script type="text/javascript">
+        // Lấy dữ liệu từ data attribute
+        let rawImageData = document.getElementById('imageData').dataset.images;
+        let parsedImageData = [];
+        try {
+            parsedImageData = JSON.parse(rawImageData);
+        } catch (e) {
+            console.error("Error parsing rawImageData:", e);
+            parsedImageData = [];
+        }
+
+        // Initialize currentImageUrls in JavaScript with proper validation
+        let currentImageUrls = [];
+        if (Array.isArray(parsedImageData)) {
+            currentImageUrls = parsedImageData
+                .filter(img => img && typeof img.url === 'string' && img.url.trim() !== '')
+                .map(img => img.url);
+        }
+
+        let newImageUrls = [];
+
+        function openCloudinaryWidget() {
+            const totalImages = currentImageUrls.length + newImageUrls.length;
+            const remainingSlots = 6 - totalImages;
+            if (remainingSlots <= 0) {
+                toastr.error("You have reached the maximum limit of 6 images.");
+                return;
+            }
+
+            cloudinary.openUploadWidget({
+                cloud_name: 'dqncabikk',
+                upload_preset: 'test123',
+                theme: 'minimal',
+                multiple: true,
+                max_files: remainingSlots
+            }, (error, result) => {
+                if (!error && result && result.event === "success") {
+                    newImageUrls.push(result.info.secure_url);
+                    updateImagePreview();
+                    document.getElementById("newImageUrls").value = JSON.stringify(newImageUrls);
+                    toastr.success("Image uploaded successfully!");
+                } else if (error) {
+                    console.error("Upload error:", error);
+                    toastr.error("Error uploading images: " + error.message);
+                }
+            });
+        }
+
+        function updateImagePreview() {
+            const previewContainer = document.getElementById("imagePreview");
+            previewContainer.innerHTML = '';
+            newImageUrls.forEach((url, index) => {
+                const imgElement = document.createElement('div');
+                imgElement.className = 'image-item';
+                imgElement.innerHTML = `
+                    <img src="${url}" alt="New image ${index + 1}">
+                    <button type="button" class="delete-btn" onclick="deleteNewImage(${index})">X</button>
+                `;
+                previewContainer.appendChild(imgElement);
+            });
+        }
+
+        function deleteCurrentImage(buttonElement) {
+            const index = parseInt(buttonElement.closest('.image-item').getAttribute('data-index'));
+            currentImageUrls.splice(index, 1);
+            updateCurrentImages();
+        }
+
+        function deleteNewImage(index) {
+            newImageUrls.splice(index, 1);
+            updateImagePreview();
+            document.getElementById("newImageUrls").value = JSON.stringify(newImageUrls);
+        }
+
+        function updateCurrentImages() {
+            const currentImagesContainer = document.getElementById("currentImages");
+            currentImagesContainer.innerHTML = '';
+            if (currentImageUrls.length > 0) {
+                currentImageUrls.forEach((url, index) => {
+                    const imgElement = document.createElement('div');
+                    imgElement.className = 'image-item';
+                    imgElement.setAttribute('data-index', index);
+                    imgElement.innerHTML = `
+                        <img src="${url}" alt="Current image">
+                        <button type="button" class="delete-btn" onclick="deleteCurrentImage(this)">X</button>
+                        <input type="hidden" name="currentImageUrls[]" value="${url}">
+                    `;
+                    currentImagesContainer.appendChild(imgElement);
+                });
+            } else {
+                currentImagesContainer.innerHTML = '<p>No images currently</p>';
+            }
+        }
+
+        // Khởi tạo giao diện ảnh hiện tại khi trang tải
+        updateCurrentImages();
+
+        document.getElementById('productForm').addEventListener('submit', (e) => {
+            const totalImages = currentImageUrls.length + newImageUrls.length;
+            if (totalImages > 6) {
+                e.preventDefault();
+                toastr.error("Maximum 6 images allowed.");
+            }
+            if (totalImages === 0) {
+                e.preventDefault();
+                toastr.error("At least one image is required.");
+            }
+        });
+    </script>
+</body>
+</html>

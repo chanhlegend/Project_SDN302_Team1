@@ -1,104 +1,135 @@
-/* General Reset */
-body, h1, p {
-    margin: 0;
-    padding: 0;
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-    font-family: Arial, sans-serif;
-}
-
-/* Header Styles */
-.logo {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.logo img {
-    width: 50px; /* Adjust based on your logo's size */
-    height: auto;
-    margin-right: 10px;
-}
-
-h1 {
-    font-size: 24px;
-    color: #3E3E3E; /* Adjust based on your color choice */
-}
-
-/* Left Section */
-.left {
-    width: 30%; /* Adjust as needed */
-    float: left;
-}
-
-.left img {
-    width: 100%;
-    height: auto;
-}
-
-.left p {
-    font-size: 16px;
-    color: #666; /* Adjust based on your color choice */
-    margin-top: 10px;
-}
-
-/* Right Section */
-.right {
-    width: 70%; /* Adjust as needed */
-    float: right;
-}
-
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
-    background-color: #f9f9f9; /* Table background color */
+    font-family: Arial, sans-serif;
+    border: none; /* Loại bỏ viền bảng */
 }
-
+h1{
+    text-align: center;
+    font-weight: bold;
+    padding: 10px;
+}
 th, td {
     padding: 10px;
     text-align: left;
-    border: 1px solid #ddd;
+    border: none; /* Loại bỏ viền ô */
 }
 
-th {
-    background-color: #f2f2f2; /* Header background color */
-    color: #333;
+thead {
+    background-color: #f5f5f5;
+    font-weight: bold;
 }
 
-tr:hover {
-    background-color: #f1f1f1; /* Row hover color */
+.product-info {
+    display: flex;
+    align-items: center;
 }
 
-/* Footer Styles */
-footer {
-    margin-top: 20px;
-    padding-top: 10px;
-    border-top: 1px solid #ddd;
-    text-align: center;
+.product-image {
+    width: 60px;
+    height: 60px;
+    margin-right: 10px;
+    border-radius: 8px; /* Làm mềm góc ảnh */
 }
 
-/* Button Styles */
-button {
-    background-color: #ff5a5f; /* Button color */
-    color: white; /* Text color */
-    border: none;
-    padding: 10px 15px;
+.product-name {
+    font-weight: bold;
+    display: block;
+}
+
+.seller-info {
+    font-size: 12px;
+    color: #666;
+}
+
+.product-description {
+    color: #666;
+    font-size: 14px;
+}
+.product-time{
+    color: #666;
+    font-size: 14px;
+}
+
+.price-text {
+    color: #666;
+    font-weight: bold;
+}
+
+.options-menu {
+    display: none;
+    position: absolute;
+    background-color: #c28f6e;
+    padding: 8px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    right: 10px;
+}
+
+.options-menu .option-item {
+    padding: 5px 10px;
     cursor: pointer;
-    border-radius: 5px; /* Rounded borders */
 }
 
-button:hover {
-    background-color: #ff2e2f; /* Button hover color */
+.options-menu .option-item:hover {
+    background-color: #a87252;
+    color: white;
 }
+        /* CSS cho modal */
+        .modal {
+            display: none; /* Ẩn modal ban đầu */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Lớp nền mờ */
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
 
-/* Clear floats */
-.container::after {
-    content: "";
-    display: table;
-    clear: both;
-}
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            width: 300px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-content p {
+            margin: 0 0 20px;
+            font-size: 16px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .modal-buttons button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .modal-buttons .ok-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .modal-buttons .ok-btn:hover {
+            background-color: #45a049;
+        }
+
+        .modal-buttons .cancel-btn {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .modal-buttons .cancel-btn:hover {
+            background-color: #da190b;
+        }

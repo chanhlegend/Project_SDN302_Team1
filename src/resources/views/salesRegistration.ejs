@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng ký bán hàng</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <style>
+      .register-form {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      .container-form {
+        background-color: white;
+        width: 80%;
+        max-width: 800px;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 80vh;
+      }
+      .header-form {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        margin-bottom: 20px;
+      }
+      .header-form img {
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        margin-bottom: 10px;
+      }
+      .header-form h2 {
+        margin: 0;
+        font-size: 1.5em;
+      }
+      .content {
+        font-size: 14px;
+        line-height: 1.6;
+        color: #333;
+        max-height: 300px;
+        overflow-y: auto;
+        padding-right: 10px;
+      }
+      .content::-webkit-scrollbar {
+        width: 10px;
+      }
+      .content::-webkit-scrollbar-thumb {
+        background-color: #ccc;
+        border-radius: 5px;
+      }
+      .footer {
+        margin-top: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+      }
+      .footer input[type="checkbox"] {
+        margin-right: 10px;
+      }
+      .footer a {
+        color: #007bff;
+        text-decoration: none;
+      }
+      .footer a:hover {
+        text-decoration: underline;
+      }
+      .footer button {
+        background-color: #d89b72;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+      .footer button:hover {
+        background-color: #c07d56;
+      }
+      #registerButton:disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+      }
+    </style>
+  </head>
+  <body style="margin: 0">
+    <!-- Include Header -->
+    <%- include('partials/header') %>
+    <div class="register-form">
+      <div class="container-form">
+        <div class="header-form">
+          <img
+            src="<%= user.avatar %>"
+            alt="Profile picture of Kaneshiro"
+            width="60"
+            height="60"
+          />
+          <h2><%= user.name %></h2>
+        </div>
+        <div class="content">
+          <p>Chính sách bảo mật của ECOHAND</p>
+          <p>
+            Công ty TNHH ECO HAND tôn trọng và cam kết bảo vệ dữ liệu cá nhân
+            của người dùng. Chúng tôi cam kết sẽ thực hiện các biện pháp liên
+            quan để bảo vệ dữ liệu cá nhân của người dùng tuân theo các quy định
+            pháp luật áp dụng về bảo mật thông tin/dữ liệu cá nhân. Chính sách
+            bảo mật này được lập nhằm quy định cách thức chúng tôi thu thập, sử
+            dụng, tiết lộ, lưu trữ và/hoặc xử lý dữ liệu bạn truy cập vào
+            website, ứng dụng ECO HAND trên nền tảng iOS và Android hoặc các
+            dịch vụ khác của chúng tôi tại các trang web liên quan khác.
+          </p>
+          <p>
+            Bằng việc sử dụng các Dịch vụ, đăng ký Tài khoản với chúng tôi
+            và/hoặc truy cập Nền tảng của chúng tôi, bạn xác nhận và đồng ý cho
+            phép chúng tôi thu thập, sử dụng, tiết lộ và/hoặc xử lý dữ liệu cá
+            nhân của bạn như quy định trong Chính sách này. NẾU BẠN KHÔNG ĐỒNG Ý
+            CHO PHÉP XỬ LÝ DỮ LIỆU CỦA BẠN NHƯ QUY ĐỊNH TRONG CHÍNH SÁCH NÀY,
+            VUI LÒNG KHÔNG SỬ DỤNG CÁC DỊCH VỤ CỦA CHÚNG TÔI HOẶC TRUY CẬP NỀN
+            TẢNG CỦA CHÚNG TÔI.
+          </p>
+          <p>
+            Chúng tôi có toàn quyền sửa đổi, bổ sung, cập nhật Chính sách này
+            theo từng thời điểm. Vui lòng thường xuyên kiểm tra lại Chính sách
+            bảo mật này để đảm bảo bạn đã đọc kỹ các phần hoặc thay đổi mà nó
+            đối với Chính sách này.
+          </p>
+          <p>1. Chúng tôi sẽ thu thập những thông tin cá nhân nào?</p>
+          <p>
+            1.1 Những thông tin cá nhân mà chúng tôi có thể thu thập bao gồm,
+            nhưng không giới hạn các thông tin sau:
+          </p>
+          <p>
+            (a) Thông tin tài khoản như họ và tên, địa chỉ email, số điện thoại,
+            giới tính, ngày sinh, ảnh hồ sơ, số điện thoại di động, các thông
+            tin bắt buộc hoặc không bắt buộc khác;
+          </p>
+          <p>
+            (b) Dữ liệu khi bạn truy cập và/hoặc sử dụng Nền tảng của chúng tôi
+            như địa chỉ IP, các thông tin về trình duyệt, các địa chỉ bạn truy
+            cập trên Nền tảng, thời gian hoạt động trên Nền tảng của chúng tôi;
+          </p>
+        </div>
+        <div class="footer">
+          <div>
+            <input type="checkbox" id="agree" />
+            <label for="agree">
+              Tôi đã đọc và đồng ý với các điều khoản của website
+            </label>
+          </div>
+          <form action="/user/account/salesRegistration" method="POST">
+            <button id="registerButton" disabled>ĐĂNG KÝ BÁN HÀNG</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Include Footer -->
+    <%- include('partials/footer') %>
+
+    <script>
+      const agreeCheckbox = document.getElementById("agree")
+      const registerButton = document.getElementById("registerButton")
+
+      agreeCheckbox.addEventListener("change", function () {
+        registerButton.disabled = !this.checked
+      })
+
+      registerButton.addEventListener("click", function (event) {
+        if (this.disabled) {
+          event.preventDefault()
+          alert("Bạn phải đồng ý với các điều khoản")
+          agreeCheckbox.focus() // Tự động focus vào checkbox
+        }
+      })
+    </script>
+  </body>
+</html>
