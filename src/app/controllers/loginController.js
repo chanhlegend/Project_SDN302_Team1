@@ -18,7 +18,7 @@ class loginController {
                         }
                         if (isMatch) {
                             req.session.user = user;
-                            console.log('Session after login:', req.session); // Thêm dòng này để in ra thông tin session
+                            console.log('Session after login:', req.session); 
                             res.redirect('/');
                         } else {
                             res.render('login', { err: 'Tên đăng nhập hoặc mật khẩu không đúng!' });

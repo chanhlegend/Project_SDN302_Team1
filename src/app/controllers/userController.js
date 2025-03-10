@@ -172,6 +172,9 @@ async getUserReports(req, res, next) {
 
     //Hiển thị menu profile
     async menuAccount(req, res) {
+        if(!req.session.user) {
+            return res.redirect('/login');
+        }
         const categories = await Category.find().sort({ createdAt: -1 });
         res.render('menuAccount', { categories });
     }
