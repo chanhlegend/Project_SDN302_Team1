@@ -65,7 +65,7 @@
                 >
                   <div class="card">
                     <img
-                    src="<%= products[j].image && products[j].image.length > 0 ? products[j].image[0].url : '/img/default.jpg' %>"
+                      src="<%= products[j].image && products[j].image.length > 0 ? products[j].image[0].url : '/img/default.jpg' %>"
                       class="card-img-top"
                       alt="<%= products[j].name %>"
                     />
@@ -117,9 +117,9 @@
                   href="/product/<%= laptops[j].id %>"
                   style="text-decoration: none"
                 >
-                  <div class="card">
+                  <div class="card laptop">
                     <img
-                      src="<%= laptops[j].image.length > 0 ? laptops[j].image[0].url : '' %>"
+                      src="<%= laptops[j].image.length > 0 ? laptops[j].image[0].url : '/img/default.jpg' %>"
                       class="card-img-top"
                       alt="<%= laptops[j].name %>"
                     />
@@ -165,10 +165,13 @@
             <div class="row">
               <% for (let j = i; j < i + 4 && j < phones.length; j++) { %>
               <div class="col-md-3 mb-3">
-                <a href="/product/<%= phones[j].id %>" style="text-decoration: none;">
-                  <div class="card">
+                <a
+                  href="/product/<%= phones[j].id %>"
+                  style="text-decoration: none"
+                >
+                  <div class="card phone">
                     <img
-                      src="<%= phones[j].image.length > 0 ? phones[j].image[0].url : '' %>"
+                      src="<%= phones[j].image.length > 0 ? phones[j].image[0].url : '/img/default.jpg' %>"
                       class="card-img-top"
                       alt="<%= phones[j].name %>"
                     />
