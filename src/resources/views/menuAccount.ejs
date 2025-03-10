@@ -99,10 +99,13 @@
             <p>Đổi mật khẩu</p>
           </div>
         </a>
-        <div class="grid-item">
+        <a href="/orderTracking" style="text-decoration: none">
+          <div class="grid-item">
           <i class="fas fa-calendar-alt"></i>
           <p>Lịch sử mua hàng</p>
         </div>
+        </a>
+        
         <% if(typeof session.user !=='undefined' && session.user.role === 'seller') { %>
         <div class="grid-item">
           <i class="fas fa-tags"></i>

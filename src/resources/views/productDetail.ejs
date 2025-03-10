@@ -248,10 +248,12 @@
               <button class="add-to-cart">Thêm vào giỏ hàng</button>
 
             </form>
-            <form action="/order" method="Post">
-              <input type="hidden" value="<%= product._id%>" name="id"/>
-              <button class="buy-now">Mua ngay</button>
+            <form action="/checkout" method="POST">
+              <!-- Gửi danh sách ID của sản phẩm, ở đây chỉ có một sản phẩm nên không cần map -->
+              <input type="hidden" name="productIds" value="<%= JSON.stringify([product._id]) %>" />
+              <button type="submit" class="buy-now">Mua ngay</button>
             </form>
+          
             
           </div>
           <div class="chat-section">
