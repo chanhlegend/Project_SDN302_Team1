@@ -10,26 +10,6 @@ const multer = require('multer');
 
 class productOwnerController {
 
-    listProductowner(req, res, next) {
-        const userId = req.params.userid;
-    
-        Promise.all([
-            Product.find({ sellerId: userId }),
-            Category.find() 
-        ])
-        .then(([products, categories]) => {
-            if (req.xhr || req.headers['accept']?.includes('application/json')) {
-                // Trả về JSON nếu yêu cầu từ frontend
-                res.json({ success: true, products, categories });
-            } else {
-                // Render trang `productOwner`
-                res.render('productOwner', { products, categories });
-            }
-        })
-        .catch(err => next(err));
-    }
-
-
     listProduct(req, res, next) {
         const userId = req.params.userid;
         
