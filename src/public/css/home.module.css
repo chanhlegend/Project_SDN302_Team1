@@ -61,7 +61,8 @@ body {
 
 /* Hiệu ứng hover */
 .card:hover {
-  height: 300px;
+  width: 260px;
+  height: 370px;
   transform: skew(0deg);
 }
 
