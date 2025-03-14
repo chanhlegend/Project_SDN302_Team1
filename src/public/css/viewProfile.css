@@ -568,3 +568,14 @@ body {
   line-height: 1.6;
   margin-bottom: 10px;
 }
+.star {
+  font-size: 18px;
+}
+
+.filled {
+  color: gold; /* Sao đã chọn */
+}
+
+.empty {
+  color: #ccc; /* Sao chưa chọn */
+}

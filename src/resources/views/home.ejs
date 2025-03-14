@@ -72,7 +72,7 @@
                     <div class="card-body">
                       <h5 class="card-title"><%= products[j].productName %></h5>
                       <p class="seller-name">
-                        <%= products[j].sellerId.name %>
+                        <%= products[j].sellerId ? products[j].sellerId.name : 'Người bán không xác định' %>
                       </p>
                       <p class="card-text"><%= products[j].price %> VND</p>
                     </div>
