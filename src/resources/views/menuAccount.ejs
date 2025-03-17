@@ -5,68 +5,77 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
     <link rel="stylesheet" href="/css/menuAccount.module.css" />
   </head>
   <body>
-    <!-- Include Header -->
-    <%- include('partials/header') %>
-    <div class="header-page">
-      <h1>MENU TÀI KHOẢN</h1>
-      <% if(typeof err !== 'undefined' && err) { %>
-      <p><%= err %></p>
-      <% } %>
-      <% if(typeof message !== 'undefined' && message) { %>
-        <p style="color: green;"><%= message %></p>
+    <div class="animate__animated animate__fadeIn">
+      <!-- Include Header -->
+      <%- include('partials/header') %>
+      <div class="header-page">
+        <h1>MENU TÀI KHOẢN</h1>
+        <% if(typeof err !== 'undefined' && err) { %>
+        <p><%= err %></p>
+        <% } %> <% if(typeof message !== 'undefined' && message) { %>
+        <p style="color: green"><%= message %></p>
         <% } %>
-    </div>
-    <div class="container" style="margin-bottom: 50px">
-      <div class="grid">
-        <a href="/user/users/userProfile" style="text-decoration: none;">
-          <div class="grid-item">
-            <i class="fas fa-user"></i>
-            <p>Thông tin cá nhân</p>
-          </div>
-        </a>
+      </div>
+      <div class="container" style="margin-bottom: 50px">
+        <div class="grid">
+          <a href="/user/users/userProfile" style="text-decoration: none">
+            <div class="grid-item">
+              <i class="fas fa-user"></i>
+              <p>Thông tin cá nhân</p>
+            </div>
+          </a>
 
-        <a href="/user/account/changePassword" style="text-decoration: none">
-          <div class="grid-item">
-            <i class="fas fa-cogs"></i>
-            <p>Đổi mật khẩu</p>
-          </div>
-        </a>
-        <a href="/orderTracking" style="text-decoration: none">
-          <div class="grid-item">
-          <i class="fas fa-calendar-alt"></i>
-          <p>Lịch sử mua hàng</p>
-        </div>
-        </a>
-        
-        <% if(typeof session.user !=='undefined' && session.user.role === 'seller') { %>
-        <div class="grid-item">
-          <i class="fas fa-tags"></i>
-          <p>Trang người bán</p>
-        </div>
-        <% } else { %>
-        <a href="/user/account/salesRegistration" style="text-decoration: none;">
+          <a href="/user/account/changePassword" style="text-decoration: none">
+            <div class="grid-item">
+              <i class="fas fa-cogs"></i>
+              <p>Đổi mật khẩu</p>
+            </div>
+          </a>
+          <a href="/orderTracking" style="text-decoration: none">
+            <div class="grid-item">
+              <i class="fas fa-calendar-alt"></i>
+              <p>Lịch sử mua hàng</p>
+            </div>
+          </a>
+
+          <% if(typeof session.user !=='undefined' && session.user.role ===
+          'seller') { %>
           <div class="grid-item">
             <i class="fas fa-tags"></i>
-            <p>Đăng kí bán hàng</p>
+            <p>Trang người bán</p>
           </div>
-        </a>
-        <% } %>
-        <div class="grid-item">
-          <i class="fas fa-heart"></i>
-          <p>My Wishlists</p>
-        </div>
-        <a href="/logout" style="text-decoration: none">
+          <% } else { %>
+          <a
+            href="/user/account/salesRegistration"
+            style="text-decoration: none"
+          >
+            <div class="grid-item">
+              <i class="fas fa-tags"></i>
+              <p>Đăng kí bán hàng</p>
+            </div>
+          </a>
+          <% } %>
           <div class="grid-item">
-            <i class="fas fa-sign-out-alt"></i>
-            <p>Đăng xuất</p>
+            <i class="fas fa-heart"></i>
+            <p>My Wishlists</p>
           </div>
-        </a>
+          <a href="/logout" style="text-decoration: none">
+            <div class="grid-item">
+              <i class="fas fa-sign-out-alt"></i>
+              <p>Đăng xuất</p>
+            </div>
+          </a>
+        </div>
       </div>
+      <!-- Include Footer -->
+      <%- include('partials/footer') %>
     </div>
-    <!-- Include Footer -->
-    <%- include('partials/footer') %>
   </body>
 </html>
