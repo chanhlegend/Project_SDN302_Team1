@@ -1,6 +1,7 @@
 const Product = require("../models/Product");
 const { mutipleMongoeseToObject } = require("../../util/Mongoese");
 const mongoose = require("mongoose");
+const Category = require('../models/Category');
 
 class SellerDashboardController {
   async getMyProducts(req, res, next) {
@@ -52,30 +53,34 @@ class SellerDashboardController {
         }),
       };
 
-      const selledProducts = await Product.find({
+      const soldProducts  = await Product.find({
         sellerId,
         status: "sold",
     }).populate("category");
     
-    // Tính tổng doanh thu theo từng tháng
-    const monthlyRevenue = Array(12).fill(0); // Mảng lưu tổng doanh thu của 12 tháng
-    
-    selledProducts.forEach(product => {
-        const soldDate = new Date(product.soldAt); // Giả sử có trường soldAt lưu ngày bán
-        const month = soldDate.getMonth(); // Lấy tháng (0-11)
-        monthlyRevenue[month] += product.price; // Cộng dồn doanh thu
+
+    const monthlyRevenue = Array(12).fill(0); 
+    const categories = await Category.find(); 
+
+    soldProducts.forEach((product) => {
+      if (product.updatedAt) {
+        const updatedDate = new Date(product.updatedAt);
+        const month = updatedDate.getMonth(); // Lấy tháng (0-11)
+        monthlyRevenue[month] += product.price;
+      }
     });
+ 
     
-    console.log("Monthly Revenue:", monthlyRevenue);
     res.render("statics", {
         title: "Sản phẩm của tôi",
         products: mutipleMongoeseToObject(products),
-        monthlyRevenue: monthlyRevenue, 
+        monthlyRevenue,
         stats,
         user: req.user,
         currentPage: page,
         totalPages,
         limit,
+        categories
     });
 
     } catch (error) {
