@@ -61,6 +61,7 @@ class UserProfileController {
     async editUserProfile(req, res, next) {
         try {
             const userId = req.session.user ? req.session.user._id : null; // Lấy từ session
+            const categories = await Category.find().sort({ createdAt: -1 });
             if (!userId) {
                 return res.status(401).send('Bạn cần đăng nhập để chỉnh sửa thông tin');
             }
@@ -71,7 +72,7 @@ class UserProfileController {
             }
 
             console.log('User to edit:', user);
-            res.render('editUserProfile', { user: mongoeseToObject(user) });
+            res.render('editUserProfile', { user: mongoeseToObject(user), categories });
         } catch (err) {
             console.error('Error:', err);
             next(err);
