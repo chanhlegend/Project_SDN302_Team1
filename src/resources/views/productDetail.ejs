@@ -16,6 +16,7 @@
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <link rel="stylesheet" href="/styles.css" />
     <!-- Gán file CSS riêng nếu cần -->
     <style>
@@ -341,6 +342,7 @@
     </style>
   </head>
   <body>
+    <div class="animate__animated animate__fadeIn">
     <!-- Include Header -->
     <%- include('partials/header') %>
 
@@ -491,5 +493,6 @@
         window.location.href = `/chat/start/${sellerId}`
       }
     </script>
+    </div>
   </body>
 </html>
