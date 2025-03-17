@@ -1,135 +1,145 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard</title>
-    <link rel="stylesheet" href="/css/statics.css">
-</head>
-<body>
+    <link rel="stylesheet" href="/css/statics.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+  </head>
+  
+  <body>
+    <%- include('partials/header') %>
     <div class="stats-container">
-        <div class="stat-card">
-            <div class="stat-icon selling"></div>
-            <div class="stat-info">
-                <h3>Sản Phẩm Đang Bán</h3>
-                <div class="stat-number">5,423</div>
-                <div class="stat-change increase">16% this month</div>
-            </div>
+      <div class="stat-card">
+        <div class="stat-icon">📦</div>
+        <div class="stat-info">
+          <h3>Sản Phẩm Đang Bán</h3>
+          <div class="stat-number"><%= stats.activeProducts %></div>
         </div>
+      </div>
 
-        <div class="stat-card">
-            <div class="stat-icon sold"></div>
-            <div class="stat-info">
-                <h3>Sản Phẩm Đã Bán</h3>
-                <div class="stat-number">1,893</div>
-                <div class="stat-change decrease">1% this month</div>
-            </div>
+      <div class="stat-card">
+        <div class="stat-icon">✅</div>
+        <div class="stat-info">
+          <h3>Sản Phẩm Đã Bán</h3>
+          <div class="stat-number"><%= stats.soldProducts %></div>
         </div>
-
-        <div class="stat-card">
-            <div class="stat-icon pending"></div>
-            <div class="stat-info">
-                <h3>Sản Phẩm Đang Kiểm Duyệt</h3>
-                <div class="stat-number"><%= stats.activeProducts %></div>
-            </div>
-        </div>
+      </div>
     </div>
 
-    <div class="products-section">
-        <div class="products-header">
-            <h2>All Products</h2>
-            <div class="search-sort">
-                <input type="text" id="searchInput" placeholder="Search" class="search-input">
-                <select class="sort-select">
-                    <option value="newest">Newest</option>
-                    <option value="oldest">Oldest</option>
-                </select>
-            </div>
-        </div>
-
-        <table class="products-table">
-            <thead>
-                <tr>
-                    <th>Tên Sản Phẩm</th>
-                    <th>Giá Bán</th>
-                    <th>Loại</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% products.forEach(product => { %>
-                    <tr>
-                        <td><%= product.productName %></td>
-                        <td><%= product.price ? product.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " VND" : "N/A" %></td>
-                        <td><%= product.type %></td>
-                    
-                        <td>
-                            <% if (product.status && product.status.toLowerCase() === "active") { %>
-                                <span class="status-badge approved">Đã Kiểm Duyệt</span>
-                            <% } else { %>
-                                <span class="status-badge rejected">Từ Chối</span>
-                            <% } %>
-                        </td>
-                    </tr>
-                <% }); %>
-            </tbody>
-        </table>
-
-        <div class="pagination">
-            <% if (currentPage > 1) { %>
-                <a href="?page=<%= currentPage - 1 %>&limit=<%= limit %>" class="prev-page">←</a>
-            <% } %>
-        
-            <% if (currentPage > 3) { %>
-                <a href="?page=1&limit=<%= limit %>">1</a>
-                <% if (currentPage > 4) { %>
-                    <span class="dots">...</span>
-                <% } %>
-            <% } %>
-        
-            <% for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) { %>
-                <a href="?page=<%= i %>&limit=<%= limit %>" class="<%= i === currentPage ? 'active' : '' %>">
-                    <%= i %>
-                </a>
-            <% } %>
-        
-            <% if (currentPage < totalPages - 2) { %>
-                <% if (currentPage < totalPages - 3) { %>
-                    <span class="dots">...</span>
-                <% } %>
-                <a href="?page=<%= totalPages %>&limit=<%= limit %>"><%= totalPages %></a>
-            <% } %>
-        
-            <% if (currentPage < totalPages) { %>
-                <a href="?page=<%= currentPage + 1 %>&limit=<%= limit %>" class="next-page">→</a>
-            <% } %>
-        </div>
+    <div class="chart-container" style="position: relative; height: 200px; width: 100%; margin-top: 30px">
+      <h3>Thống kê sản phẩm đã bán</h3>
+      <canvas id="salesChart"></canvas>
     </div>
-</body>
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    const searchInput = document.getElementById("searchInput");
-    const tableRows = document.querySelectorAll(".products-table tbody tr");
+    <div class="chart-container" style="position: relative; height: 250px; width: 100%; margin-top: 30px">
+      <h3>Tỷ lệ sản phẩm</h3>
+      <canvas id="salesPieChart"></canvas>
+    </div>
+  </body>
 
-    function removeVietnameseTones(str) {
-        return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-    }
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const ctx = document.getElementById('salesChart').getContext('2d');
+      const chartData = {
+        labels: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        datasets: [{
+          label: 'Doanh thu (VND)',
+          data: <%- JSON.stringify(monthlyRevenue) %>,
+          backgroundColor: 'rgba(75, 192, 192, 0.7)',
+          borderColor: 'rgba(75, 192, 192, 1)',
+          borderWidth: 1,
+          barThickness: 30,
+        }]
+      };
 
-    searchInput.addEventListener("input", function () {
-        const searchTerm = removeVietnameseTones(searchInput.value.trim());
-
-        tableRows.forEach(row => {
-            const productName = removeVietnameseTones(row.querySelector("td:first-child").textContent);
-            
-            if (searchTerm === "" || productName.includes(searchTerm)) {
-                row.style.display = "";
-            } else {
-                row.style.display = "none";
+      new Chart(ctx, {
+        type: 'bar',
+        data: chartData,
+        options: {
+          indexAxis: 'x',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            title: {
+              display: true,
+              text: 'Doanh thu theo tháng'
+            },
+            legend: {
+              display: true,
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return `${context.label}: ${new Intl.NumberFormat('vi-VN', {
+                    style: 'currency',
+                    currency: 'VND'
+                  }).format(context.raw)}`;
+                }
+              }
             }
-        });
-    });
-});
+          },
+          scales: {
+            x: {
+              barPercentage: 0.2,
+              categoryPercentage: 0.3,
+              maxBarThickness: 20,
+            },
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: function(value) {
+                  return new Intl.NumberFormat('vi-VN', {
+                    style: 'currency',
+                    currency: 'VND'
+                  }).format(value);
+                }
+              }
+            }
+          }
+        }
+      });
 
-</script>
+      // Biểu đồ tròn
+      const ctxPie = document.getElementById('salesPieChart').getContext('2d');
+      const pieChartData = {
+        labels: ["Sản Phẩm Đang Bán", "Sản Phẩm Đã Bán"],
+        datasets: [{
+          data: [<%= stats.activeProducts %>, <%= stats.soldProducts %>],
+          backgroundColor: ["#36A2EB", "#FF6384"],
+          hoverBackgroundColor: ["#36A2EB", "#FF6384"]
+        }]
+      };
+
+      new Chart(ctxPie, {
+        type: 'doughnut',
+        data: pieChartData,
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom'
+            },
+            datalabels: {
+              formatter: (value, ctx) => {
+                let total = ctx.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                let percentage = ((value / total) * 100).toFixed(2) + "%";
+                return percentage;
+              },
+              color: '#fff',
+              font: {
+                weight: 'bold'
+              }
+            }
+          }
+        },
+        plugins: [ChartDataLabels]
+      });
+    });
+  </script>
+
+  <%- include('partials/footer') %>
 </html>

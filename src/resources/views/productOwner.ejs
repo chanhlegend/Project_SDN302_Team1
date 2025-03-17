@@ -4,37 +4,225 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Danh Sách Sản Phẩm</title>
-    <link rel="stylesheet" href="/css/style.css"> <!-- Liên kết file CSS nếu có -->
+    <link rel="stylesheet" href="/css/productOwner.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+
 </head>
 <body>
-        <!-- Include Header -->
-        <%- include('partials/header') %>
-    <h1>Danh Sách Sản Phẩm Của Bạn</h1>
+    <!-- Include Header -->
+    <%- include('partials/header') %>
 
-    <% if (products.length > 0) { %>
-        <table border="1">
-            <thead>
-                <tr>
-                    <th>Tên Sản Phẩm</th>
-                    <th>Giá</th>
-                    <th>Mô Tả</th>
-                    <th>Trạng Thái</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% products.forEach(product => { %>
+    <!-- Nội dung chính -->
+    <div class="main-content">
+        <h1>Danh Sách Sản Phẩm Đang Bán</h1>
+        <div class="navigation">
+            <div class="grid">
+                <a href="/productOwner/productSold"style="text-decoration: none;">
+                    <div class="grid-item <%= currentTab === 'sold' ? 'active' : '' %>">
+                        <p>Đã Bán</p>
+                    </div>
+                </a>
+                <a href="/productOwner/product"style="text-decoration: none;">
+                    <div class="grid-item <%= currentTab === 'active' ? 'active' : '' %>">
+                        <p>Đang Bán</p>
+                    </div>
+                </a>
+                <a href="/productOwner/productNonActive"style="text-decoration: none;">
+                    <div class="grid-item <%= currentTab === 'non-active' ? 'active' : '' %>">
+                        <p>Kiểm Duyệt</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <% if (products.length > 0) { %>
+            <table id="productTable">
+                <thead>
                     <tr>
-                        <td><%= product.productName %></td>
-                        <td><%= product.price %> VND</td>
-                        <td><%= product.description %></td>
-                        <td><%= product.status %></td>
+                        <th>Sản Phẩm</th>
+                        <th>Mô Tả</th>
+                        <th>Giá</th>
+                        <th>Thời Gian</th>
+                        <th></th>
                     </tr>
-                <% }) %>
-            </tbody>
-        </table>
-    <% } else { %>
-        <p>Không có sản phẩm nào.</p>
-    <% } %>
+                </thead>
+                <tbody id="productBody">
+                    <!-- Sản phẩm sẽ được thêm bằng JS -->
+                </tbody>
+            </table>
+            <div class="pagination" id="pagination">
+                <!-- Nút phân trang sẽ được thêm bằng JS -->
+            </div>
+        <% } else { %>
+            <p>Không có sản phẩm nào.</p>
+        <% } %>
 
+        <!-- Modal xác nhận xóa -->
+        <div id="deleteModal" class="modal">
+            <div class="modal-content">
+                <p>Bạn có muốn xóa sản phẩm này không?</p>
+                <div class="modal-buttons">
+                    <button class="ok-btn" onclick="confirmDelete()">Đồng Ý</button>
+                    <button class="cancel-btn" onclick="closeModal()">Hủy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Footer -->
+    <%- include('partials/footer') %>
+
+    <script>
+        // Dữ liệu sản phẩm từ server
+        const products = <%- JSON.stringify(products) %>;
+        const itemsPerPage = 4; // Số sản phẩm mỗi trang
+        let currentPage = 1; // Trang hiện tại
+
+        // Hàm hiển thị sản phẩm theo trang
+        function displayProducts(page) {
+            const start = (page - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const paginatedProducts = products.slice(start, end);
+
+            const tbody = document.getElementById('productBody');
+            tbody.innerHTML = ''; // Xóa nội dung cũ
+
+            paginatedProducts.forEach(product => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="product-info">
+                        <img 
+                            src="${product.image && product.image.length > 0 ? product.image[0].url : '/default-image.jpg'}" 
+                            alt="${product.productName}"
+                            class="product-image"
+                        >
+                        <div>
+                            <a href="/product/${product._id}" style="text-decoration: none;">
+                                <span class="product-name">${product.productName}</span>
+                            </a>
+                            <br>
+                        </div>
+                    </td>
+                    <td class="product-description">${product.description}</td>
+                    <td class="product-price">
+                        <span class="price-text">${product.price.toLocaleString()} VND</span>
+                    </td>
+                    <td class="product-time">
+                        ${new Date(product.createdAt).toLocaleString('vi-VN')}
+                    </td>
+                    <td class="options-container">
+                        <i onclick="handleOpenMenu(event)" class="fa-solid fa-ellipsis-vertical options-icon"></i>
+                        <div class="options-menu" id="options-menu">
+                            <div class="option-item delete-option">
+                                <i class="fa-solid fa-xmark"></i>
+                                <a href="#" onclick="openDeleteModal('${product._id}'); return false;">Xóa</a>
+                            </div>
+                            <div class="option-item edit-option">
+                                <i class="fa-solid fa-pen"></i>
+                                <a href="/productOwner/edit/${product._id}">Chỉnh sửa</a>
+                            </div>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Hàm tạo nút phân trang
+        function setupPagination() {
+            const totalPages = Math.ceil(products.length / itemsPerPage);
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = ''; // Xóa nội dung cũ
+
+            // Nút Previous
+            const prevButton = document.createElement('button');
+            prevButton.textContent = 'Trước';
+            prevButton.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    displayProducts(currentPage);
+                    updatePaginationButtons(totalPages);
+                }
+            });
+            pagination.appendChild(prevButton);
+
+            // Hiển thị trang hiện tại / tổng số trang
+            const pageInfo = document.createElement('span');
+            pageInfo.textContent = `Trang ${currentPage} / ${totalPages}`;
+            pagination.appendChild(pageInfo);
+
+            // Nút Next
+            const nextButton = document.createElement('button');
+            nextButton.textContent = 'Sau';
+            nextButton.addEventListener('click', () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    displayProducts(currentPage);
+                    updatePaginationButtons(totalPages);
+                }
+            });
+            pagination.appendChild(nextButton);
+
+            updatePaginationButtons(totalPages);
+        }
+
+        // Cập nhật trạng thái nút phân trang
+        function updatePaginationButtons(totalPages) {
+            const prevButton = document.querySelector('.pagination button:first-child');
+            const nextButton = document.querySelector('.pagination button:last-child');
+            prevButton.disabled = currentPage === 1;
+            nextButton.disabled = currentPage === totalPages;
+            document.querySelector('.pagination span').textContent = `Trang ${currentPage} / ${totalPages}`;
+        }
+
+        // Khởi tạo phân trang nếu có sản phẩm
+        if (products.length > 0) {
+            displayProducts(currentPage);
+            setupPagination();
+        }
+
+        // Các hàm hiện có
+        function handleOpenMenu(event) {
+            event.stopPropagation();
+            document.querySelectorAll(".options-menu").forEach(menu => {
+                menu.style.display = "none";
+            });
+            let menu = event.target.nextElementSibling;
+            if (menu) {
+                menu.style.display = "block";
+            }
+        }
+
+        document.addEventListener("click", function () {
+            document.querySelectorAll(".options-menu").forEach(menu => {
+                menu.style.display = "none";
+            });
+        });
+
+        let currentProductId = '';
+        function openDeleteModal(productId) {
+            currentProductId = productId;
+            document.getElementById('deleteModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('deleteModal').style.display = 'none';
+        }
+
+        function confirmDelete() {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `/productOwner/delete/${currentProductId}?_method=DELETE`;
+            const methodInput = document.createElement('input');
+            methodInput.type = 'hidden';
+            methodInput.name = '_method';
+            methodInput.value = 'DELETE';
+            form.appendChild(methodInput);
+            document.body.appendChild(form);
+            form.submit();
+            closeModal();
+        }
+    </script>
 </body>
 </html>

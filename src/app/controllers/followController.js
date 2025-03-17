@@ -1,13 +1,13 @@
 const User = require("../models/User")
 const Follower = require("../models/Follower")
+const Category = require('../models/Category')
 
 class FollowController {
     static async followUser(req, res) {
         try {
             const followerId = req.session.user ? req.session.user._id : null;
-            console.log(followerId);
             const { followingId } = req.body;
-            console.log("Following ID nhận được:", followingId);
+            console.log("followingId: ",followingId);
             if (!followerId) {
                 return res.status(401).json({ message: "Bạn cần đăng nhập để theo dõi" });
             }
@@ -26,7 +26,7 @@ class FollowController {
                 return res.status(404).json({ message: "Người được theo dõi không tồn tại" });
             }
     
-            if (following.role !== "sale") {
+            if (following.role !== "seller") {
                 return res.status(400).json({ message: "Người này không thể có người theo dõi" });
             }
     
@@ -50,28 +50,26 @@ class FollowController {
         try {
             const userId = req.session.user ? req.session.user._id : null;
             if (!userId) {
-                return res.status(401).json({ message: "Chưa đăng nhập" });
+                return res.status(401).json({ success: false, message: "Chưa đăng nhập" });
             }
     
             const { followingId } = req.body;
     
-
             const followRecord = await Follower.findOne({ followerId: userId, followingId });
             if (!followRecord) {
-                return res.status(400).json({ message: "Bạn chưa theo dõi người này" });
+                return res.status(400).json({ success: false, message: "Bạn chưa theo dõi người này" });
             }
     
-
             await Follower.deleteOne({ _id: followRecord._id });
     
-          
             await User.findByIdAndUpdate(userId, { $pull: { followers: followRecord._id } });
     
-            return res.status(200).json({ message: "Hủy theo dõi thành công" });
+            return res.status(200).json({ success: true, message: "Hủy theo dõi thành công" });
         } catch (error) {
-            return res.status(500).json({ message: "Lỗi server", error: error.message });
+            return res.status(500).json({ success: false, message: "Lỗi server", error: error.message });
         }
     }
+    
 
     static async getFollowing(req, res) {
         try {
@@ -87,22 +85,29 @@ class FollowController {
     static async getFollowers(req, res) {
         try {
             const userId = req.session.user ? req.session.user._id : null;
-            if(!userId) {
-                return res.status(401).json({message: "Chưa đăng nhập"})
+            if (!userId) {
+                return res.status(401).json({ message: "Chưa đăng nhập" });
             }
+    
+            // Lấy danh sách người theo dõi và đang theo dõi
             const followers = await Follower.find({ followingId: userId }).populate('followerId', 'username email avatar');
             const following = await Follower.find({ followerId: userId }).populate('followingId', 'username email avatar');
-            console.log(following);
+    
+            // Lấy danh sách danh mục để truyền vào template
+            const categories = await Category.find(); 
+    
             res.render("friend", { 
                 title: "Bạn Bè", 
                 followers: followers,
                 following: following,
-                userId: userId
+                userId: userId,
+                categories: categories // Thêm categories vào render
             });
         } catch (error) {
             return res.status(500).json({ message: "Lỗi server", error: error.message });
         }
     }
+    
 
     static async checkFollowStatus(req, res){
         try {

@@ -19,4 +19,7 @@ router.get('/:id', UserProfileController.getUserProfile);
 router.post('/update-profile/:id', updateUserProfileController.updateUserProfile);
 router.get('/view/:id', UserProfileController.viewUserProfile);
 
+router.get('/users/userProfile', UserProfileController.getUserInfo);
+router.get('/profile/editprofile', UserProfileController.editUserProfile);
+router.post('/profile/updateprofile', UserProfileController.updateUserProfile);
 module.exports = router;
