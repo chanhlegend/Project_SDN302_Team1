@@ -10,240 +10,25 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #F7F8FC;
-            margin: 0;
-            padding: 0;
-            display: flex;
-        }
-        .sidebar {
-            width: 250px;
-            background-color: #FFFFFF;
-            color: #A4A6B3;
-            height: 100vh;
-            padding: 20px;
-            box-sizing: border-box;
-            position: fixed;
-        }
-        .sidebar h1 {
-            color: #252733;
-            font-size: 24px;
-            margin-bottom: 40px;
-        }
-        .sidebar .menu-item {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 10px 0;
-            cursor: pointer;
-            position: relative;
-            border-radius: 8px;
-            margin: 10px 0;
-        }
-        .sidebar .menu-item i {
-            margin-right: 15px;
-        }
-        .sidebar .menu-item.active,
-        .sidebar .menu-item:hover {
-            background-color: #E7B9A6;
-            color: #FFFFFF;
-        }
-        .sidebar .menu-item.active i,
-        .sidebar .menu-item:hover i {
-            color: #FFFFFF;
-        }
-        .sidebar .menu-item i {
-            color: #E7B9A6;
-        }
-        .sidebar .profile {
-            position: absolute;
-            bottom: 20px;
-            display: flex;
-            align-items: center;
-        }
-        .sidebar .profile img {
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-        .sidebar .profile .name {
-            font-size: 14px;
-        }
-        .sidebar .profile .role {
-            font-size: 12px;
-            color: #9FA2B4;
-        }
-        .submenu {
-            display: none;
-            flex-direction: column;
-            margin-left: 20px;
-        }
-        .submenu a {
-            padding: 5px 0;
-            color: #252733;
-            text-decoration: none;
-        }
-        .submenu a:hover {
-            color: #3751FF;
-        }
-        .main-content {
-            flex: 1;
-            padding: 20px;
-            box-sizing: border-box;
-            margin-left: 250px;
-        }
-        .main-content .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .main-content .header h2 {
-            font-size: 24px;
-            color: #252733;
-        }
-        .main-content .header .search {
-            position: relative;
-        }
-        .main-content .header .search input {
-            padding: 10px 20px;
-            border-radius: 8px;
-            border: 1px solid #DFE0EB;
-            outline: none;
-        }
-        .main-content .header .search i {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #9FA2B4;
-        }
-        .main-content .stats {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-        .main-content .stats .stat {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            flex: 1;
-            margin-right: 20px;
-            text-align: center;
-            position: relative;
-        }
-        .main-content .stats .stat:last-child {
-            margin-right: 0;
-        }
-        .main-content .stats .stat h3 {
-            font-size: 18px;
-            color: #9FA2B4;
-            margin-bottom: 10px;
-        }
-        .main-content .stats .stat p {
-            font-size: 24px;
-            color: #252733;
-            margin: 0;
-        }
-        .main-content .stats .stat .change {
-            font-size: 14px;
-            color: #F7685B;
-        }
-        .main-content .stats .stat .icon {
-            position: absolute;
-            top: 50%;
-            left: 20px;
-            font-size: 40px;
-            color: #E7B9A6;
-            background-color: #F7F8FC;
-            border-radius: 50%;
-            padding: 10px;
-            transform: translateY(-50%);
-        }
-        .main-content .table-container {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        .main-content .table-container h3 {
-            font-size: 18px;
-            color: #252733;
-            margin-bottom: 20px;
-        }
-        .main-content .table-container .table-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .main-content .table-container .table-header .search {
-            position: relative;
-        }
-        .main-content .table-container .table-header .search input {
-            padding: 10px 20px;
-            border-radius: 8px;
-            border: 1px solid #DFE0EB;
-            outline: none;
-        }
-        .main-content .table-container .table-header .search i {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #9FA2B4;
-        }
-        .main-content .table-container .table-header .sort select {
-            padding: 10px 20px;
-            border-radius: 8px;
-            border: 1px solid #DFE0EB;
-            outline: none;
-        }
-        .main-content .table-container table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .main-content .table-container table th,
-        .main-content .table-container table td {
-            padding: 15px;
-            text-align: center;
-            border-bottom: 1px solid #DFE0EB;
-        }
-        .main-content .table-container table th {
-            color: #9FA2B4;
-            font-weight: 600;
-        }
-        .main-content .table-container table td {
-            color: #252733;
-        }
-        .report-trigger {
-            cursor: pointer;
-        }
-        .modal-content {
-            border-radius: 8px;
-        }
-        .report-details p {
-            margin: 5px 0;
-        }
-        .report-details img {
-            max-width: 100px;
-            margin: 5px;
-        }
-    </style>
+    
 </head>
 <body>
     <div class="sidebar">
         <h1>ADMIN</h1>
-        <div class="menu-item active"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></div>
-        <div class="menu-item" onclick="toggleSubmenu()"><i class="fas fa-box"></i><span>Sản Phẩm</span></div>
-        <div class="submenu" id="submenu">
+        <div class="menu-item" onclick="toggleSubmenu('productSubmenu')">
+            <i class="fas fa-box"></i><span>Sản Phẩm</span>
+        </div>
+        <div class="submenu" id="productSubmenu">
             <a href="/admin/products">Chưa kiểm duyệt</a>
             <a href="#">Đã kiểm duyệt</a>
-            
         </div>
-        <div class="menu-item"><i class="fas fa-users" style="color: #E7B9A6;"></i><span>Customers</span></div>
+        <div class="menu-item active" onclick="toggleSubmenu('customerSubmenu')">
+            <i class="fas fa-users" style="color: #ffffff;"></i><span>Customers</span>
+        </div>
+        <div class="submenu" id="customerSubmenu">
+            <a href="/user/customers">Danh sách khách hàng</a>
+            <a href="/registration">Đăng ký Sale</a>
+        </div>
         <div class="profile">
             <img alt="Profile" height="40" src="https://storage.googleapis.com/a1aa/image/TD024PUWIiib9Zio94kV2WgkuTWpKalS5ibKpVZtcKE.jpg" width="40"/>
             <div><div class="name">Evano</div><div class="role">Project Manager</div></div>
@@ -262,17 +47,14 @@
         </div>
         <div class="table-container">
             <h3>Tất Cả Người Dùng</h3>
-            <div class="table-header">
-                <div class="search"><input placeholder="Search" type="text"/><i class="fas fa-search"></i></div>
-                <div class="sort"><select><option>Sort by: Newest</option></select></div>
-            </div>
+            
             <table border="1">
                 <thead>
                     <tr>
                         <th>Tên</th>
                         <th>Email</th>
-                        <th>Số lượng báo cáo</th>
                         <th>Trạng thái</th>
+                        <th>Số lượng báo cáo</th>
                         <th>Hành động</th>
                     </tr>
                 </thead>
@@ -372,10 +154,240 @@
             });
         });
     
-        function toggleSubmenu() {
-            const submenu = document.getElementById('submenu');
-            submenu.style.display = submenu.style.display === 'flex' ? 'none' : 'flex';
-        }
+        function toggleSubmenu(submenuId) {
+        const submenu = document.getElementById(submenuId);
+        submenu.style.display = submenu.style.display === 'flex' ? 'none' : 'flex';
+    }
     </script>
 </body>
 </html>
+<style>
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #F7F8FC;
+        margin: 0;
+        padding: 0;
+        display: flex;
+    }
+    .sidebar {
+        width: 250px;
+        background-color: #FFFFFF;
+        color: #A4A6B3;
+        height: 100vh;
+        padding: 20px;
+        box-sizing: border-box;
+        position: fixed;
+    }
+    .sidebar h1 {
+        color: #252733;
+        font-size: 24px;
+        margin-bottom: 40px;
+    }
+    .sidebar .menu-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 0;
+        cursor: pointer;
+        position: relative;
+        border-radius: 8px;
+        margin: 10px 0;
+    }
+    .sidebar .menu-item i {
+        margin-right: 15px;
+    }
+    .sidebar .menu-item.active,
+    .sidebar .menu-item:hover {
+        background-color: #E7B9A6;
+        color: #FFFFFF;
+    }
+    .sidebar .menu-item.active i,
+    .sidebar .menu-item:hover i {
+        color: #FFFFFF;
+    }
+    .sidebar .menu-item i {
+        color: #E7B9A6;
+    }
+    .sidebar .profile {
+        position: absolute;
+        bottom: 20px;
+        display: flex;
+        align-items: center;
+    }
+    .sidebar .profile img {
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+    .sidebar .profile .name {
+        font-size: 14px;
+    }
+    .sidebar .profile .role {
+        font-size: 12px;
+        color: #9FA2B4;
+    }
+    .submenu {
+        display: none;
+        flex-direction: column;
+        margin-left: 20px;
+    }
+    .submenu a {
+        padding: 5px 0;
+        color: #252733;
+        text-decoration: none;
+    }
+    .submenu a:hover {
+        color: #3751FF;
+    }
+    .main-content {
+        flex: 1;
+        padding: 20px;
+        box-sizing: border-box;
+        margin-left: 250px;
+    }
+    .main-content .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    .main-content .header h2 {
+        font-size: 24px;
+        color: #252733;
+    }
+    .main-content .header .search {
+        position: relative;
+    }
+    .main-content .header .search input {
+        padding: 10px 20px;
+        border-radius: 8px;
+        border: 1px solid #DFE0EB;
+        outline: none;
+    }
+    .main-content .header .search i {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #9FA2B4;
+    }
+    .main-content .stats {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+    .main-content .stats .stat {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        flex: 1;
+        margin-right: 20px;
+        text-align: center;
+        position: relative;
+    }
+    .main-content .stats .stat:last-child {
+        margin-right: 0;
+    }
+    .main-content .stats .stat h3 {
+        font-size: 18px;
+        color: #9FA2B4;
+        margin-bottom: 10px;
+    }
+    .main-content .stats .stat p {
+        font-size: 24px;
+        color: #252733;
+        margin: 0;
+    }
+    .main-content .stats .stat .change {
+        font-size: 14px;
+        color: #F7685B;
+    }
+    .main-content .stats .stat .icon {
+        position: absolute;
+        top: 50%;
+        left: 20px;
+        font-size: 40px;
+        color: #E7B9A6;
+        background-color: #F7F8FC;
+        border-radius: 50%;
+        padding: 10px;
+        transform: translateY(-50%);
+    }
+    .main-content .table-container {
+background-color: #FFFFFF; /* Màu nền trắng đơn giản */
+padding: 15px; /* Giảm padding cho gọn gàng */
+border-radius: 4px; /* Bo góc nhẹ hơn */
+border: 1px solid #E7B9A6; /* Viền mỏng với màu chủ đạo */
+}
+
+.main-content .table-container h3 {
+font-size: 16px; /* Giảm kích thước chữ cho tối giản */
+color: #E7B9A6; /* Sử dụng màu chủ đạo */
+margin-bottom: 15px;
+font-weight: 600; /* Đậm vừa phải */
+font-family: 'Inter', sans-serif; /* Giữ font tối giản */
+}
+
+.main-content .table-container table {
+width: 100%;
+border-collapse: collapse;
+}
+
+.main-content .table-container table th {
+padding: 10px; /* Giảm padding */
+text-align: center;
+background-color: #E7B9A6; /* Màu chủ đạo cho tiêu đề */
+color: #FFFFFF;
+font-weight: 500; /* Giảm độ đậm cho tối giản */
+border-bottom: 1px solid #D89F8A; /* Biến thể đậm hơn của #E7B9A6 */
+}
+
+.main-content .table-container table td {
+padding: 10px; /* Giảm padding */
+text-align: center;
+color: #3A2E28; /* Màu chữ tối tương phản với #E7B9A6 */
+border-bottom: 1px solid #F2D9CF; /* Biến thể nhạt của #E7B9A6 */
+}
+
+.main-content .table-container table tr:last-child td {
+border-bottom: none; /* Loại viền dưới của hàng cuối cùng */
+}
+
+.main-content .table-container table td .btn {
+border-radius: 4px;
+padding: 4px 12px; /* Nút nhỏ hơn */
+font-size: 14px;
+border: none;
+}
+
+.main-content .table-container table td .btn-danger {
+background-color: #D89F8A; /* Biến thể đậm hơn của #E7B9A6 */
+color: #FFFFFF;
+}
+
+.main-content .table-container table td .btn-danger:hover {
+background-color: #C78E79; /* Biến thể đậm hơn nữa khi hover */
+}
+
+.main-content .table-container table td .btn-success {
+background-color: #F2D9CF; /* Biến thể nhạt của #E7B9A6 */
+color: #3A2E28; /* Màu chữ tối cho tương phản */
+}
+
+.main-content .table-container table td .btn-success:hover {
+background-color: #E7B9A6; /* Màu chủ đạo khi hover */
+}
+    .report-trigger {
+        cursor: pointer;
+    }
+    .modal-content {
+        border-radius: 8px;
+    }
+    .report-details p {
+        margin: 5px 0;
+    }
+    .report-details img {
+        max-width: 100px;
+        margin: 5px;
+    }
+</style>
