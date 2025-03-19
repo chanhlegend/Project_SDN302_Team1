@@ -3,6 +3,8 @@ const RegistrationForm = require('../models/RegistrationForm');
 const User = require('../models/User');
 // Lấy danh sách tất cả RegistrationForms
 const getAllRegistrationForms = async (req, res) => {
+    if (!req.session.user || req.session.user.role !== 'admin') {
+        return res.redirect('/login');}
     try {
         const forms = await RegistrationForm.find()
             .populate('userId', 'username name email role')
@@ -29,7 +31,7 @@ const approveRegistration = async (req, res) => {
 
         const updatedUser = await User.findByIdAndUpdate(
             form.userId,
-            { role: 'sale' },
+            { role: 'seller' },
             { new: true, runValidators: true }
         );
 

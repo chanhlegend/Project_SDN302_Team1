@@ -1,5 +1,6 @@
-const Product = require('../models/Product')
+const Product = require('../models/Product');
 const Category = require('../models/Category')
+const Order = require('../models/Order')
 const { mutipleMongoeseToObject, mongoeseToObject } = require('../../util/Mongoese')
 const mongoose = require('mongoose');
 const cloudinary = require('../../config/cloudinary');
@@ -9,26 +10,6 @@ const fs = require('fs');
 const multer = require('multer');
 
 class productOwnerController {
-
-    listProductowner(req, res, next) {
-        const userId = req.params.userid;
-    
-        Promise.all([
-            Product.find({ sellerId: userId }),
-            Category.find() 
-        ])
-        .then(([products, categories]) => {
-            if (req.xhr || req.headers['accept']?.includes('application/json')) {
-                // Trả về JSON nếu yêu cầu từ frontend
-                res.json({ success: true, products, categories });
-            } else {
-                // Render trang `productOwner`
-                res.render('productOwner', { products, categories });
-            }
-        })
-        .catch(err => next(err));
-    }
-
 
     listProduct(req, res, next) {
         const userId = req.params.userid;
@@ -100,35 +81,69 @@ class productOwnerController {
             next(err);
         }
     }
-
-    async listSelledProducts(req, res, next) {
+    async listsoldProducts(req, res, next) {
         try {
             const userId = req.session.user ? req.session.user._id : null;
             if (!userId) {
                 return res.status(401).send('Bạn cần đăng nhập để xem danh sách sản phẩm đã bán');
             }
-   
+    
             const categories = await Category.find().sort({ createdAt: -1 });
-            let products = await Product.find({
-                sellerId: userId,
-                status: "selled"
+    
+            let orders = await Order.find({
+                status: 'Delivered'
             })
-                .populate('image')
+                .populate({
+                    path: 'product',
+                    match: { sellerId: userId },
+                    populate: { path: 'image' }
+                })
                 .sort({ createdAt: -1 });
     
+            orders = orders.filter(order => order.product.length > 0);
+    
             console.log('userId: ', userId);
-            console.log('Selled products:', products);
-            res.render('productOwner', { 
-                products, 
+            console.log('Sold orders:', orders);
+            res.render('selledProducts', { 
+                orders, 
                 categories, 
                 userId, 
-                currentTab: 'selled' // Truyền currentTab để đánh dấu tab "Đã Bán"
+                currentTab: 'sold' 
             });
         } catch (err) {
             console.error('Error:', err);
             next(err);
         }
     }
+    async listNonActiveProducts(req, res, next) {
+        try {
+            const userId = req.session.user ? req.session.user._id : null;
+            if (!userId) {
+                return res.status(401).send('Bạn cần đăng nhập để xem danh sách sản phẩm chưa kiểm duyệt');
+            }
+    
+            const categories = await Category.find().sort({ createdAt: -1 });
+            let products = await Product.find({
+                sellerId: userId,
+                status: "non-active"
+            })
+                .populate('image')
+                .sort({ createdAt: -1 });
+    
+            console.log('userId: ', userId);
+            console.log('Non active products:', products);
+            res.render('nonActiveProduct', { 
+                products, 
+                categories, 
+                userId, 
+                currentTab: 'non-active' // Truyền currentTab để đánh dấu tab "chưa kiểm duyệt"
+            });
+        } catch (err) {
+            console.error('Error:', err);
+            next(err);
+        }
+    }
+
     // GET /create
     createProduct(req, res, next) {
         const userId = req.session.user ? req.session.user._id : null; // Lấy userId từ session
