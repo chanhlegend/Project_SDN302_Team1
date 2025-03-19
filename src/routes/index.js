@@ -22,7 +22,7 @@ const authRouter = require('./auth')
 const payment = require('./payment');
 const chatRouter = require('./chat');
 const orderTracking = require('./orderTracking');
-
+const vnpay = require('./vnpay');
 function route(app) {
     app.use('/', siteRouter)
     app.use('/login', loginRouter)
@@ -49,5 +49,6 @@ function route(app) {
     app.use('/auth/google', authRouter)
     app.use('/payment', payment)
     app.use('/orderTracking', orderTracking);
+    app.use('/order', vnpay);
 }
 module.exports = route
