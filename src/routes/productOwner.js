@@ -5,8 +5,7 @@ const productOwnerController = require('../app/controllers/productOwnerControlle
 router.get('/createProduct', productOwnerController.createProduct);
 router.post('/create', productOwnerController.create);
 router.get('/product',productOwnerController.listProductOwner)
-router.get('/productSold', productOwnerController.listsoldProducts)
-router.get('/productNonActive', productOwnerController.listNonActiveProducts)
+router.get('/productSelled', productOwnerController.listSelledProducts)
 router.get('/edit/:productid', productOwnerController.editProduct) // Thêm :productid
 router.put('/update/:productid', productOwnerController.update) // Thay /product/:productid thành /update/:productid
 router.delete('/product/:productid', productOwnerController.delete);

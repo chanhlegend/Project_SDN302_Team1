@@ -90,8 +90,8 @@ class FollowController {
             }
     
             // Lấy danh sách người theo dõi và đang theo dõi
-            const followers = await Follower.find({ followingId: userId }).populate('followerId', 'username email avatar');
-            const following = await Follower.find({ followerId: userId }).populate('followingId', 'username email avatar');
+            const followers = await Follower.find({ followingId: userId }).populate('followerId', 'name email avatar');
+            const following = await Follower.find({ followerId: userId }).populate('followingId', 'name email avatar');
     
             // Lấy danh sách danh mục để truyền vào template
             const categories = await Category.find(); 

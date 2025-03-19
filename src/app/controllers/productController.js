@@ -5,12 +5,10 @@ const Notification = require('../models/Notification');
 const Follower = require('../models/Follower');
 const User = require('../models/User');
 const mongoose = require('mongoose');
+const Evaluate = require('../models/Evaluate');
 class ProductController {
     // Lấy danh sách sản phẩm
     async listProduct(req, res, next) {
-        if (!req.session.user || req.session.user.role !== 'admin') {
-            return res.redirect('/login'); 
-        }
         try {
             const products = await Product.find({}).populate('sellerId', 'name email');
             res.render('admin', { products });
@@ -224,6 +222,9 @@ class ProductController {
         }
     }
 
+    
+
+
     async getProduct(req, res, next) {
     const { id } = req.params;
     Product.findById(id)
@@ -242,7 +243,10 @@ class ProductController {
         .then(async product => {
             if (product) {
                 const categories = await Category.find().sort({ createdAt: -1 });
-                res.render('productDetail', { product, categories });
+                const sellerId = product.sellerId._id;
+                const averageRating = await getAverageRating(sellerId);
+                res.render('productDetail', { product, categories , averageRating });
+           
             } else {
                 res.json({
                     message: 'failure',
@@ -256,7 +260,24 @@ class ProductController {
                 data: err.message
             });
         });
+    }
 }
+
+async function getAverageRating(sellerId) {
+    try {
+        const evaluations = await Evaluate.find({ evaluatedId: sellerId });
+        
+        if(evaluations.length > 0) {
+            const totalStars = evaluations.reduce((sum, eval) => sum + eval.star, 0);
+            const averageRating = totalStars / evaluations.length;
+            return averageRating;
+        }else{
+            return 0;
+        }
+    } catch (error) {
+        console.error("Error when calculating average rating: ", error);
+        throw error;
+    }
 }
 
 module.exports = new ProductController;

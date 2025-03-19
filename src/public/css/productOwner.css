@@ -1,324 +1,135 @@
-
-/* Đảm bảo layout đẩy footer xuống dưới */
-html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
-
-.main-content {
-    flex: 1 0 auto;
-    padding: 20px;
-}
-
-footer {
-    flex-shrink: 0;
-}
-
-/* CSS cho modal */
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-content {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 5px;
-    text-align: center;
-    width: 300px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    font-family: 'Arial', sans-serif;
-}
-
-.modal-content p {
-    margin: 0 0 20px;
-    font-size: 16px;
-}
-
-.modal-buttons {
-    display: flex;
-    justify-content: space-around;
-}
-
-.modal-buttons button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    font-family: 'Verdana', sans-serif;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.modal-buttons .ok-btn {
-    background-color: #4CAF50;
-    color: white;
-}
-
-.modal-buttons .ok-btn:hover {
-    background-color: #45a049;
-    transform: translateY(-3px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-}
-
-.modal-buttons .cancel-btn {
-    background-color: #f44336;
-    color: white;
-}
-
-.modal-buttons .cancel-btn:hover {
-    background-color: #da190b;
-    transform: translateY(-3px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-}
-
-/* Style cho liên kết Chỉnh sửa và Xóa */
-.edit-option a, .delete-option a {
-    text-decoration: none;
-}
-
-.edit-option a {
-    color: #007BFF;
-}
-
-.delete-option a {
-    color: #f44336;
-}
-
-.edit-option a:hover, .delete-option a:hover {
-    text-decoration: none;
-}
-
-/* CSS cho thanh điều hướng */
-.navigation {
-    margin-bottom: 50px;
-    border-top: 2px solid #FFC107;
-}
-
-.grid {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    justify-content: center;
-    gap: 30px;
-}
-
-.grid-item {
-    padding: 10px 20px;
-    position: relative;
-    text-align: center;
-    font-family: 'Georgia', serif;
-}
-
-.grid-item p {
-    margin: 0;
-    font-size: 16px;
-    color: #333;
-    font-weight: 500;
-}
-
-.grid-item a {
-    text-decoration: none;
-}
-
-.grid-item.active {
-    border-bottom: 2px solid #FFC107;
-}
-
-.grid-item.active p {
-    color: #000;
-    font-weight: 700;
-}
-
-.grid-item:hover p {
-    color: #000;
-}
-
-/* Hover effect cho tên sản phẩm */
-.product-name {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.product-name:hover {
-    text-decoration: underline;
-    color: #007BFF;
-    transform: translateY(-3px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-}
-
-/* CSS cho bảng */
 table {
     width: 100%;
     border-collapse: collapse;
-    background-color: #fff;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    margin-top: 20px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    font-family: Arial, sans-serif;
+    border: none; /* Loại bỏ viền bảng */
 }
-
-table:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+h1{
+    text-align: center;
+    font-weight: bold;
+    padding: 10px;
+}
+th, td {
+    padding: 10px;
+    text-align: left;
+    border: none; /* Loại bỏ viền ô */
 }
 
 thead {
-    background-color: #d19b7f;
+    background-color: #f5f5f5;
+    font-weight: bold;
 }
 
-th, td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-    font-family: 'Arial', serif;
-}
-
-th {
-    font-weight: 700;
-    color: #555;
-}
-
-td.product-info {
+.product-info {
     display: flex;
     align-items: center;
 }
 
-td.product-info img {
-    width: 50px;
-    height: 50px;
-    object-fit: cover;
-    border-radius: 5px;
+.product-image {
+    width: 60px;
+    height: 60px;
     margin-right: 10px;
+    border-radius: 8px; /* Làm mềm góc ảnh */
 }
 
-td.product-info .product-name {
-    color: #6a1b9a;
-    font-weight: 500;
+.product-name {
+    font-weight: bold;
+    display: block;
 }
 
-td.product-description {
+.seller-info {
+    font-size: 12px;
+    color: #666;
+}
+
+.product-description {
+    color: #666;
+    font-size: 14px;
+}
+.product-time{
     color: #666;
     font-size: 14px;
 }
 
-td.product-price {
-    color: #333;
-    font-weight: 500;
-}
-
-td.product-time {
-    color: #777;
-    font-size: 14px;
-}
-
-td.options-container {
-    text-align: right;
-    position: relative;
-}
-
-.options-icon {
-    cursor: pointer;
-    font-size: 18px;
+.price-text {
     color: #666;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.options-icon:hover {
-    color: #000;
-    transform: translateY(-3px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    font-weight: bold;
 }
 
 .options-menu {
     display: none;
     position: absolute;
-    background-color: #f9e7c3;
+    background-color: #c28f6e;
+    padding: 8px;
     border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    min-width: 100px;
-    z-index: 1001;
-    right: 0;
-    padding: 5px 0;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    right: 10px;
 }
 
-.options-menu:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-}
-
-.option-item {
-    display: flex;
-    align-items: center;
-    padding: 8px 16px;
+.options-menu .option-item {
+    padding: 5px 10px;
     cursor: pointer;
-    font-family: 'Arial', sans-serif;
 }
 
-.option-item i {
-    margin-right: 8px;
+.options-menu .option-item:hover {
+    background-color: #a87252;
+    color: white;
 }
+        /* CSS cho modal */
+        .modal {
+            display: none; /* Ẩn modal ban đầu */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Lớp nền mờ */
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
 
-.option-item a {
-    flex: 1;
-    text-align: center;
-    color: inherit;
-    text-decoration: none;
-}
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            width: 300px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
 
-.option-item:hover {
-    background-color: #f0f0f0;
-}
+        .modal-content p {
+            margin: 0 0 20px;
+            font-size: 16px;
+        }
 
-h1 {
-    text-align: center;
-    font-family: 'Helvetica', sans-serif;
-}
+        .modal-buttons {
+            display: flex;
+            justify-content: space-around;
+        }
 
-/* CSS cho phân trang */
-.pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px;
-    gap: 10px;
-}
+        .modal-buttons button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
 
-.pagination button {
-    padding: 8px 16px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #fff;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
-}
+        .modal-buttons .ok-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
 
-.pagination button:hover {
-    background-color: #f0f0f0;
-    transform: translateY(-2px);
-}
+        .modal-buttons .ok-btn:hover {
+            background-color: #45a049;
+        }
 
-.pagination button:disabled {
-    background-color: #e0e0e0;
-    cursor: not-allowed;
-    transform: none;
-}
+        .modal-buttons .cancel-btn {
+            background-color: #f44336;
+            color: white;
+        }
 
-.pagination span {
-    font-size: 16px;
-    font-family: 'Arial', sans-serif;
-}
+        .modal-buttons .cancel-btn:hover {
+            background-color: #da190b;
+        }

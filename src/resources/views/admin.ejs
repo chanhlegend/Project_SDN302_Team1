@@ -89,22 +89,17 @@
 <body>
     <div class="sidebar">
         <h1>ADMIN</h1>
-        <div class="menu-item Active" onclick="toggleSubmenu('productSubmenu')">
-            <i class="fas fa-box"></i><span>Sản Phẩm</span>
-        </div>
-        <div class="submenu" id="productSubmenu">
-            <a href="/admin/products">Chưa kiểm duyệt</a>
+        <div class="menu-item active"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></div>
+        <div class="menu-item" onclick="toggleSubmenu()"><i class="fas fa-box"></i><span>Sản Phẩm</span></div>
+        <div class="submenu" id="submenu">
+            <a href="#">Chưa kiểm duyệt</a>
             <a href="#">Đã kiểm duyệt</a>
         </div>
-        <div class="menu-item" onclick="toggleSubmenu('customerSubmenu')">
-            <i class="fas fa-users" style="color: #E7B9A6;"></i><span>Customers</span>
-        </div>
-        <div class="submenu" id="customerSubmenu">
-            <a href="/user/customers">Danh sách khách hàng</a>
-            <a href="/registration">Đăng ký Sale</a>
-        </div>
+        <a class="menu-item" href="/user/customers">
+            <i class="fas fa-users"></i><span>Customers</span>
+        </a>
         <div class="profile">
-            <img alt="Profile" height="40" src="https://storage.googleapis.com/a1aa/image/TD024PUWIiib9Zio94kV2WgkuTWpKalS5ibKpVZtcKE.jpg" width="40"/>
+            <img src="https://storage.googleapis.com/a1aa/image/TD024PUWIiib9Zio94kV2WgkuTWpKalS5ibKpVZtcKE.jpg" alt="Profile" width="40" height="40">
             <div><div class="name">Evano</div><div class="role">Project Manager</div></div>
         </div>
     </div>
@@ -123,7 +118,10 @@
 
         <div class="table-container">
             <h3>Tất Cả Sản Phẩm</h3>
-            
+            <div class="table-header">
+                <div class="search"><input type="text" placeholder="Search"><i class="fas fa-search"></i></div>
+                <div class="sort"><select><option>Sort by: Newest</option></select></div>
+            </div>
             <h2>Quản lý sản phẩm</h2>
             <div class="actions">
                 <button onclick="updateStatus('active')">✔ Duyệt</button>
@@ -234,10 +232,10 @@
             });
         });
 
-        function toggleSubmenu(submenuId) {
-        const submenu = document.getElementById(submenuId);
-        submenu.style.display = submenu.style.display === 'flex' ? 'none' : 'flex';
-    }
+        function toggleSubmenu() {
+            const submenu = document.getElementById('submenu');
+            submenu.style.display = submenu.style.display === 'flex' ? 'none' : 'flex';
+        }
     </script>
 </body>
 </html>

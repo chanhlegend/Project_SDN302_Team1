@@ -20,7 +20,7 @@
               alt="Shop avatar"
             />
             <div class="shop-name" id="shop-name">
-              <%= user.username || 'Chưa có tên' %>
+              <%= user.name || 'Chưa có tên' %>
             </div>
             <div class="shop-address" id="shop-address">
               <%= user.address || 'Chưa có địa chỉ' %>
@@ -51,20 +51,21 @@
 
             <div class="tab-content" id="overview">
               <div class="shop-intro">
-                <div class="intro-text">
+                <div class="intro-card">
                   <h2>Giới thiệu</h2>
-                  <p>
+                  <p1>
                     Chào mừng bạn đến với cửa hàng của chúng tôi! Chúng tôi
                     chuyên cung cấp các sản phẩm chất lượng cao với giá cả phải
                     chăng. Với nhiều năm kinh nghiệm trong ngành, chúng tôi tự
                     hào mang đến cho khách hàng những trải nghiệm mua sắm tuyệt
                     vời nhất.
-                  </p>
-                  <p>
+                  </p1>
+                  <p2>
                     Hãy khám phá các sản phẩm đang bán và đừng ngần ngại liên hệ
                     với chúng tôi nếu bạn có bất kỳ câu hỏi nào.
-                  </p>
+                  </p2>
                 </div>
+
                 <div class="intro-images">
                   <img
                     src="/img/slide1.jpg"
@@ -83,14 +84,9 @@
                   />
                 </div>
               </div>
+
               <h2 style="margin-top: 20px">Sản phẩm đang bán</h2>
               <div class="product-list"></div>
-
-              <!-- THÊM PHẦN ĐÁNH GIÁ VÀO TỔNG QUAN -->
-              <div class="reviews-section">
-                <h2>Đánh giá từ khách hàng</h2>
-                <div class="reviews-list"></div>
-              </div>
             </div>
 
             <div class="tab-content" id="sold" style="display: none">
@@ -198,8 +194,7 @@
 
             // Load dữ liệu tương ứng
             if (tabId === "overview") {
-              await fetchProducts(userId); // Tải sản phẩm cho tab Tổng quan
-              await fetchReviews(userId); // Tải đánh giá
+              await fetchProducts(userId);
             } else if (tabId === "sold") {
               await fetchProductsByStatus(userId, "sold");
             } else if (tabId === "selling") {
@@ -252,7 +247,7 @@
             throw new Error(`Lỗi khi lấy danh sách sản phẩm (${status})`);
           }
 
-          // Tìm container dựa theo status
+          // Xác định container dựa vào status
           const containerClass =
             status === "sold" ? ".sold-products" : ".selling-products";
           const container = document.querySelector(containerClass);
@@ -275,23 +270,38 @@
             const productItem = document.createElement("div");
             productItem.classList.add("product-item");
             productItem.innerHTML = `
-                            <div class="product-image">
-                                <img src="${
-                                  product.image.length > 0
-                                    ? product.image[0].url
-                                    : "/images/default.jpg"
-                                }" alt="${product.productName}">
-                            </div>
-                            <div class="product-info">
-                                <h3 class="product-name">${
-                                  product.productName
-                                }</h3>
-                                 <div class="price-container">
-                                    <div class="price">${product.price.toLocaleString()}₫</div>
-                                    <button class="favorite-btn" onclick="toggleFavorite(this)">🤍</button>
-                                 </div>
-                            </div>
-                        `;
+                <div class="product-image">
+                    <img src="${
+                      product.image.length > 0
+                        ? product.image[0].url
+                        : "/images/default.jpg"
+                    }" alt="${product.productName}">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">${product.productName}</h3>
+                    <div class="price-container">
+                        <div class="price">${product.price.toLocaleString()}₫</div>
+                        <button class="favorite-btn">🤍</button>
+                    </div>
+                </div>
+            `;
+
+            // Thêm sự kiện click để chuyển hướng sang trang sản phẩm
+            productItem.addEventListener("click", (event) => {
+              console.log("Clicked on product:", product._id);
+              // Nếu click vào nút "favorite" thì không chuyển trang
+              if (!event.target.classList.contains("favorite-btn")) {
+                window.location.href = `/product/${product._id}`;
+              }
+            });
+
+            // Xử lý sự kiện cho nút yêu thích (nếu có)
+            const favoriteBtn = productItem.querySelector(".favorite-btn");
+            favoriteBtn.addEventListener("click", (event) => {
+              event.stopPropagation(); // Ngăn chặn sự kiện click lan ra ngoài
+              toggleFavorite(event, favoriteBtn);
+            });
+
             container.appendChild(productItem);
           });
         } catch (error) {
@@ -347,6 +357,14 @@
                                  </div>
                             </div>
                         `;
+
+            productItem.addEventListener("click", (event) => {
+              console.log("Clicked on product:", product._id);
+              // Nếu click vào nút "favorite" thì không chuyển trang
+              if (!event.target.classList.contains("favorite-btn")) {
+                window.location.href = `/product/${product._id}`;
+              }
+            });
             productListContainer.appendChild(productItem);
           });
         } catch (error) {
@@ -374,33 +392,50 @@
             }
 
             data.evaluates.forEach((review) => {
-  const reviewerName = review.evaluaterId?.name || "Người dùng ẩn danh";
+              const reviewerName =
+                review.evaluaterId?.name || "Người dùng ẩn danh";
 
-  const reviewItem = document.createElement("div");
-  reviewItem.classList.add("review-item");
+              const reviewItem = document.createElement("div");
+              reviewItem.classList.add("review-box"); // Thêm lớp CSS tạo khung riêng
 
-  // Tạo dãy sao đầy đủ
-  let starsHTML = "";
-  for (let i = 1; i <= 5; i++) {
-    starsHTML += `<span class="star ${i <= review.star ? "filled" : "empty"}">★</span>`;
-  }
+              let starsHTML = "";
+              for (let i = 1; i <= 5; i++) {
+                starsHTML += `<span class="star ${
+                  i <= review.star ? "filled" : "empty"
+                }">★</span>`;
+              }
 
-  reviewItem.innerHTML = `
-    <div class="review-container">
-        <img class="review-avatar" src="${
-          review.avatar || "/img/avatar.png"
-        }" alt="Avatar">
-        <div class="review-content">
-            <div class="review-header">
-                <strong>${reviewerName}</strong>
-                <span class="rating">${starsHTML}</span>
-            </div>
-            <p class="review-comment">${review.comment || "Không có bình luận."}</p>
-        </div>
-    </div>
-  `;
-  reviewContainer.appendChild(reviewItem);
-});
+              reviewItem.innerHTML = `
+          <div class="review-container">
+              <img class="review-avatar" src="${
+                review.evaluaterId?.avatar || "/img/avatar.png"
+              }" alt="Avatar">
+              <div class="review-content">
+                  <div class="review-header">
+                      <strong>${reviewerName}</strong>
+                      <span class="rating">${starsHTML}</span>
+                  </div>
+                  <p class="review-comment">${
+                    review.comment || "Không có bình luận."
+                  }</p>
+                  <div class="review-product">
+                      <span>Sản phẩm được đánh giá:</span>
+                      <div class="product-info">
+                          <img class="product-image-evaluate" src="${
+                            review.productId?.image[0]?.url ||
+                            "/img/default-product.png"
+                          }" alt="Sản phẩm">
+                          <p class="product-name">${
+                            review.productId?.productName ||
+                            "Sản phẩm không xác định"
+                          }</p>
+                      </div>
+                  </div>
+              </div>
+          </div>
+        `;
+              reviewContainer.appendChild(reviewItem);
+            });
           });
         } catch (error) {
           console.error("Lỗi khi lấy đánh giá:", error);

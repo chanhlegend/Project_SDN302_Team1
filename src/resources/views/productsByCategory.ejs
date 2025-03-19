@@ -11,64 +11,58 @@
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap"
       rel="stylesheet"
     />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
-    />
     <link rel="stylesheet" href="/css/productsByCategory.module.css" />
   </head>
   <body>
-    <div class="animate__animated animate__fadeIn">
-      <!-- Include Header -->
-      <%- include('partials/header') %>
+    <!-- Include Header -->
+    <%- include('partials/header') %>
 
-      <div class="container">
-        <div class="sidebar">
-          <h2>PRODUCT CATEGORIES</h2>
-          <ul>
-            <% categories.forEach(function(category) { %>
-            <li>
-              <a href="/category/productsByCategory/<%= category._id %>"
-                ><%= category.name %></a
-              >
-            </li>
-            <% }); %>
-          </ul>
-        </div>
-        <div class="products">
-          <% if (products.length <= 0) { %>
-          <p>Không có sản phẩm nào</p>
-          <% } else { %> <% products.forEach(function(product) { %>
-          <a href="/product/<%= product._id %>" class="product-link">
-            <div class="product-card">
-              <img
-                alt="<%= product.name %>"
-                src="<%= product.image.length > 0 ? product.image[0].url : '/img/default.jpg' %>"
-              />
-              <h3><%= product.productName %></h3>
-              <p class="price"><%= product.price %> VND</p>
-            </div>
-          </a>
-          <% }); %> <% } %>
-        </div>
+    <div class="container">
+      <div class="sidebar">
+        <h2>PRODUCT CATEGORIES</h2>
+        <ul>
+          <% categories.forEach(function(category) { %>
+          <li>
+            <a href="/category/productsByCategory/<%= category._id %>"
+              ><%= category.name %></a
+            >
+          </li>
+          <% }); %>
+        </ul>
       </div>
-      <!-- Pagination Controls -->
-      <div class="pagination">
-        <% if (currentPage > 1) { %>
-        <a href="?page=<%= currentPage - 1 %>&limit=<%= limit %>">Previous</a>
-        <% } %> <% for (let i = 1; i <= totalPages; i++) { %>
-        <a
-          href="?page=<%= i %>&limit=<%= limit %>"
-          class="<%= currentPage === i ? 'active' : '' %>"
-          ><%= i %></a
-        >
-        <% } %> <% if (currentPage < totalPages) { %>
-        <a href="?page=<%= currentPage + 1 %>&limit=<%= limit %>">Next</a>
-        <% } %>
+      <div class="products">
+        <% if (products.length <= 0) { %>
+        <p>Không có sản phẩm nào</p>
+        <% } else { %> <% products.forEach(function(product) { %>
+        <a href="/product/<%= product._id %>" class="product-link">
+          <div class="product-card">
+            <img
+              alt="<%= product.name %>"
+              src="<%= product.image.length > 0 ? product.image[0].url : '/img/default.jpg' %>"
+            />
+            <h3><%= product.productName %></h3>
+            <p class="price"><%= product.price %> VND</p>
+          </div>
+        </a>
+        <% }); %> <% } %>
       </div>
-
-      <!-- Include Footer -->
-      <%- include('partials/footer') %>
     </div>
+    <!-- Pagination Controls -->
+    <div class="pagination">
+      <% if (currentPage > 1) { %>
+      <a href="?page=<%= currentPage - 1 %>&limit=<%= limit %>">Previous</a>
+      <% } %> <% for (let i = 1; i <= totalPages; i++) { %>
+      <a
+        href="?page=<%= i %>&limit=<%= limit %>"
+        class="<%= currentPage === i ? 'active' : '' %>"
+        ><%= i %></a
+      >
+      <% } %> <% if (currentPage < totalPages) { %>
+      <a href="?page=<%= currentPage + 1 %>&limit=<%= limit %>">Next</a>
+      <% } %>
+    </div>
+
+    <!-- Include Footer -->
+    <%- include('partials/footer') %>
   </body>
 </html>
