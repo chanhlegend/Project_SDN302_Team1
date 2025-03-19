@@ -33,7 +33,7 @@
             src="<%= follow.followingId.avatar || '/img/avatar.png' %>"
             alt="User"
           />
-          <span><%= follow.followingId.username %></span>
+          <span><%= follow.followingId.name %></span>
           <span class="ms-auto">
             <button
               class="btn btn-outline-danger btn-sm"
@@ -56,7 +56,7 @@
             src="<%= follower.followerId.avatar || '/img/avatar.png' %>"
             alt="User"
           />
-          <span><%= follower.followerId.username %></span>
+          <span><%= follower.followerId.name %></span>
         </div>
         <% }) %> <% } %>
       </div>

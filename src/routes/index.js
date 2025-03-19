@@ -17,7 +17,6 @@ const logoutRouter = require('./logout')
 const notificationRouter = require('./notificationRouter')
 const registrationRoutes = require('./registrationRoutes');
 const checkout = require ('./checkout')
-const orderTransportationRouter = require('./orderTransportation')
 const authRouter = require('./auth')
 const payment = require('./payment');
 const chatRouter = require('./chat');
@@ -44,7 +43,6 @@ function route(app) {
     app.use('/notification', notificationRouter)
     app.use('/registration', registrationRoutes)
     app.use('/chat', chatRouter);
-    app.use('/orderTransportation', orderTransportationRouter);
     app.use('/checkout', checkout)
     app.use('/auth/google', authRouter)
     app.use('/payment', payment)

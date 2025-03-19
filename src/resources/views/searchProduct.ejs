@@ -11,54 +11,48 @@
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap"
       rel="stylesheet"
     />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
-    />
     <link rel="stylesheet" href="/css/searchProduct.module.css" />
   </head>
   <body>
-    <div class="animate__animated animate__fadeIn">
-      <!-- Include Header -->
-      <%- include('partials/header') %>
-      <p class="tiltle">Kết quả tìm kiếm cho: "<%= productname %>"</p>
-      <div class="container">
-        <div class="products">
-          <% if (products.length <= 0) { %>
-          <p>Không có sản phẩm nào</p>
-          <% } else { %> <% products.forEach(function(product) { %>
-          <a href="/product/<%= product._id %>" class="product-link">
-            <div class="product-card">
-              <img
-                alt="<%= product.name %>"
-                src="<%= product.image.length > 0 ? product.image[0].url : '/img/default.jpg' %>"
-              />
-              <h3><%= product.productName %></h3>
-              <p class="price"><%= product.price %> VND</p>
-            </div>
-          </a>
-          <% }); %> <% } %>
-        </div>
+    <!-- Include Header -->
+    <%- include('partials/header') %>
+    <p class="tiltle">Kết quả tìm kiếm cho: "<%= productname %>"</p>
+    <div class="container">
+      <div class="products">
+        <% if (products.length <= 0) { %>
+        <p>Không có sản phẩm nào</p>
+        <% } else { %> <% products.forEach(function(product) { %>
+        <a href="/product/<%= product._id %>" class="product-link">
+          <div class="product-card">
+            <img
+              alt="<%= product.name %>"
+              src="<%= product.image.length > 0 ? product.image[0].url : '/img/default.jpg' %>"
+            />
+            <h3><%= product.productName %></h3>
+            <p class="price"><%= product.price %> VND</p>
+          </div>
+        </a>
+        <% }); %> <% } %>
       </div>
-      <div class="pagination">
-        <% if (currentPage > 1) { %>
-        <a href="?productname=<%= productname %>&page=<%= currentPage - 1 %>"
-          >Previous</a
-        >
-        <% } %> <% for (let i = 1; i <= totalPages; i++) { %>
-        <a
-          href="?productname=<%= productname %>&page=<%= i %>"
-          class="<%= currentPage === i ? 'active' : '' %>"
-          ><%= i %></a
-        >
-        <% } %> <% if (currentPage < totalPages) { %>
-        <a href="?productname=<%= productname %>&page=<%= currentPage + 1 %>"
-          >Next</a
-        >
-        <% } %>
-      </div>
-      <!-- Include Footer -->
-      <%- include('partials/footer') %>
     </div>
+    <div class="pagination">
+      <% if (currentPage > 1) { %>
+      <a href="?productname=<%= productname %>&page=<%= currentPage - 1 %>"
+        >Previous</a
+      >
+      <% } %> <% for (let i = 1; i <= totalPages; i++) { %>
+      <a
+        href="?productname=<%= productname %>&page=<%= i %>"
+        class="<%= currentPage === i ? 'active' : '' %>"
+        ><%= i %></a
+      >
+      <% } %> <% if (currentPage < totalPages) { %>
+      <a href="?productname=<%= productname %>&page=<%= currentPage + 1 %>"
+        >Next</a
+      >
+      <% } %>
+    </div>
+    <!-- Include Footer -->
+    <%- include('partials/footer') %>
   </body>
 </html>

@@ -76,9 +76,6 @@ class ChatController {
 
 
    async startChat(req, res) {
-    if (!req.session || !req.session.user || !req.session.user._id) {
-        return res.redirect('/login');
-    }
         try {
             const sellerId = new mongoose.Types.ObjectId(req.params.sellerId); // Thêm 'new'
             const userId = new mongoose.Types.ObjectId(req.session.user._id); // Thêm 'new'
