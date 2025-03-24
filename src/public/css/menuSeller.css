@@ -1,16 +1,25 @@
-
-body {
-  font-family: Arial, sans-serif;
+html, body {
+  height: 100%; /* Ensure the html and body take up the full viewport height */
   margin: 0;
   padding: 0;
+  font-family: Arial, sans-serif;
   background-color: #f8f9fa;
 }
+
+body {
+  display: flex; /* Use flexbox to structure the layout */
+  flex-direction: column; /* Stack children vertically */
+  min-height: 100vh; /* Ensure the body is at least the height of the viewport */
+}
+
 .container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
   text-align: center;
+  flex: 1; /* Allow the container to grow and push the footer down */
 }
+
 .header-page {
   display: flex;
   flex-direction: column;
@@ -19,23 +28,26 @@ body {
   padding: 20px 0;
   margin-bottom: 20px;
 }
+
 .header-page h1 {
   margin: 0;
   font-size: 24px;
   color: #333;
 }
+
 .header-page p {
   margin: 10px 0 0 0;
   font-size: 16px;
   color: red;
 }
+
 .grid {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 20px;
-
 }
+
 .grid-item {
   background-color: #fff;
   border: 1px solid #ddd;
@@ -46,30 +58,34 @@ body {
   text-align: center;
   transition: transform 0.2s;
 }
+
 .grid-item:hover {
   transform: translateY(-5px);
 }
+
 .grid-item i {
   font-size: 36px;
   color: #333;
   margin-bottom: 10px;
 }
+
 .grid-item p {
   margin: 0;
   font-size: 16px;
   color: #333;
   text-decoration: none;
 }
+
 @media (max-width: 768px) {
   .grid-item {
     width: 100%;
   }
 }
+
 footer {
-padding: 10px 20px;
-text-align: center;
-background-color: #f8f9fa;
-border-top: 190px solid #f8f9fa;
-width: 100%;
-margin-top: auto;
+  padding: 10px 30px;
+  text-align: center;
+  background-color: #f8f9fa;
+  width: 100%;
+  /* Removed border-top: 190px solid #f8f9fa; as it’s not needed for positioning */
 }
