@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">  
+   
+</head>
+<body>
+    <div class="orders-container">
+        <h2>Danh sách đơn hàng</h2>
+
+        <!-- Search Form -->
+        <form method="GET" action="/orderTransportation/orders" class="search-form">
+            <input type="text" name="search" placeholder="Tìm kiếm theo mã đơn hàng hoặc email" value="<%= search || '' %>">
+            <button type="submit">Tìm kiếm</button>
+        </form>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Mã đơn hàng</th>
+                    <th>Khách hàng</th>
+                    <th>Tổng tiền</th>
+                    <th>Trạng thái</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (orders.length > 0) { %>
+                    <% orders.forEach(order => { %>
+                        <tr>
+                            <td><%= order._id %></td>
+                            <td><%= order.user.email %></td>
+                            <td><%= order.totalPrice.toLocaleString() %> VNĐ</td>
+                            <td><%= order.status %></td>
+                            <td>
+                                <div class="action-container">
+                                    <button onclick="showModal('<%= order._id %>')">Xem chi tiết</button>
+                                    <select name="status" onchange="updateStatus('<%= order._id %>', this)">
+                                        <option value="shipping" <%= order.status === 'shipping' ? 'selected' : '' %>>Shipping</option>
+                                        <option value="delivered" <%= order.status === 'delivered' ? 'selected' : '' %>>Delivered</option>
+                                    </select>
+                                    <button onclick="submitStatus('<%= order._id %>')">Cập nhật</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Modal -->
+                        <div id="modal-<%= order._id %>" class="modal">
+                            <div class="modal-content">
+                                <span class="close" onclick="hideModal('<%= order._id %>')">×</span>
+                                <h2>Chi tiết đơn hàng #<%= order._id %></h2>
+                                <p><strong>Địa chỉ khách hàng:</strong> <%= order.user.address ? order.user.address : 'Chưa có địa chỉ' %></p>
+                                <h3>Sản phẩm:</h3>
+                                <ul>
+                                    <% order.product.forEach(product => { %>
+                                        <li>
+                                            <strong>Tên sản phẩm:</strong> <%= product.productName %><br>
+                                            <strong>Giá:</strong> <%= product.price.toLocaleString() %> VNĐ<br>
+                                            <strong>Người bán:</strong> <%= product.sellerId.name || 'Không xác định' %><br>
+                                            <strong>Hình ảnh:</strong><br>
+                                            <% if (product.image && product.image.length > 0) { %>
+                                                <% product.image.forEach(img => { %>
+                                                    <% if (img && img.url && img.url !== '') { %>
+                                                        <img src="<%= img.url %>" alt="<%= product.productName %>" class="product-image">
+                                                    <% } else { %>
+                                                        <img src="https://via.placeholder.com/100" alt="Không có hình ảnh" class="product-image">
+                                                    <% } %>
+                                                <% }); %>
+                                            <% } else { %>
+                                                <img src="https://via.placeholder.com/100" alt="Không có hình ảnh" class="product-image">
+                                            <% } %>
+                                        </li>
+                                    <% }); %>
+                                </ul>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="5">Không tìm thấy đơn hàng nào.</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+
+        <!-- Pagination -->
+        <div class="pagination">
+            <% if (currentPage > 1) { %>
+                <a href="?page=<%= currentPage - 1 %>&search=<%= search || '' %>">Trang trước</a>
+            <% } %>
+            <% for (let i = 1; i <= totalPages; i++) { %>
+                <a href="?page=<%= i %>&search=<%= search || '' %>" class="<%= currentPage === i ? 'active' : '' %>"><%= i %></a>
+            <% } %>
+            <% if (currentPage < totalPages) { %>
+                <a href="?page=<%= currentPage + 1 %>&search=<%= search || '' %>">Trang sau</a>
+            <% } %>
+        </div>
+    </div>
+    <div class="truck">
+        <span class="cab"></span>
+        <span class="smoke"></span>
+      </div>
+    
+    <script>
+        function showModal(orderId) {
+            document.getElementById('modal-' + orderId).style.display = 'block';
+        }
+    
+        function hideModal(orderId) {
+            document.getElementById('modal-' + orderId).style.display = 'none';
+        }
+    
+        window.onclick = function(event) {
+            const modals = document.getElementsByClassName('modal');
+            for (let i = 0; i < modals.length; i++) {
+                if (event.target == modals[i]) {
+                    modals[i].style.display = 'none';
+                }
+            }
+        }
+    
+        function updateStatus(orderId, selectElement) {
+            localStorage.setItem('selectedStatus_' + orderId, selectElement.value);
+        }
+    
+        function submitStatus(orderId) {
+            const status = localStorage.getItem('selectedStatus_' + orderId);
+            if (status) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/orderTransportation/order/${orderId}/status`;
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'status';
+                input.value = status;
+                form.appendChild(input);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+    </script>
+</body>
+<style>
+    body { font-family: 'Poppins', sans-serif; margin: 20px; background: #f0f2f5; color: #2c3e50; overflow-x: hidden; }
+    .orders-container { max-width: 1000px; margin: 0 auto; opacity: 0; animation: fadeIn 0.8s ease-out forwards; }
+    .search-form { margin-bottom: 20px; }
+    .search-form input { padding: 8px; width: 300px; border: 1px solid #dfe6e9; border-radius: 5px; }
+    .search-form button { padding: 8px 16px; background: #3498db; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
+    .search-form button:hover { background: #2980b9; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #fff; border-radius: 8px; box-shadow: 0 4px 15px hsla(0,0%,0%,0.1); overflow: hidden; }
+    th, td { padding: 12px; border: 1px solid #dfe6e9; text-align: left; transition: all 0.3s ease; }
+    th { background: #34495e; color: #fff; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+    tr:hover { background: #ecf0f1; box-shadow: 0 2px 10px hsla(0,0%,0%,0.05); }
+    .action-container { display: flex; align-items: center; gap: 8px; }
+    select, button { width: 100px; padding: 6px 12px; background: #3498db; color: #fff; border: none; border-radius: 5px; font-size: 14px; cursor: pointer; text-align: center; transition: all 0.3s ease; }
+    select { background: #3498db url('data:image/svg+xml;utf8,<svg fill="white" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 8px center; padding-right: 25px; appearance: none; }
+    select:hover, button:hover { background: #2980b9; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(52,152,219,0.4); }
+    select:focus { outline: none; box-shadow: 0 0 0 3px rgba(52,152,219,0.4); }
+    .modal { display: none; position: fixed; z-index: 1; inset: 0; overflow: auto; background: rgba(0,0,0,0.7); animation: fadeInOverlay 0.6s ease-out; backdrop-filter: blur(5px); }
+    .modal-content { background: linear-gradient(145deg, #fff, #f7f9fc); margin: 10% auto; padding: 30px; border-radius: 15px; width: 80%; max-width: 650px; box-shadow: 0 15px 40px hsla(0,0%,0%,0.2), 0 0 20px rgba(52,152,219,0.1); transform: translateY(50px); animation: slideUp 0.7s cubic-bezier(0.4,0,0.2,1) forwards; position: relative; overflow: hidden; }
+    .modal-content::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 5px; background: linear-gradient(90deg, #3498db, #2980b9); animation: gradientShift 3s infinite alternate; }
+    .close { color: #7f8c8d; float: right; font-size: 32px; font-weight: bold; cursor: pointer; transition: all 0.4s ease; text-shadow: 0 2px 5px hsla(0,0%,0%,0.1); }
+    .close:hover, .close:focus { color: #e74c3c; transform: scale(1.2) rotate(180deg); text-shadow: 0 4px 10px rgba(231,76,60,0.3); }
+    .modal-content h2 { color: #2c3e50; font-weight: 600; margin-bottom: 20px; opacity: 0; animation: fadeInUp 0.5s ease-out 0.3s forwards; }
+    .modal-content p { color: #636e72; font-size: 16px; margin-bottom: 15px; line-height: 1.5; }
+    .modal-content h3 { color: #34495e; font-weight: 500; margin: 20px 0 10px; letter-spacing: 0.5px; }
+    .modal-content ul { list-style: none; padding: 0; margin: 0; }
+    .modal-content li { background: #f9fbfc; padding: 15px; margin-bottom: 10px; border-radius: 8px; transition: all 0.3s ease; }
+    .modal-content li:hover { transform: translateX(5px); box-shadow: 0 4px 15px hsla(0,0%,0%,0.1); }
+    .product-image { max-width: 120px; height: auto; border-radius: 8px; border: 1px solid #dfe6e9; margin-top: 10px; transition: all 0.4s ease; }
+    .product-image:hover { transform: scale(1.15); box-shadow: 0 6px 15px hsla(0,0%,0%,0.15); }
+    h2 { color: #2c3e50; font-weight: 600; margin-bottom: 20px; opacity: 0; animation: slideIn 0.6s ease-out 0.2s forwards; }
+    h3 { color: #7f8c8d; font-weight: 500; margin-top: 15px; }
+    .pagination { margin-top: 20px; text-align: center; }
+    .pagination a { padding: 8px 12px; margin: 0 5px; text-decoration: none; color: #3498db; border: 1px solid #dfe6e9; border-radius: 5px; }
+    .pagination a.active { background: #3498db; color: #fff; }
+    .pagination a:hover:not(.active) { background: #ecf0f1; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes fadeInOverlay { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes gradientShift { from { background-position: 0% 50%; } to { background-position: 100% 50%; } }
+  
+
+    .truck {
+    width: 15em;
+    height: 5em;
+    font-size: 10px;
+    background-color: #444;
+    border-radius: 0.4em;
+    position: fixed; /* Thay đổi từ relative thành fixed */
+    bottom: 0; /* Đặt ở dưới cùng */
+    left: 0; /* Đặt ở bên trái */
+    animation: 
+        put-put 2s infinite,
+        move 10s infinite;
+    z-index: 1000; /* Đảm bảo nó hiển thị trên các phần tử khác */
+}
+
+/* Giữ nguyên phần còn lại của CSS */
+@keyframes put-put {
+    0% {
+        margin-top: 0;
+        height: 5em;
+    }
+    5% {
+        margin-top: -0.2em;
+        height: 5.2em;
+    }
+    20% {
+        margin-top: -0.1em;
+        height: 5em;
+    }
+    35% {
+        margin-top: 0.1em;
+        height: 4.9em;
+    }
+    40% {
+        margin-top: -0.1em;
+        height: 5.1em;
+    }
+    60% {
+        margin-top: 0.1em;
+        height: 4.9em;
+    }
+    75% {
+        margin-top: 0;
+        height: 5em;
+    }
+    80% {
+        margin-top: -0.4em;
+        height: 5.2em;
+    }
+    100% {
+        margin-top: 0.1em;
+        height: 4.9em;
+    }
+}
+
+@keyframes move {
+    0% {
+        margin-left: 90%;
+    }
+    50% {
+        margin-left: 45%;
+    }
+    100% {
+        margin-left: 0;
+    }
+    0%, 100% {
+        filter: opacity(0);
+    }
+    10%, 90% {
+        filter: opacity(1);
+    }
+}
+
+.truck::before,
+.truck::after,
+.cab::after {
+    content: '';
+    position: absolute;
+    box-sizing: border-box;
+    width: 2em;
+    height: 2em;
+    background-color: #444;
+    border: 0.1em solid white;
+    border-radius: 50%;
+    bottom: -1em;
+}
+
+.truck::before {
+    left: 0.6em;
+}
+
+.truck::after {
+    right: 0.6em;
+}
+
+.cab {
+    position: absolute;
+    width: 3.3em;
+    height: 2.5em;
+    background-color: #333;
+    left: -3.5em;
+    bottom: 0;
+    border-radius: 40% 0 0.4em 0.4em;
+}
+
+.cab::before {
+    content: '';
+    position: absolute;
+    width: 2em;
+    height: 1.5em;
+    background-color: #333;
+    top: -1.5em;
+    right: 0;
+    border-radius: 100% 0 0 0;
+}
+
+.cab::after {
+    left: 0.5em;
+}
+
+.smoke,
+.smoke::before,
+.smoke::after {
+    content: '';
+    position: absolute;
+    width: 1em;
+    height: 1em;
+    background-color: #333;
+    right: -0.1em;
+    bottom: -0.5em;
+    border-radius: 50%;
+}
+
+.smoke {
+    animation:
+        drift 2s infinite,
+        smoke-1 2s infinite;
+}
+
+.smoke::before {
+    animation: 
+        drift 3s infinite,
+        smoke-2 3s infinite;
+}
+
+.smoke::after {
+    animation: 
+        drift 4s infinite,
+        smoke-3 4s infinite;
+}
+
+@keyframes drift {
+    0%, 100% {
+        filter: opacity(0);
+    }
+    15% {
+        filter: opacity(0.9);
+    }
+}
+
+@keyframes smoke-1 {
+    to {
+        width: 3em;
+        height: 3em;
+        right: -3em;
+        bottom: 0.5em;
+    }
+}
+
+@keyframes smoke-2 {
+    to {
+        width: 2.5em;
+        height: 2.5em;
+        right: -6em;
+        bottom: 0.8em;
+    }
+}
+
+@keyframes smoke-3 {
+    to {
+        width: 3.5em;
+        height: 3.5em;
+        right: -4em;
+        bottom: 0.2em;
+    }
+}
+
+</style>
+</html>

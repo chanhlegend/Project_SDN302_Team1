@@ -9,6 +9,9 @@ const Evaluate = require('../models/Evaluate');
 class ProductController {
     // Lấy danh sách sản phẩm
     async listProduct(req, res, next) {
+        if (!req.session.user || req.session.user.role !== 'admin') {
+            return res.redirect('/login'); 
+        }
         try {
             const products = await Product.find({}).populate('sellerId', 'name email');
             res.render('admin', { products });
@@ -281,4 +284,3 @@ async function getAverageRating(sellerId) {
 }
 
 module.exports = new ProductController;
-
