@@ -22,6 +22,7 @@ const payment = require('./payment');
 const chatRouter = require('./chat');
 const orderTracking = require('./orderTracking');
 const vnpay = require('./vnpay');
+const orderTransportationRouter = require('./orderTransportation')
 function route(app) {
     app.use('/', siteRouter)
     app.use('/login', loginRouter)
@@ -48,5 +49,6 @@ function route(app) {
     app.use('/payment', payment)
     app.use('/orderTracking', orderTracking);
     app.use('/order', vnpay);
+    app.use('/orderTransportation', orderTransportationRouter);
 }
 module.exports = route

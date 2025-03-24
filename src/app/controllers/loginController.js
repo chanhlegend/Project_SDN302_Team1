@@ -16,8 +16,14 @@ class loginController {
                         if (err) {
                             return next(err);
                         }
-                        if (isMatch) {
+                        if (isMatch) {                           
                             req.session.user = user;
+                            if(user.role ==='transportation'){
+                               return res.redirect('/orderTransportation/orders');
+                            }
+                            if(user.role ==='admin'){
+                              return  res.redirect('/admin/products');
+                            }
                             console.log('Session after login:', req.session); // Thêm dòng này để in ra thông tin session
                             res.redirect('/');
                         } else {
