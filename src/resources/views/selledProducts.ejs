@@ -11,45 +11,68 @@
 <body>
     <!-- Include Header -->
     <%- include('partials/header') %>
+<div class="main-content">
     <h1>Danh Sách Sản Phẩm Đã Bán</h1>
-
-    <% if (products.length > 0) { %>
+    <div class="navigation">
+        <div class="grid">
+            <a href="/productOwner/productSold"style="text-decoration: none;">
+                <div class="grid-item <%= currentTab === 'sold' ? 'active' : '' %>">
+                    <p>Đã Bán</p>
+                </div>
+            </a>
+            <a href="/productOwner/product"style="text-decoration: none;">
+                <div class="grid-item <%= currentTab === 'active' ? 'active' : '' %>">
+                    <p>Đang Bán</p>
+                </div>
+            </a>
+            <a href="/productOwner/productNonActive"style="text-decoration: none;">
+                <div class="grid-item <%= currentTab === 'non-active' ? 'active' : '' %>">
+                    <p>Kiểm Duyệt</p>
+                </div>
+            </a>
+        </div>
+    </div>
+    <% if (orders.length > 0) { %>
         <table>
             <thead>
                 <tr>
                     <th>Sản Phẩm</th>
                     <th>Mô Tả</th>
                     <th>Giá</th>
-                    <th>Thời Gian</th>
+                    <th>Thời Gian Đặt Hàng</th>
                 </tr>
             </thead>
             <tbody>
-                <% products.forEach(product => { %>
-                    <tr>
-                        <td class="product-info">
-                            <img 
-                                src="<%= product.image && product.image.length > 0 ? product.image[0].url : '/default-image.jpg' %>" 
-                                alt="<%= product.productName %>" 
-                                class="product-image"
-                            >
-                            <div>
-                                <span class="product-name"><%= product.productName %></span>
-                                <br>
-                            </div>
-                        </td>     
-                        <td class="product-description"><%= product.description %></td>                   
-                        <td class="product-price">
-                            <span class="price-text"><%= product.price.toLocaleString() %> VND</span>
-                        </td>
-                        <td class="product-time"> 
-                            <%= new Date(product.createdAt).toLocaleString('vi-VN') %>
-                        </td>
-                    </tr>
+                <% orders.forEach(order => { %>
+                    <% order.product.forEach(product => { %>
+                        <tr>
+                            <td class="product-info">
+                                <img 
+                                    src="<%= product.image && product.image.length > 0 ? product.image[0].url : '/default-image.jpg' %>" 
+                                    alt="<%= product.productName %>" 
+                                    class="product-image"
+                                >
+                                <div>
+                                    <span class="product-name"><%= product.productName %></span>
+                                    <br>
+                                </div>
+                            </td>     
+                            <td class="product-description"><%= product.description %></td>                   
+                            <td class="product-price">
+                                <span class="price-text"><%= product.price.toLocaleString() %> VND</span>
+                            </td>
+                            <td class="product-time"> 
+                                <%= new Date(order.createdAt).toLocaleString('vi-VN') %>
+                            </td>
+                        </tr>
+                    <% }) %>
                 <% }) %>
             </tbody>
         </table>                       
     <% } else { %>
         <p>Không có sản phẩm nào đã bán.</p>
     <% } %>
+</div> 
+<%- include('partials/footer') %>
 </body>
 </html>

@@ -42,10 +42,12 @@
         </a>
         
         <% if(typeof session.user !=='undefined' && session.user.role === 'seller') { %>
+      <a href="/user/account/menuSeller" style="text-decoration: none">
         <div class="grid-item">
           <i class="fas fa-tags"></i>
           <p>Trang người bán</p>
         </div>
+      </a>
         <% } else { %>
         <a href="/user/account/salesRegistration" style="text-decoration: none;">
           <div class="grid-item">

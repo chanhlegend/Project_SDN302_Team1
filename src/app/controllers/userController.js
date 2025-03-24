@@ -178,6 +178,13 @@ async getUserReports(req, res, next) {
         const categories = await Category.find().sort({ createdAt: -1 });
         res.render('menuAccount', { categories });
     }
+    async menuSeller(req, res) {
+        if(!req.session.user) {
+            return res.redirect('/login');
+        }
+        const categories = await Category.find().sort({ createdAt: -1 });
+        res.render('menuSeller', { categories });
+    }
 
     //Hiển thị trang đổi mật khẩu
     async changePassword(req, res, next) {

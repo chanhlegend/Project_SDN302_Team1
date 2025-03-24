@@ -1,5 +1,6 @@
 const Product = require('../models/Product')
 const Category = require('../models/Category')
+const Order = require('../models/Order')
 const { mutipleMongoeseToObject, mongoeseToObject } = require('../../util/Mongoese')
 const mongoose = require('mongoose');
 const cloudinary = require('../../config/cloudinary');
@@ -80,29 +81,62 @@ class productOwnerController {
             next(err);
         }
     }
-
-    async listSelledProducts(req, res, next) {
+    async listsoldProducts(req, res, next) {
         try {
             const userId = req.session.user ? req.session.user._id : null;
             if (!userId) {
                 return res.status(401).send('Bạn cần đăng nhập để xem danh sách sản phẩm đã bán');
             }
-   
+    
+            const categories = await Category.find().sort({ createdAt: -1 });
+    
+            let orders = await Order.find({
+                status: 'Delivered'
+            })
+                .populate({
+                    path: 'product',
+                    match: { sellerId: userId },
+                    populate: { path: 'image' }
+                })
+                .sort({ createdAt: -1 });
+    
+            orders = orders.filter(order => order.product.length > 0);
+    
+            console.log('userId: ', userId);
+            console.log('Sold orders:', orders);
+            res.render('selledProducts', { 
+                orders, 
+                categories, 
+                userId, 
+                currentTab: 'sold' 
+            });
+        } catch (err) {
+            console.error('Error:', err);
+            next(err);
+        }
+    }
+    async listNonActiveProducts(req, res, next) {
+        try {
+            const userId = req.session.user ? req.session.user._id : null;
+            if (!userId) {
+                return res.status(401).send('Bạn cần đăng nhập để xem danh sách sản phẩm chưa kiểm duyệt');
+            }
+    
             const categories = await Category.find().sort({ createdAt: -1 });
             let products = await Product.find({
                 sellerId: userId,
-                status: "selled"
+                status: "non-active"
             })
                 .populate('image')
                 .sort({ createdAt: -1 });
     
             console.log('userId: ', userId);
-            console.log('Selled products:', products);
-            res.render('productOwner', { 
+            console.log('Non active products:', products);
+            res.render('nonActiveProduct', { 
                 products, 
                 categories, 
                 userId, 
-                currentTab: 'selled' // Truyền currentTab để đánh dấu tab "Đã Bán"
+                currentTab: 'non-active' // Truyền currentTab để đánh dấu tab "chưa kiểm duyệt"
             });
         } catch (err) {
             console.error('Error:', err);
