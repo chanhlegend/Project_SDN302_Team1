@@ -5,6 +5,7 @@ const Category = require('../models/Category');
 class UserProfileController {
     getUserProfile(req, res, next) {
         const userId = req.params.id;
+        
         User.findById(userId)
             .then(user => {
                 if (!user) {
@@ -17,22 +18,27 @@ class UserProfileController {
 
     viewUserProfile(req, res, next) {
         const userId = req.params.id;
-        User.findById(userId)
-            .then(user => {
-                if (!user) {
-                    return res.status(404).json({ message: 'User not found' });
-                }
-
-                if (req.xhr || req.headers["accept"].includes("application/json")) {
-                    return res.json(user); // Trả về toàn bộ thông tin user
-                }
+        
+        Promise.all([
+            User.findById(userId),
+            Category.find() // Hoặc Category.find({ userId }) nếu danh mục liên quan đến user
+        ])
+        .then(([user, categories]) => {
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' });
+            }
     
-                res.render('viewProfile', { 
-                    user: mongoeseToObject(user),
-                    messages: req.flash()
-                });
-            })
-            .catch(next);
+            if (req.xhr || req.headers["accept"].includes("application/json")) {
+                return res.json({ user, categories }); 
+            }
+            
+            res.render('viewProfile', { 
+                user: mongoeseToObject(user),
+                categories, 
+                messages: req.flash()
+            });
+        })
+        .catch(next);
     }
 
     async getUserInfo(req, res, next) {
