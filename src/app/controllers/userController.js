@@ -198,6 +198,10 @@ async getCustomers(req, res, next) {
     }
 
     async postChangePassword(req, res, next) {
+        const categories = await Category.find().sort({ createdAt: -1 });
+        const userId = req.session.user._id;
+        const user = await
+            User.findById(userId)
         if (!req.session.user) {
             return res.redirect('/login');
         }
@@ -211,19 +215,19 @@ async getCustomers(req, res, next) {
             }
             const isMatch = await bcrypt.compare(oldpassword, user.password);
             if (!isMatch) {
-                return res.status(400).json({ message: 'Mật khẩu cũ không đúng.' });
+                return res.render('changePassword', { categories, user, error: 'Mật khẩu cũ không đúng'});
             }
             if (newpassword.length <= 6) {
-                return res.status(400).json({ message: 'Mật khẩu phải trên 6 kí tự.' });
+                return res.render('changePassword', { categories, user,  error: 'Mật khẩu phải trên 6 kí tự' });
             }
             if (newpassword !== repassword) {
-                return res.status(400).json({ message: 'Mật khẩu không trùng nhau.' });
+                return res.render('changePassword', { categories, user, error: 'Mật khẩu không trùng nhau' });
             }
 
             const salt = await bcrypt.genSalt(10);
             user.password = await bcrypt.hash(newpassword, salt);
             await user.save();
-            res.status(200).json({ message: 'Đổi mật khẩu thành công' });
+            res.render('changePassword', { categories, user, error: 'Đổi mật khẩu thành công' });
         } catch (error) {
             res.status(500).json({ message: 'Error changing password', error });
         }
