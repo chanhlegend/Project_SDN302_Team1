@@ -4,11 +4,92 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lỗi giao dịch</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #ffebee, #ffcdd2); /* Gradient nền đỏ nhạt */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Bóng đổ mềm hơn */
+            max-width: 500px;
+            width: 90%; /* Responsive hơn */
+            text-align: center;
+            animation: fadeIn 0.5s ease-in-out; /* Hiệu ứng xuất hiện */
+        }
+
+        h1 {
+            color: #dc3545; /* Màu đỏ báo lỗi */
+            font-size: 2.8em;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        p {
+            font-size: 1.3em;
+            color: #444;
+            margin: 15px 0;
+        }
+
+        a {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(45deg, #007bff, #00c4ff); /* Gradient cho nút */
+            color: white;
+            text-decoration: none;
+            border-radius: 25px; /* Bo tròn hơn */
+            font-size: 1.2em;
+            font-weight: bold;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        a:hover {
+            transform: translateY(-3px); /* Nâng nút lên khi hover */
+            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4); /* Thêm bóng đổ */
+        }
+
+        /* Hiệu ứng fade-in */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive cho màn hình nhỏ */
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2em;
+            }
+            p {
+                font-size: 1em;
+            }
+            a {
+                padding: 10px 20px;
+                font-size: 1em;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Thanh toán không thành công!</h1>
-    <p>Mã lỗi: <%= code %></p>
-    <p><%= message %></p>
-    <a href="/">Quay lại trang chủ</a>
+    <div class="container">
+        <h1>Thanh toán không thành công!</h1>
+        <p>Mã lỗi: <%= code %></p>
+        <p><%= message %></p>
+        <a href="/">Quay lại trang chủ</a>
+    </div>
 </body>
 </html>
