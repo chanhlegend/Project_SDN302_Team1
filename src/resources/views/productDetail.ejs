@@ -399,10 +399,9 @@
         <div class="product-details">
           <div class="product-title"><%= product.productName %></div>
           <div class="product-rating">
-            <% const fullStars = Math.floor(averageRating);
-            const hasHalfStar = (averageRating % 1) !== 0; 
-          %> <% for (let i = 1; i <= 5; i++) { %> <% if (i <= fullStars)
-            { %>
+            <% const fullStars = Math.floor(averageRating); const hasHalfStar =
+            (averageRating % 1) !== 0; %> <% for (let i = 1; i <= 5; i++) { %>
+            <% if (i <= fullStars) { %>
             <!-- Hiển thị sao vàng -->
             <i class="fas fa-star text-yellow-500"></i>
             <% } else if (i === fullStars + 1 && hasHalfStar) { %>
@@ -441,6 +440,7 @@
           </div>
 
           <div class="product-actions">
+            <% if (session.user && session.user._id != product.sellerId._id) { %>
             <form action="/cart/addToCart" method="Post">
               <input type="hidden" value="<%= product._id%>" name="id" />
               <button class="btn-53">
@@ -453,6 +453,7 @@
                 </div>
               </button>
             </form>
+
             <form action="/checkout" method="POST">
               <!-- Gửi danh sách ID của sản phẩm, ở đây chỉ có một sản phẩm nên không cần map -->
               <input
@@ -468,12 +469,14 @@
                 </div>
               </button>
             </form>
+            <% } %>
           </div>
 
           <div>
             <!-- From Uiverse.io by doniaskima -->
           </div>
 
+          <% if (session.user && session.user._id != product.sellerId._id) { %>
           <div class="chat-btn">
             <ul>
               <li style="--i: #cc9159; --j: #2f80ed">
@@ -495,6 +498,7 @@
               </li>
             </ul>
           </div>
+          <% } %>
         </div>
       </div>
     </div>
@@ -507,7 +511,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
       function startChat(sellerId) {
-        window.location.href = `/chat/start/${sellerId}`;
+        window.location.href = `/chat/start/${sellerId}`
       }
     </script>
   </body>
