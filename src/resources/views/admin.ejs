@@ -141,7 +141,7 @@
                             <td><%= product.sellerId ? product.sellerId.name : 'Không có' %></td>
                             <td><%= product.sellerId ? product.sellerId.email : 'Không có' %></td>
                             <td>
-                                <% if (product.status === 'non_active') { %>
+                                <% if (product.status === 'non-active') { %>
                                     <span class="status pending">Chờ duyệt</span>
                                 <% } else if (product.status === 'active') { %>
                                     <span class="status approved">Đã duyệt</span>
