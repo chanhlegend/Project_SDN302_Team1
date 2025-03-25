@@ -119,11 +119,10 @@
             </p>
             <div class="flex space-x-2">
     <!-- Nút Trở về -->
-    <a href="/orderTracking"
-       class="bg-gray-200 text-gray-700 px-6 py-3 rounded w-full text-center inline-block">
+    <p href="/orderTracking"
+       class="bg-gray-200 text-gray-700 px-6 py-3 rounded w-full text-center inline-block h-50" style="height: 50px;">
         Trở về
-    </a>
-
+    </p>
     <!-- Nút hủy hàng với điều kiện -->
     <form action="/orders/cancelOrder" method="POST" class="inline-block w-full">
         <input type="hidden" name="orderId" value="<%= order._id %>">
