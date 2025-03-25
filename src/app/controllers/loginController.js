@@ -17,6 +17,9 @@ class loginController {
                             return next(err);
                         }
                         if (isMatch) {                           
+                            if(user.status === 'banned'){
+                                return res.redirect('/login/banned');
+                            }
                             req.session.user = user;
 
                             if(user.role ==='transportation'){
@@ -143,6 +146,10 @@ class loginController {
                     .catch(next);
             }
         }
+    }
+
+    async bannedUser(req, res) {
+        res.render('banned');
     }
 }
 
