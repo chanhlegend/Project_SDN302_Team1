@@ -24,6 +24,10 @@ class orderController {
             next(error);  
         }
     }
+
+    // async detailOrder (req, res, next){
+    //     const 
+    // }
 }
 
 module.exports = new orderController;
