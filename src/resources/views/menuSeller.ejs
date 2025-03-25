@@ -1,0 +1,48 @@
+<html>
+  <head>
+    <title>Your Account</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="/css/menuSeller.css" />
+  </head>
+  <body>
+    <!-- Include Header -->
+    <%- include('partials/header') %>
+    <div class="header-page">
+      <h1>MENU NGƯỜI BÁN</h1>
+      <% if(typeof err !== 'undefined' && err) { %>
+      <p><%= err %></p>
+      <% } %>
+      <% if(typeof message !== 'undefined' && message) { %>
+        <p style="color: green;"><%= message %></p>
+        <% } %>
+    </div>
+    <div class="container" style="margin-bottom: 50px">
+      <div class="grid">
+        <a href="/productOwner/product" style="text-decoration: none;">
+            <div class="grid-item">
+              <i class="fa-solid fa-shop"></i>
+              <p>Cửa Hàng Của Tôi</p>
+            </div>
+        </a>
+
+        <a href="/seller/myStatics" style="text-decoration: none">
+          <div class="grid-item">
+            <i class="fa-solid fa-signal"></i>
+            <p>Doanh Thu Cá Nhân</p>
+          </div>
+        </a>
+        <a href="/productOwner/createProduct" style="text-decoration: none">
+          <div class="grid-item">
+            <i class="fa-solid fa-plus"></i>
+            <p>Thêm Sản Phẩm</p>
+        </div>
+        </a>
+      </div>
+    </div>
+    <!-- Include Footer -->
+    <%- include('partials/footer') %>
+  </body>
+</html>

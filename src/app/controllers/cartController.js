@@ -56,13 +56,14 @@ class cartController {
             cartItems = await Product.find({
                 _id: { $in: cart.products },
                 status: { $ne: "sold" }  
-            }).populate('sellerId', 'name');
+            }).populate('sellerId', 'name')
+              .populate('image', 'url');
 
             if (cartItems.length > 0) {
                 message = "";
             }
         }
-
+       
         res.render('cart', { cart, cartItems, message, categories });
     } catch (err) {
         console.error("Lỗi khi lấy giỏ hàng:", err);

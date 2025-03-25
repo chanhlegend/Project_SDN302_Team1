@@ -8,6 +8,7 @@ const RegistrationForm = require('../models/RegistrationForm');
 const { mutipleMongoeseToObject, mongoeseToObject } = require('../../util/Mongoese');
 
 class UserController {
+
 // Hiển thị danh sách người dùng cho admin
 async getCustomers(req, res, next) {
     try {
@@ -19,32 +20,42 @@ async getCustomers(req, res, next) {
                 return { ...user, reportCount };
             })
         );
+            // Lấy số lượng báo cáo cho từng người dùng
+            const usersWithReportCount = await Promise.all(
+                users.map(async (user) => {
+                    const reportCount = await Report.countDocuments({ sellerId: user._id });
+                    return { ...user, reportCount }; // Thêm số lượng báo cáo vào object user
+                })
+            );
 
-        res.render('customers', { users: usersWithReportCount });
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Lỗi lấy danh sách người dùng');
-    }
-}
-
-// Hiển thị chi tiết reports của một user dưới dạng JSON
-async getUserReports(req, res, next) {
-    try {
-        const sellerId = req.params.sellerId;
-        const user = await User.findById(sellerId).lean();
-        if (!user) {
-            return res.status(404).json({ error: 'Người dùng không tồn tại' });
+            res.render('customers', { users: usersWithReportCount });
+        } catch (error) {
+            console.error(error);
+            res.status(500).send('Lỗi lấy danh sách người dùng');
         }
-        const reports = await Report.find({ sellerId: sellerId })
-            .populate('reporterId', 'name email')
-            .lean();
-
-        res.json({ reports });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Lỗi khi lấy chi tiết báo cáo' });
     }
-}
+
+    // Hiển thị chi tiết reports của một user dưới dạng JSON
+    async getUserReports(req, res, next) {
+        try {
+            const sellerId = req.params.sellerId;
+            const user = await User.findById(sellerId).lean();
+            if (!user) {
+                return res.status(404).json({ error: 'Người dùng không tồn tại' });
+            }
+
+            const reports = await Report.find({ sellerId: sellerId })
+                .populate('reporterId', 'name email')
+               
+                .lean();
+
+
+            res.json({ reports });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Lỗi khi lấy chi tiết báo cáo' });
+        }
+    }
     // Ban người dùng
     async banCustomer(req, res) {
         try {
@@ -164,11 +175,18 @@ async getUserReports(req, res, next) {
 
     //Hiển thị menu profile
     async menuAccount(req, res) {
-        if(!req.session.user) {
+        if (!req.session.user) {
             return res.redirect('/login');
         }
         const categories = await Category.find().sort({ createdAt: -1 });
         res.render('menuAccount', { categories });
+    }
+    async menuSeller(req, res) {
+        if(!req.session.user) {
+            return res.redirect('/login');
+        }
+        const categories = await Category.find().sort({ createdAt: -1 });
+        res.render('menuSeller', { categories });
     }
 
     //Hiển thị trang đổi mật khẩu
@@ -207,7 +225,7 @@ async getUserReports(req, res, next) {
             }
             if (newpassword !== repassword) {
                 return res.status(400).json({ message: 'Mật khẩu không trùng nhau.' });
-            }            
+            }
 
             const salt = await bcrypt.genSalt(10);
             user.password = await bcrypt.hash(newpassword, salt);
@@ -224,30 +242,33 @@ async getUserReports(req, res, next) {
             return res.redirect('/login');
         }
         const user = req.session.user;
+        if (user.address == '' || user.phone == '') {
+            return res.redirect('/user/users/userProfile'); //edit profile
+        }
         res.render('salesRegistration', { categories, user });
     }
 
     async postSalesRegistation(req, res) {
-            if (!req.session.user) {
-                return res.redirect('/login');
-            }
-            const userId = req.session.user._id;
-    
-            const registrationForm = await RegistrationForm.find({ userId });
-            const categories = await Category.find().sort({ createdAt: -1 });
-    
-            if (registrationForm.length > 0) {
-                return res.render('menuAccount', { err: 'Đơn đăng kí của bạn đang được duyệt!', categories });
-            }
-    
-            try {
-                const newRegistrationForm = new RegistrationForm({ userId });
-                await newRegistrationForm.save();
-                res.render('menuAccount', { message: 'Đăng kí thành công!', categories });
-            } catch (error) {
-                res.status(500).json({ message: 'Error creating registration form', error });
-            }
+        if (!req.session.user) {
+            return res.redirect('/login');
         }
+        const userId = req.session.user._id;
+
+        const registrationForm = await RegistrationForm.find({ userId });
+        const categories = await Category.find().sort({ createdAt: -1 });
+
+        if (registrationForm.length > 0) {
+            return res.render('menuAccount', { err: 'Đơn đăng kí của bạn đang được duyệt!', categories });
+        }
+
+        try {
+            const newRegistrationForm = new RegistrationForm({ userId });
+            await newRegistrationForm.save();
+            res.render('menuAccount', { message: 'Đăng kí thành công!', categories });
+        } catch (error) {
+            res.status(500).json({ message: 'Error creating registration form', error });
+        }
+    }
 }
 
 module.exports = new UserController;
