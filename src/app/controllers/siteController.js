@@ -8,17 +8,17 @@ class siteController {
   async index(req, res) {
     const user = req.session.user;
     let notifications = [];
-    const products = await Product.find().sort({ createdAt: -1 })
+    const products = await Product.find({status: 'active'}).sort({ createdAt: -1 })
       .populate('image')
       .populate('sellerId'); 
 
     const laptopCategory = await Category.findOne({ name: 'Máy Tính' });
-    const laptops = laptopCategory ? await Product.find({ category: laptopCategory._id }).sort({ createdAt: -1 })
+    const laptops = laptopCategory ? await Product.find({ category: laptopCategory._id,  status: 'active'}).sort({ createdAt: -1 })
       .populate('image')
       .populate('sellerId') : [];
 
     const phoneCategory = await Category.findOne({ name: 'Điện Thoại' });
-    const phones = phoneCategory ? await Product.find({ category: phoneCategory._id }).sort({ createdAt: -1 })
+    const phones = phoneCategory ? await Product.find({ category: phoneCategory._id, status: 'active' }).sort({ createdAt: -1 })
       .populate('image')
       .populate('sellerId') : [];
 

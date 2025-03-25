@@ -13,8 +13,17 @@ class ProductController {
             return res.redirect('/login'); 
         }
         try {
-            const products = await Product.find({}).populate('sellerId', 'name email');
-            res.render('admin', { products });
+            const status = req.query.status || null;
+            let query = {};
+            if (status){
+                query.status = status;
+            }
+            const products = await Product.find(query).populate('sellerId', 'name email');
+            let title;
+            if (status ==='non-active') title ='Sản phẩm chờ duyệt';
+            else if(status ==='rejected') title ='Sản phẩm bị từ chối';
+            else title = 'Tất cả sản phẩm';
+            res.render('admin', { products, title});
         } catch (err) {
             res.status(500).send("Lỗi server");
         }

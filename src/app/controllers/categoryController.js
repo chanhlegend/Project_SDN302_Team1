@@ -41,7 +41,7 @@ class CategoryController {
             const limit = parseInt(req.query.limit) || 9;
             const skip = (page - 1) * limit;
     
-            const products = await Product.find({ category: categoryId })
+            const products = await Product.find({ category: categoryId, status: 'active' })
                 .sort({ createdAt: -1 })
                 .skip(skip)
                 .limit(limit)

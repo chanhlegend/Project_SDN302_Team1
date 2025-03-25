@@ -93,8 +93,9 @@
             <i class="fas fa-box"></i><span>Sản Phẩm</span>
         </div>
         <div class="submenu" id="productSubmenu">
-            <a href="/admin/products">Chưa kiểm duyệt</a>
-            <a href="#">Đã kiểm duyệt</a>
+            <a href="/admin/products">Tất cả sản phẩm</a>
+            <a href="/admin/products?status=non-active">Chờ duyệt</a>
+            <a href="/admin/products?status=rejected">Đã từ chối</a>
         </div>
         <div class="menu-item" onclick="toggleSubmenu('customerSubmenu')">
             <i class="fas fa-users" style="color: #E7B9A6;"></i><span>Customers</span>

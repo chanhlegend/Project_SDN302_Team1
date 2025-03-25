@@ -157,188 +157,201 @@
   </body>
   <script>
     document.addEventListener("DOMContentLoaded", async () => {
-      const userId = window.location.pathname.split("/").pop();
-      const followButton = document.getElementById("follow-button");
-      followButton.addEventListener("click", handleFollowAction);
-      const followingId = followButton.dataset.id;
-      const reviewsList = document.querySelectorAll(".reviews-list");
+      const userId = window.location.pathname.split("/").pop()
+      const followButton = document.getElementById("follow-button")
+      followButton.addEventListener("click", handleFollowAction)
+      const followingId = followButton.dataset.id
+      const reviewsList = document.querySelectorAll(".reviews-list")
 
-      await fetchUserProfile(userId);
-      await fetchProducts(userId);
-      await fetchReviews(userId);
-      await checkFollowStatus(followingId);
+      await fetchUserProfile(userId)
+      await fetchProducts(userId)
+      await fetchReviews(userId)
+      await checkFollowStatus(followingId)
 
-      setupTabs(userId);
+      setupTabs(userId)
 
       function setupTabs(userId) {
         document.querySelectorAll(".tab-item").forEach((tab) => {
           tab.addEventListener("click", async function (e) {
-            e.preventDefault();
+            e.preventDefault()
 
             // Xóa active các tab
             document
               .querySelectorAll(".tab-item")
-              .forEach((t) => t.classList.remove("active"));
-            this.classList.add("active");
+              .forEach((t) => t.classList.remove("active"))
+            this.classList.add("active")
 
             // Ẩn tất cả nội dung tab
             document.querySelectorAll(".tab-content").forEach((content) => {
-              content.style.display = "none";
-            });
+              content.style.display = "none"
+            })
 
-            const tabId = this.dataset.tab;
-            const activeTab = document.getElementById(tabId);
+            const tabId = this.dataset.tab
+            const activeTab = document.getElementById(tabId)
             if (activeTab) {
-              activeTab.style.display = "block";
+              activeTab.style.display = "block"
             }
 
             // Load dữ liệu tương ứng
             if (tabId === "overview") {
-              await fetchProducts(userId);
+              await fetchProducts(userId)
             } else if (tabId === "sold") {
-              await fetchProductsByStatus(userId, "sold");
+              await fetchProductsByStatus(userId, "sold")
             } else if (tabId === "selling") {
-              await fetchProductsByStatus(userId, "active");
+              await fetchProductsByStatus(userId, "active")
             } else if (tabId === "reviews") {
-              await fetchReviews(userId);
+              await fetchReviews(userId)
             }
-          });
-        });
+          })
+        })
 
-        const defaultTab = document.querySelector(".tab-item.active");
+        const defaultTab = document.querySelector(".tab-item.active")
         if (defaultTab) {
-          defaultTab.click();
+          defaultTab.click()
         }
       }
 
       function closeUserReportModal() {
-        document.getElementById("userReportModal").style.display = "none";
+        document.getElementById("userReportModal").style.display = "none"
       }
 
       document
         .getElementById("reportReason")
         .addEventListener("change", function () {
-          const customReason = document.getElementById("customReportReason");
-          const customLabel = document.getElementById("customReportLabel");
+          const customReason = document.getElementById("customReportReason")
+          const customLabel = document.getElementById("customReportLabel")
           if (this.value === "other") {
-            customReason.style.display = "block";
-            customLabel.style.display = "block";
+            customReason.style.display = "block"
+            customLabel.style.display = "block"
           } else {
-            customReason.style.display = "none";
-            customLabel.style.display = "none";
+            customReason.style.display = "none"
+            customLabel.style.display = "none"
           }
-        });
+        })
 
       window.onclick = function (event) {
-        const modal = document.getElementById("userReportModal");
+        const modal = document.getElementById("userReportModal")
         if (event.target === modal) {
-          closeUserReportModal();
+          closeUserReportModal()
         }
-      };
+      }
 
       async function fetchProductsByStatus(userId, status) {
         try {
           const response = await fetch(
             `http://localhost:3000/productOwner/${userId}/status?status=${status}`
-          );
-          const data = await response.json();
+          )
+          const data = await response.json()
 
           if (!response.ok || !data.success) {
-            throw new Error(`Lỗi khi lấy danh sách sản phẩm (${status})`);
+            throw new Error(`Lỗi khi lấy danh sách sản phẩm (${status})`)
           }
 
           // Xác định container dựa vào status
           const containerClass =
-            status === "sold" ? ".sold-products" : ".selling-products";
-          const container = document.querySelector(containerClass);
+            status === "sold" ? ".sold-products" : ".selling-products"
+          const container = document.querySelector(containerClass)
 
           if (!container) {
-            console.error("Không tìm thấy container:", containerClass);
-            return;
+            console.error("Không tìm thấy container:", containerClass)
+            return
           }
 
-          container.innerHTML = ""; // Xóa nội dung cũ
+          container.innerHTML = "" // Xóa nội dung cũ
 
           if (data.products.length === 0) {
             container.innerHTML = `<p>Không có sản phẩm nào ${
               status === "sold" ? "đã bán" : "đang bán"
-            }.</p>`;
-            return;
+            }.</p>`
+            return
           }
 
           data.products.forEach((product) => {
-            const productItem = document.createElement("div");
-            productItem.classList.add("product-item");
-            productItem.innerHTML = `
-                <div class="product-image">
-                    <img src="${
-                      product.image.length > 0
-                        ? product.image[0].url
-                        : "/images/default.jpg"
-                    }" alt="${product.productName}">
-                </div>
-                <div class="product-info">
-                    <h3 class="product-name">${product.productName}</h3>
-                    <div class="price-container">
-                        <div class="price">${product.price.toLocaleString()}₫</div>
-                        <button class="favorite-btn">🤍</button>
-                    </div>
-                </div>
-            `;
+            const productItem = document.createElement("div")
+            productItem.classList.add("product-item")
 
-            // Thêm sự kiện click để chuyển hướng sang trang sản phẩm
-            productItem.addEventListener("click", (event) => {
-              console.log("Clicked on product:", product._id);
-              // Nếu click vào nút "favorite" thì không chuyển trang
-              if (!event.target.classList.contains("favorite-btn")) {
-                window.location.href = `/product/${product._id}`;
-              }
-            });
+            // Nếu là sản phẩm đã bán, thêm class `sold-out` để vô hiệu hóa click
+            if (status === "sold") {
+              productItem.classList.add("sold-out")
+            }
+
+            productItem.innerHTML = `
+          <div class="product-image">
+              <img src="${
+                product.image.length > 0
+                  ? product.image[0].url
+                  : "/images/default.jpg"
+              }" alt="${product.productName}">
+          </div>
+          <div class="product-info">
+              <h3 class="product-name">${product.productName}</h3>
+              <div class="price-container">
+                  <div class="price">${product.price.toLocaleString()}₫</div>
+                  <button class="favorite-btn">🤍</button>
+              </div>
+          </div>
+          ${
+            status === "sold"
+              ? '<div class="sold-label">Đã bán</div>' // Thêm nhãn "Đã bán"
+              : ""
+          }
+      `
+
+            // Nếu sản phẩm chưa bán, cho phép click vào để chuyển trang
+            if (status !== "sold") {
+              productItem.addEventListener("click", (event) => {
+                console.log("Clicked on product:", product._id)
+                // Nếu click vào nút "favorite" thì không chuyển trang
+                if (!event.target.classList.contains("favorite-btn")) {
+                  window.location.href = `/product/${product._id}`
+                }
+              })
+            }
 
             // Xử lý sự kiện cho nút yêu thích (nếu có)
-            const favoriteBtn = productItem.querySelector(".favorite-btn");
+            const favoriteBtn = productItem.querySelector(".favorite-btn")
             favoriteBtn.addEventListener("click", (event) => {
-              event.stopPropagation(); // Ngăn chặn sự kiện click lan ra ngoài
-              toggleFavorite(event, favoriteBtn);
-            });
+              event.stopPropagation() // Ngăn chặn sự kiện click lan ra ngoài
+              toggleFavorite(event, favoriteBtn)
+            })
 
-            container.appendChild(productItem);
-          });
+            container.appendChild(productItem)
+          })
         } catch (error) {
-          console.error(`Lỗi khi lấy sản phẩm (${status}):`, error);
+          console.error(`Lỗi khi lấy sản phẩm (${status}):`, error)
         }
       }
 
       async function fetchUserProfile(userId) {
         try {
-          const response = await fetch(`/user/profile/${userId}`);
-          const user = await response.json();
-          if (!response.ok) throw new Error(user.message);
+          const response = await fetch(`/user/profile/${userId}`)
+          const user = await response.json()
+          if (!response.ok) throw new Error(user.message)
 
           document.getElementById("shop-avatar").src =
-            user.avatar || "/images/shop-avatar.jpg";
+            user.avatar || "/images/shop-avatar.jpg"
           document.getElementById("shop-name").textContent =
-            user.username || "Chưa có tên";
+            user.username || "Chưa có tên"
           document.getElementById("shop-address").textContent =
-            user.address || "Chưa có địa chỉ";
+            user.address || "Chưa có địa chỉ"
         } catch (error) {
-          console.error("Lỗi khi lấy thông tin người dùng:", error);
+          console.error("Lỗi khi lấy thông tin người dùng:", error)
         }
       }
 
       async function fetchProducts(userId) {
         try {
-          const response = await fetch(`/productOwner/${userId}`);
-          const data = await response.json();
+          const response = await fetch(`/productOwner/${userId}`)
+          const data = await response.json()
           if (!response.ok || !data.products.length)
-            throw new Error("Không có sản phẩm hoặc lỗi API");
+            throw new Error("Không có sản phẩm hoặc lỗi API")
 
-          const productListContainer = document.querySelector(".product-list");
-          productListContainer.innerHTML = "";
+          const productListContainer = document.querySelector(".product-list")
+          productListContainer.innerHTML = ""
 
           data.products.forEach((product) => {
-            const productItem = document.createElement("div");
-            productItem.classList.add("product-item");
+            const productItem = document.createElement("div")
+            productItem.classList.add("product-item")
             productItem.innerHTML = `
                             <div class="product-image">
                                 <img src="${
@@ -356,53 +369,53 @@
                                     <button class="favorite-btn" onclick="toggleFavorite(this)">🤍</button>
                                  </div>
                             </div>
-                        `;
+                        `
 
             productItem.addEventListener("click", (event) => {
-              console.log("Clicked on product:", product._id);
+              console.log("Clicked on product:", product._id)
               // Nếu click vào nút "favorite" thì không chuyển trang
               if (!event.target.classList.contains("favorite-btn")) {
-                window.location.href = `/product/${product._id}`;
+                window.location.href = `/product/${product._id}`
               }
-            });
-            productListContainer.appendChild(productItem);
-          });
+            })
+            productListContainer.appendChild(productItem)
+          })
         } catch (error) {
-          console.error("Lỗi khi lấy danh sách sản phẩm:", error);
+          console.error("Lỗi khi lấy danh sách sản phẩm:", error)
         }
       }
 
       async function fetchReviews(userId) {
         try {
-          const response = await fetch(`/evaluate/${userId}`);
-          const data = await response.json();
+          const response = await fetch(`/evaluate/${userId}`)
+          const data = await response.json()
 
           if (!response.ok || !data || !Array.isArray(data.evaluates)) {
             throw new Error(
               "Dữ liệu đánh giá không hợp lệ hoặc không có đánh giá."
-            );
+            )
           }
 
           reviewsList.forEach((reviewContainer) => {
-            reviewContainer.innerHTML = "";
+            reviewContainer.innerHTML = ""
 
             if (data.evaluates.length === 0) {
-              reviewContainer.innerHTML = "<p>Chưa có đánh giá nào.</p>";
-              return;
+              reviewContainer.innerHTML = "<p>Chưa có đánh giá nào.</p>"
+              return
             }
 
             data.evaluates.forEach((review) => {
               const reviewerName =
-                review.evaluaterId?.name || "Người dùng ẩn danh";
+                review.evaluaterId?.name || "Người dùng ẩn danh"
 
-              const reviewItem = document.createElement("div");
-              reviewItem.classList.add("review-box"); // Thêm lớp CSS tạo khung riêng
+              const reviewItem = document.createElement("div")
+              reviewItem.classList.add("review-box") // Thêm lớp CSS tạo khung riêng
 
-              let starsHTML = "";
+              let starsHTML = ""
               for (let i = 1; i <= 5; i++) {
                 starsHTML += `<span class="star ${
                   i <= review.star ? "filled" : "empty"
-                }">★</span>`;
+                }">★</span>`
               }
 
               reviewItem.innerHTML = `
@@ -433,12 +446,12 @@
                   </div>
               </div>
           </div>
-        `;
-              reviewContainer.appendChild(reviewItem);
-            });
-          });
+        `
+              reviewContainer.appendChild(reviewItem)
+            })
+          })
         } catch (error) {
-          console.error("Lỗi khi lấy đánh giá:", error);
+          console.error("Lỗi khi lấy đánh giá:", error)
         }
       }
 
@@ -446,44 +459,44 @@
         try {
           const response = await fetch(`/follow/check-follow/${followingId}`, {
             credentials: "include",
-          });
+          })
 
-          if (!response.ok) throw new Error("Không thể kiểm tra trạng thái");
+          if (!response.ok) throw new Error("Không thể kiểm tra trạng thái")
 
-          const data = await response.json();
-          updateFollowButton(data.isFollowing);
+          const data = await response.json()
+          updateFollowButton(data.isFollowing)
         } catch (error) {
-          console.error("Lỗi khi kiểm tra trạng thái:", error);
+          console.error("Lỗi khi kiểm tra trạng thái:", error)
         }
       }
-    });
+    })
 
     function updateFollowButton(isFollowing) {
-      const followButton = document.getElementById("follow-button");
-      if (!followButton) return;
+      const followButton = document.getElementById("follow-button")
+      if (!followButton) return
 
       if (isFollowing) {
-        followButton.innerHTML = '<i class="fas fa-check"></i> Đang theo dõi';
-        followButton.classList.add("following");
-        followButton.style.backgroundColor = "#6c757d";
+        followButton.innerHTML = '<i class="fas fa-check"></i> Đang theo dõi'
+        followButton.classList.add("following")
+        followButton.style.backgroundColor = "#6c757d"
       } else {
-        followButton.innerHTML = '<i class="fas fa-heart"></i> Theo dõi';
-        followButton.classList.remove("following");
-        followButton.style.backgroundColor = "#dc3545";
+        followButton.innerHTML = '<i class="fas fa-heart"></i> Theo dõi'
+        followButton.classList.remove("following")
+        followButton.style.backgroundColor = "#dc3545"
       }
     }
 
     async function handleFollowAction() {
-      const followButton = document.getElementById("follow-button");
-      const followingId = followButton.dataset.id;
-      const isFollowing = followButton.classList.contains("following");
+      const followButton = document.getElementById("follow-button")
+      const followingId = followButton.dataset.id
+      const isFollowing = followButton.classList.contains("following")
 
       try {
-        followButton.disabled = true;
+        followButton.disabled = true
         followButton.innerHTML =
-          '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
+          '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...'
 
-        const endpoint = isFollowing ? "/follow/unfollower" : "/follow/";
+        const endpoint = isFollowing ? "/follow/unfollower" : "/follow/"
 
         const response = await fetch(endpoint, {
           method: "POST",
@@ -492,91 +505,91 @@
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ followingId }),
-        });
+        })
 
-        const result = await response.json();
+        const result = await response.json()
 
-        if (!response.ok) throw new Error(result.message || "Lỗi hệ thống");
+        if (!response.ok) throw new Error(result.message || "Lỗi hệ thống")
 
         // Cập nhật UI
-        updateFollowButton(!isFollowing);
+        updateFollowButton(!isFollowing)
       } catch (error) {
-        alert(error.message);
-        console.error("Lỗi khi thao tác theo dõi:", error);
+        alert(error.message)
+        console.error("Lỗi khi thao tác theo dõi:", error)
       } finally {
-        followButton.disabled = false;
+        followButton.disabled = false
       }
     }
 
     function toggleFavorite(button) {
       if (button.textContent === "🤍") {
-        button.textContent = "❤️";
+        button.textContent = "❤️"
       } else {
-        button.textContent = "🤍";
+        button.textContent = "🤍"
       }
     }
 
     function openUserReportModal() {
-      document.getElementById("userReportModal").style.display = "flex";
-      const form = document.getElementById("userReportForm");
-      const customSection = document.getElementById("customReasonSection");
-      const reasonSelect = document.getElementById("reportReason");
+      document.getElementById("userReportModal").style.display = "flex"
+      const form = document.getElementById("userReportForm")
+      const customSection = document.getElementById("customReasonSection")
+      const reasonSelect = document.getElementById("reportReason")
 
       // Xử lý hiển thị phần nhập lý do tùy chỉnh
       reasonSelect.addEventListener("change", () => {
         customSection.style.display =
-          reasonSelect.value === "other" ? "block" : "none";
-      });
+          reasonSelect.value === "other" ? "block" : "none"
+      })
 
       form.onsubmit = async function (event) {
-        event.preventDefault();
-        const formData = new FormData(form);
-        const userId = window.location.pathname.split("/").pop();
+        event.preventDefault()
+        const formData = new FormData(form)
+        const userId = window.location.pathname.split("/").pop()
 
-        formData.append("sellerId", userId);
+        formData.append("sellerId", userId)
 
         try {
           const response = await fetch(`/report/`, {
             method: "POST",
             body: formData,
             credentials: "include",
-          });
+          })
 
-          const result = await response.json();
-          if (!response.ok) throw new Error(result.message || "Lỗi hệ thống");
+          const result = await response.json()
+          if (!response.ok) throw new Error(result.message || "Lỗi hệ thống")
 
-          alert("Báo cáo thành công!");
-          form.reset();
-          closeUserReportModal();
+          alert("Báo cáo thành công!")
+          form.reset()
+          closeUserReportModal()
         } catch (error) {
-          alert(error.message);
+          alert(error.message)
         }
-      };
+      }
     }
 
     function closeUserReportModal() {
-      document.getElementById("userReportModal").style.display = "none";
+      document.getElementById("userReportModal").style.display = "none"
     }
 
     window.onclick = function (event) {
-      const modal = document.getElementById("userReportModal");
+      const modal = document.getElementById("userReportModal")
       if (event.target === modal) {
-        closeUserReportModal();
+        closeUserReportModal()
       }
-    };
+    }
 
     document
       .getElementById("reportReason")
       .addEventListener("change", function () {
-        const customReason = document.getElementById("customReportReason");
-        const customLabel = document.getElementById("customReportLabel");
+        const customReason = document.getElementById("customReportReason")
+        const customLabel = document.getElementById("customReportLabel")
         if (this.value === "other") {
-          customReason.style.display = "block";
-          customLabel.style.display = "block";
+          customReason.style.display = "block"
+          customLabel.style.display = "block"
         } else {
-          customReason.style.display = "none";
-          customLabel.style.display = "none";
+          customReason.style.display = "none"
+          customLabel.style.display = "none"
         }
-      });
+      })
   </script>
 </html>

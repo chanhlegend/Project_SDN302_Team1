@@ -2,6 +2,7 @@ const Product = require("../models/Product");
 const { mutipleMongoeseToObject } = require("../../util/Mongoese");
 const mongoose = require("mongoose");
 const Category = require('../models/Category');
+const Order = require("../models/Order");
 
 class SellerDashboardController {
   async getMyProducts(req, res, next) {
@@ -53,21 +54,19 @@ class SellerDashboardController {
         }),
       };
 
-      const soldProducts  = await Product.find({
-        sellerId,
-        status: "sold",
-    }).populate("category");
+      const deliveredOrders = await Order.find({
+        status: "Delivered",
+    }).populate("product");
     
-
-    const monthlyRevenue = Array(12).fill(0); 
+    const monthlyRevenue = Array(12).fill(0);
     const categories = await Category.find(); 
-
-    soldProducts.forEach((product) => {
-      if (product.updatedAt) {
-        const updatedDate = new Date(product.updatedAt);
-        const month = updatedDate.getMonth(); // Lấy tháng (0-11)
-        monthlyRevenue[month] += product.price;
-      }
+    
+    deliveredOrders.forEach((order) => {
+        if (order.updatedAt) {
+            const updatedDate = new Date(order.updatedAt);
+            const month = updatedDate.getMonth(); // Lấy tháng (0-11)
+            monthlyRevenue[month] += order.totalPrice; // Cộng tổng giá trị đơn hàng
+        }
     });
  
     

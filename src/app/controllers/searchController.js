@@ -16,7 +16,7 @@ class searchController {
         const totalPages = Math.ceil(totalProducts / limit);
 
         const products = await Product
-            .find({ productName: { $regex: productname, $options: 'i' } })
+            .find({ productName: { $regex: productname, $options: 'i' }, status: 'active' })
             .populate('image')
             .populate('sellerId')
             .skip(skip)
