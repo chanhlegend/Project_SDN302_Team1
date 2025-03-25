@@ -13,13 +13,6 @@ class UserController {
 async getCustomers(req, res, next) {
     try {
         const users = await User.find({}).lean();
-
-        const usersWithReportCount = await Promise.all(
-            users.map(async (user) => {
-                const reportCount = await Report.countDocuments({ sellerId: user._id });
-                return { ...user, reportCount };
-            })
-        );
             // Lấy số lượng báo cáo cho từng người dùng
             const usersWithReportCount = await Promise.all(
                 users.map(async (user) => {

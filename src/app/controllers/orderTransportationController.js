@@ -75,7 +75,7 @@ const updateOrderStatus = async (req, res) => {
         const { status } = req.body;
         const orderId = req.params.id;
 
-        const validStatuses = ['shipping', 'delivered'];
+        const validStatuses = ['Shipped', 'Delivered'];
         
         if (!validStatuses.includes(status)) {
             return res.status(400).json({ 

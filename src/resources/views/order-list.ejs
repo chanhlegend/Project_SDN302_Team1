@@ -36,8 +36,8 @@
                                 <div class="action-container">
                                     <button onclick="showModal('<%= order._id %>')">Xem chi tiết</button>
                                     <select name="status" onchange="updateStatus('<%= order._id %>', this)">
-                                        <option value="shipping" <%= order.status === 'shipping' ? 'selected' : '' %>>Shipping</option>
-                                        <option value="delivered" <%= order.status === 'delivered' ? 'selected' : '' %>>Delivered</option>
+                                        <option value="Shipped" <%= order.status === 'Shipped' ? 'selected' : '' %>>Shipped</option>
+                                        <option value="Delivered" <%= order.status === 'Delivered' ? 'selected' : '' %>>Delivered</option>
                                     </select>
                                     <button onclick="submitStatus('<%= order._id %>')">Cập nhật</button>
                                 </div>
