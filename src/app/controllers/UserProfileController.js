@@ -88,41 +88,42 @@ class UserProfileController {
     // Xử lý cập nhật profile của người dùng hiện tại
     async updateUserProfile(req, res, next) {
         try {
-            const userId = req.session.user ? req.session.user._id : null; // Lấy từ session
+            const userId = req.session.user ? req.session.user._id : null;
             if (!userId) {
                 return res.status(401).send('Bạn cần đăng nhập để chỉnh sửa thông tin');
             }
-
+    
             const { name, phone, email, dob, gender, address, newAvatarUrl } = req.body;
-
-            // Tạo object để cập nhật
-            const updateData = {
-                name: name || undefined,
-                phone: phone || undefined,
-                email: email || undefined,
-                dob: dob ? new Date(dob) : undefined,
-                gender: gender === 'true' ? true : false,
-                address: address || undefined
-            };
-
-            // Nếu có URL ảnh mới từ Cloudinary
-            if (newAvatarUrl) {
-                updateData.avatar = newAvatarUrl;
-            }
-
+    
+            // Tạo object để cập nhật, chỉ thêm các trường có giá trị
+            const updateData = {};
+            if (name) updateData.name = name;
+            if (phone) updateData.phone = phone;
+            if (email) updateData.email = email;
+            if (dob) updateData.dob = new Date(dob);
+            if (gender !== undefined) updateData.gender = gender === 'true'; // Chuyển thành boolean
+            if (address) updateData.address = address;
+            if (newAvatarUrl) updateData.avatar = newAvatarUrl; // Chỉ cập nhật avatar nếu có URL mới
+    
             // Cập nhật thông tin người dùng
-            const updatedUser = await User.findByIdAndUpdate(userId, updateData, { new: true });
+            const updatedUser = await User.findByIdAndUpdate(
+                userId,
+                { $set: updateData }, // Sử dụng $set để chỉ cập nhật các trường được cung cấp
+                { new: true, runValidators: true }
+            );
+    
             if (!updatedUser) {
                 return res.status(404).send('Không thể cập nhật người dùng');
             }
-
-            // Cập nhật session với thông tin mới
+    
+            // Cập nhật session và đảm bảo lưu thay đổi
             if (req.session.user) {
                 req.session.user = updatedUser;
+                await req.session.save(); // Đảm bảo session được lưu
             }
-
+    
             console.log('Updated user:', updatedUser);
-            res.redirect('/user/users/userProfile'); // Redirect về trang thông tin người dùng
+            res.redirect('/user/users/userProfile');
         } catch (err) {
             console.error('Error:', err);
             next(err);
