@@ -52,13 +52,29 @@ class orderController {
   async cancelOrder(req, res, next) {
     const { orderId } = req.body;
 
-    const order = await Order.findById(orderId);
-    if (order && order.status === "Pending") {
-      order.status = "Cancelled"; 
-      await order.save();
-      res.redirect("/orderTracking"); 
-    } else {
-      res.status(400).send("Không thể hủy đơn hàng này.");
+    try {
+      // Tìm đơn hàng theo orderId
+      const order = await Order.findById(orderId);
+
+      if (order && order.status === "Pending") {
+        // Cập nhật trạng thái đơn hàng thành "Cancelled"
+        order.status = "Cancelled";
+
+        // Cập nhật trạng thái của các sản phẩm về "active"
+        await Product.updateMany(
+          { _id: { $in: order.product } },
+          { $set: { status: "active" } }
+        );
+
+        await order.save();
+
+        res.redirect("/orderTracking");
+      } else {
+        res.status(400).send("Không thể hủy đơn hàng này.");
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Đã xảy ra lỗi khi hủy đơn hàng.");
     }
   }
 }
