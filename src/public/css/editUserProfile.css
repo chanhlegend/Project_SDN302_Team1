@@ -1,0 +1,268 @@
+
+.edit-form-container {
+    max-width: 500px;
+    margin: 0 auto;
+    background-color: #f5f5f5; /* Màu xám nhẹ cho bảng */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-family: 'Roboto', sans-serif; /* Áp dụng font chỉ trong container */
+    transition: all 0.3s ease; /* Hiệu ứng mượt mà khi hover */
+}
+
+/* Hiệu ứng chỉ khi hover trực tiếp vào form */
+.edit-form-container:hover {
+    transform: translateY(-5px); /* Form nhảy lên nhẹ */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Tăng độ đổ bóng */
+}
+
+.edit-form-container h1 {
+    text-align: center;
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.avatar-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.avatar-container img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    color: #333;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: all 0.3s ease; /* Hiệu ứng mượt mà khi hover */
+}
+
+/* Hiệu ứng hover cho input và select */
+.form-group input:hover,
+.form-group select:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Tăng độ đổ bóng */
+    transform: translateY(-2px); /* Nhảy lên nhẹ */
+}
+
+.form-group select {
+    margin-bottom: 10px;
+}
+
+.avatar-upload {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.avatar-upload button {
+    padding: 8px 16px;
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease; /* Hiệu ứng mượt mà khi hover */
+}
+
+.avatar-upload button:hover {
+    background-color: #0056b3;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Tăng độ đổ bóng */
+    transform: translateY(-2px); /* Nhảy lên nhẹ */
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease; /* Hiệu ứng mượt mà khi hover */
+}
+
+.submit-btn:hover {
+    background-color: #555;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Tăng độ đổ bóng */
+    transform: translateY(-2px); /* Nhảy lên nhẹ */
+}
+
+/* CSS từ mẫu esgoo.net */
+.css_select_div {
+    text-align: center;
+}
+
+.css_select {
+    display: inline-table;
+    width: 25%; /* Độ dài cố định cho mỗi select */
+    padding: 5px;
+    margin: 5px 2%;
+    border: solid 1px #686868;
+    border-radius: 5px;
+    transition: all 0.3s ease; /* Hiệu ứng mượt mà khi hover */
+}
+
+/* Đặt độ dài của input#detailedAddress bằng tổng của 3 select */
+#detailedAddress {
+    display: inline-block; /* Sử dụng inline-block để căn chỉnh tốt hơn */
+    width: 483px; /* Tổng độ dài của 3 select */
+    padding: 5px;
+    margin: 5px 2%;
+    border: solid 1px #686868;
+    border-radius: 2px;
+    transition: all 0.3s ease; /* Hiệu ứng mượt mà khi hover */
+}
+
+/* Hiệu ứng hover cho select và detailedAddress */
+.css_select:hover,
+#detailedAddress:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Tăng độ đổ bóng */
+    transform: translateY(-2px); /* Nhảy lên nhẹ */
+}
+.edit-form-container {
+background-color: #D19B7F; /* Màu nền mới */
+}
+
+/* Animation fade-in khi form được tải */
+.edit-form-container {
+background-color: #fdf6e3; /* Giữ màu nền từ trước */
+border: 2px dashed #8B4513; /* Viền nét đứt màu nâu đậm kiểu cổ */
+box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3); /* Đổ bóng kiểu cổ điển */
+background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png'); /* Kết cấu giấy cũ */
+background-size: cover; /* Đảm bảo kết cấu phủ toàn bộ */
+border-radius: 10px; /* Bo góc nhẹ */
+padding: 25px; /* Tăng padding để phù hợp với phong cách */
+}
+
+/* Tiêu đề với font chữ kiểu cổ điển */
+.edit-form-container h1 {
+font-family: 'Georgia', serif; /* Font kiểu cổ điển */
+color: #4A2C2A; /* Màu nâu đỏ đậm */
+font-size: 28px;
+text-align: center;
+margin-bottom: 25px;
+text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); /* Đổ bóng chữ nhẹ */
+border-bottom: 1px solid #8B4513; /* Đường viền dưới kiểu cổ */
+padding-bottom: 10px;
+}
+
+/* Avatar container với hiệu ứng cổ điển */
+.avatar-container img {
+border: 3px solid #8B4513; /* Viền nâu đậm */
+border-radius: 50%;
+box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.3); /* Đổ bóng kiểu cổ */
+transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.avatar-container img:hover {
+transform: scale(1.1); /* Giữ animation cũ */
+box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5); /* Đổ bóng đậm hơn khi hover */
+}
+
+/* Label với phong cách cổ điển */
+.form-group label {
+font-family: 'Georgia', serif; /* Font chữ cổ điển */
+color: #4A2C2A; /* Màu nâu đỏ đậm */
+font-weight: bold;
+font-size: 16px;
+text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1); /* Đổ bóng nhẹ cho chữ */
+}
+
+/* Input và select với phong cách cổ điển */
+.form-group input,
+.form-group select,
+.css_select,
+#detailedAddress {
+background-color: #fff8e1; /* Màu nền giấy cũ nhạt */
+border: 1px dashed #8B4513; /* Viền nét đứt màu nâu đậm */
+font-family: 'Time New Roman'; /* Font chữ cổ điển */
+font-size: 18px; /*;
+color: #4A2C2A; /* Màu chữ nâu đỏ đậm */
+box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1); /* Đổ bóng bên trong */
+transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.css_select:focus,
+#detailedAddress:focus {
+animation: pulse 0.3s ease; /* Giữ animation cũ */
+border-color: #4A2C2A; /* Viền đậm hơn khi focus */
+box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.2), 0 0 5px rgba(74, 44, 42, 0.5); /* Hiệu ứng sáng kiểu cổ */
+}
+
+/* Nút tải ảnh mới với phong cách cổ điển */
+.avatar-upload button {
+background-color: #8B4513; /* Màu nâu đậm */
+border: 1px dashed #4A2C2A; /* Viền nét đứt */
+font-family: 'Georgia', serif; /* Font cổ điển */
+color: #fff8e1; /* Màu chữ nhạt kiểu giấy cũ */
+text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3); /* Đổ bóng chữ */
+transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.avatar-upload button:hover {
+background-color: #4A2C2A; /* Màu nâu đỏ đậm hơn khi hover */
+transform: translateY(-3px) scale(1.02); /* Giữ animation cũ */
+box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.4); /* Đổ bóng đậm hơn */
+}
+
+/* Nút submit với phong cách cổ điển */
+.submit-btn {
+background-color: #8B4513; /* Màu nâu đậm */
+border: 1px dashed #4A2C2A; /* Viền nét đứt */
+font-family: 'Georgia', serif; /* Font cổ điển */
+color: #fff8e1; /* Màu chữ nhạt kiểu giấy cũ */
+text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3); /* Đổ bóng chữ */
+transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.submit-btn:hover {
+background-color: #4A2C2A; /* Màu nâu đỏ đậm hơn khi hover */
+transform: translateY(-3px) scale(1.02); /* Giữ animation cũ */
+box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.4); /* Đổ bóng đậm hơn */
+}
+
+/* Đảm bảo các animation cũ vẫn hoạt động */
+.form-group input:hover,
+.form-group select:hover,
+.css_select:hover,
+#detailedAddress:hover {
+transform: translateY(-3px) scale(1.02); /* Giữ animation cũ */
+box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.3); /* Đổ bóng kiểu cổ khi hover */
+}
+
+/* Thêm hiệu ứng kiểu máy đánh chữ cho tiêu đề */
+.edit-form-container h1 {
+animation: typewriter 2s steps(20) 1s 1 normal both;
+overflow: hidden;
+white-space: nowrap;
+}
+
+@keyframes typewriter {
+from {
+width: 0;
+}
+to {
+width: 100%;
+}
+}

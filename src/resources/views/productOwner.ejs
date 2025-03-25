@@ -213,7 +213,7 @@
         function confirmDelete() {
             const form = document.createElement('form');
             form.method = 'POST';
-            form.action = `/productOwner/delete/${currentProductId}?_method=DELETE`;
+            form.action = `/productOwner/product/${currentProductId}?_method=DELETE`;
             const methodInput = document.createElement('input');
             methodInput.type = 'hidden';
             methodInput.name = '_method';

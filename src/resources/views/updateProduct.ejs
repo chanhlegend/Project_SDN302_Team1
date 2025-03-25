@@ -4,85 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update Product</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/updateProduct.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
     <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <style>
-        .form-container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        .form-group input, .form-group textarea, .form-group select {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        .image-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-        .image-item {
-            position: relative;
-            display: inline-block;
-        }
-        .image-item img {
-            max-width: 100px;
-            border-radius: 4px;
-        }
-        .image-item .delete-btn {
-            position: absolute;
-            top: 0;
-            right: 0;
-            background: red;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-            text-align: center;
-            line-height: 20px;
-        }
-        .submit-btn {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .submit-btn:hover {
-            background-color: #45a049;
-        }
-        .back-link {
-            display: inline-block;
-            margin-top: 10px;
-            color: #007BFF;
-            text-decoration: none;
-        }
-        .back-link:hover {
-            text-decoration: underline;
-        }
-    </style>
+
 </head>
-<body>
+<body style="margin: 0;">
+    <%- include('partials/header') %>
     <div class="form-container">
-        <h2>Update Product</h2>
+        <h2>Chỉnh Sửa Sản Phẩm</h2>
         <form action="/productOwner/update/<%= product._id %>?_method=PUT" method="POST" id="productForm">
             <!-- Sử dụng method-override để giả lập PUT -->
             <input type="hidden" name="_method" value="PUT">
@@ -91,22 +22,22 @@
             <div id="imageData" data-images="<%= JSON.stringify(product.image || []) %>" style="display: none;"></div>
             
             <div class="form-group">
-                <label for="productName">Product Name:</label>
+                <label for="productName">Tên Sản Phẩm:</label>
                 <input type="text" id="productName" name="productName" value="<%= product.productName %>" required>
             </div>
             
             <div class="form-group">
-                <label for="price">Price:</label>
+                <label for="price">Giá Thành:</label>
                 <input type="number" id="price" name="price" value="<%= product.price %>" required>
             </div>
             
             <div class="form-group">
-                <label for="description">Description:</label>
+                <label for="description">Mô Tả:</label>
                 <textarea id="description" name="description"><%= product.description %></textarea>
             </div>
             
             <div class="form-group">
-                <label for="category">Category:</label>
+                <label for="category">Danh Mục:</label>
                 <select id="category" name="category" required>
                     <option value="">--Chọn danh mục--</option>
                     <% categories.forEach(category => { %>
@@ -117,9 +48,17 @@
                 </select>
             </div>
 
+           <!-- Upload ảnh mới -->
+           <div class="form-group">
+            <label style="font-family: Arial, Helvetica, sans-serif;">Thêm Hình Ảnh Mới(Tối Đa 6 hình ảnh):</label>
+            <input type="hidden" id="newImageUrls" name="newImageUrls" value="">
+            <button type="button" onclick="openCloudinaryWidget()">Thêm Hình Ảnh Mới</button>
+            <div id="imagePreview" class="image-container"></div>
+        </div>
+
             <!-- Hiển thị ảnh hiện tại -->
             <div class="form-group">
-                <label>Current Images:</label>
+                <label>Các Hình Ảnh Hiện Tại:</label>
                 <div id="currentImages" class="image-container">
                     <% if (product.image && product.image.length > 0) { %>
                         <% product.image.forEach((img, index) => { %>
@@ -132,22 +71,15 @@
                             <% } %>
                         <% }); %>
                     <% } else { %>
-                        <p>No images currently</p>
+                        <p>Không Có Hình Ảnh Nào Hiện Tại</p>/p>
                     <% } %>
                 </div>
             </div>
 
-            <!-- Upload ảnh mới -->
-            <div class="form-group">
-                <label>Upload New Images (Max 6 total):</label>
-                <input type="hidden" id="newImageUrls" name="newImageUrls" value="">
-                <button type="button" onclick="openCloudinaryWidget()">Upload New Images</button>
-                <div id="imagePreview" class="image-container"></div>
-            </div>
+ 
 
-            <button type="submit" class="submit-btn">Update Product</button>
+            <button type="submit" class="submit-btn">Xác Nhận</button>
         </form>
-        <a href="/productOwner/product/<%= userId %>" class="back-link">Back to Product List</a>
     </div>
 
     <script type="text/javascript">
@@ -170,6 +102,20 @@
         }
 
         let newImageUrls = [];
+
+        // Hàm tự động điều chỉnh chiều cao textarea
+        function autoResizeTextarea() {
+            const textarea = document.getElementById('description');
+            textarea.style.height = 'auto'; // Reset chiều cao để tính lại
+            textarea.style.height = `${textarea.scrollHeight}px`; // Đặt chiều cao dựa trên nội dung
+        }
+
+        // Gọi hàm autoResizeTextarea khi trang tải và khi người dùng nhập
+        document.addEventListener('DOMContentLoaded', () => {
+            const textarea = document.getElementById('description');
+            autoResizeTextarea(); // Điều chỉnh chiều cao ban đầu
+            textarea.addEventListener('input', autoResizeTextarea); // Điều chỉnh khi nhập
+        });
 
         function openCloudinaryWidget() {
             const totalImages = currentImageUrls.length + newImageUrls.length;
@@ -259,5 +205,6 @@
             }
         });
     </script>
+    <%- include('partials/footer') %>
 </body>
 </html>

@@ -4,281 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chỉnh Sửa Thông Tin Người Dùng</title>
+    <link rel="stylesheet" href="/css/editUserProfile.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
     <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <!-- Thêm jQuery từ esgoo.net -->
     <script src="https://esgoo.net/scripts/jquery.js"></script>
-    <style>
-        .edit-form-container {
-            max-width: 500px;
-            margin: 0 auto;
-            background-color: #f5f5f5; /* Màu xám nhẹ cho bảng */
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            font-family: 'Roboto', sans-serif; /* Áp dụng font chỉ trong container */
-            transition: all 0.3s ease; /* Hiệu ứng mượt mà khi hover */
-        }
-
-        /* Hiệu ứng chỉ khi hover trực tiếp vào form */
-        .edit-form-container:hover {
-            transform: translateY(-5px); /* Form nhảy lên nhẹ */
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Tăng độ đổ bóng */
-        }
-
-        .edit-form-container h1 {
-            text-align: center;
-            color: #333;
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-
-        .avatar-container {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .avatar-container img {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            color: #333;
-            margin-bottom: 5px;
-            font-weight: 500;
-        }
-
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-            transition: all 0.3s ease; /* Hiệu ứng mượt mà khi hover */
-        }
-
-        /* Hiệu ứng hover cho input và select */
-        .form-group input:hover,
-        .form-group select:hover {
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Tăng độ đổ bóng */
-            transform: translateY(-2px); /* Nhảy lên nhẹ */
-        }
-
-        .form-group select {
-            margin-bottom: 10px;
-        }
-
-        .avatar-upload {
-            text-align: center;
-            margin-bottom: 15px;
-        }
-
-        .avatar-upload button {
-            padding: 8px 16px;
-            background-color: #007BFF;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.3s ease; /* Hiệu ứng mượt mà khi hover */
-        }
-
-        .avatar-upload button:hover {
-            background-color: #0056b3;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Tăng độ đổ bóng */
-            transform: translateY(-2px); /* Nhảy lên nhẹ */
-        }
-
-        .submit-btn {
-            width: 100%;
-            padding: 10px;
-            background-color: #333;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease; /* Hiệu ứng mượt mà khi hover */
-        }
-
-        .submit-btn:hover {
-            background-color: #555;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Tăng độ đổ bóng */
-            transform: translateY(-2px); /* Nhảy lên nhẹ */
-        }
-
-        /* CSS từ mẫu esgoo.net */
-        .css_select_div {
-            text-align: center;
-        }
-
-        .css_select {
-            display: inline-table;
-            width: 25%; /* Độ dài cố định cho mỗi select */
-            padding: 5px;
-            margin: 5px 2%;
-            border: solid 1px #686868;
-            border-radius: 5px;
-            transition: all 0.3s ease; /* Hiệu ứng mượt mà khi hover */
-        }
-
-        /* Đặt độ dài của input#detailedAddress bằng tổng của 3 select */
-        #detailedAddress {
-            display: inline-block; /* Sử dụng inline-block để căn chỉnh tốt hơn */
-            width: 483px; /* Tổng độ dài của 3 select */
-            padding: 5px;
-            margin: 5px 2%;
-            border: solid 1px #686868;
-            border-radius: 2px;
-            transition: all 0.3s ease; /* Hiệu ứng mượt mà khi hover */
-        }
-
-        /* Hiệu ứng hover cho select và detailedAddress */
-        .css_select:hover,
-        #detailedAddress:hover {
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Tăng độ đổ bóng */
-            transform: translateY(-2px); /* Nhảy lên nhẹ */
-        }
-        .edit-form-container {
-    background-color: #D19B7F; /* Màu nền mới */
-}
-
-/* Animation fade-in khi form được tải */
-.edit-form-container {
-    background-color: #fdf6e3; /* Giữ màu nền từ trước */
-    border: 2px dashed #8B4513; /* Viền nét đứt màu nâu đậm kiểu cổ */
-    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3); /* Đổ bóng kiểu cổ điển */
-    background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png'); /* Kết cấu giấy cũ */
-    background-size: cover; /* Đảm bảo kết cấu phủ toàn bộ */
-    border-radius: 10px; /* Bo góc nhẹ */
-    padding: 25px; /* Tăng padding để phù hợp với phong cách */
-}
-
-/* Tiêu đề với font chữ kiểu cổ điển */
-.edit-form-container h1 {
-    font-family: 'Georgia', serif; /* Font kiểu cổ điển */
-    color: #4A2C2A; /* Màu nâu đỏ đậm */
-    font-size: 28px;
-    text-align: center;
-    margin-bottom: 25px;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); /* Đổ bóng chữ nhẹ */
-    border-bottom: 1px solid #8B4513; /* Đường viền dưới kiểu cổ */
-    padding-bottom: 10px;
-}
-
-/* Avatar container với hiệu ứng cổ điển */
-.avatar-container img {
-    border: 3px solid #8B4513; /* Viền nâu đậm */
-    border-radius: 50%;
-    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.3); /* Đổ bóng kiểu cổ */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.avatar-container img:hover {
-    transform: scale(1.1); /* Giữ animation cũ */
-    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5); /* Đổ bóng đậm hơn khi hover */
-}
-
-/* Label với phong cách cổ điển */
-.form-group label {
-    font-family: 'Georgia', serif; /* Font chữ cổ điển */
-    color: #4A2C2A; /* Màu nâu đỏ đậm */
-    font-weight: bold;
-    font-size: 16px;
-    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1); /* Đổ bóng nhẹ cho chữ */
-}
-
-/* Input và select với phong cách cổ điển */
-.form-group input,
-.form-group select,
-.css_select,
-#detailedAddress {
-    background-color: #fff8e1; /* Màu nền giấy cũ nhạt */
-    border: 1px dashed #8B4513; /* Viền nét đứt màu nâu đậm */
-    font-family: 'Time New Roman'; /* Font chữ cổ điển */
-    font-size: 18px; /*;
-    color: #4A2C2A; /* Màu chữ nâu đỏ đậm */
-    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1); /* Đổ bóng bên trong */
-    transition: all 0.3s ease;
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.css_select:focus,
-#detailedAddress:focus {
-    animation: pulse 0.3s ease; /* Giữ animation cũ */
-    border-color: #4A2C2A; /* Viền đậm hơn khi focus */
-    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.2), 0 0 5px rgba(74, 44, 42, 0.5); /* Hiệu ứng sáng kiểu cổ */
-}
-
-/* Nút tải ảnh mới với phong cách cổ điển */
-.avatar-upload button {
-    background-color: #8B4513; /* Màu nâu đậm */
-    border: 1px dashed #4A2C2A; /* Viền nét đứt */
-    font-family: 'Georgia', serif; /* Font cổ điển */
-    color: #fff8e1; /* Màu chữ nhạt kiểu giấy cũ */
-    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3); /* Đổ bóng chữ */
-    transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.avatar-upload button:hover {
-    background-color: #4A2C2A; /* Màu nâu đỏ đậm hơn khi hover */
-    transform: translateY(-3px) scale(1.02); /* Giữ animation cũ */
-    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.4); /* Đổ bóng đậm hơn */
-}
-
-/* Nút submit với phong cách cổ điển */
-.submit-btn {
-    background-color: #8B4513; /* Màu nâu đậm */
-    border: 1px dashed #4A2C2A; /* Viền nét đứt */
-    font-family: 'Georgia', serif; /* Font cổ điển */
-    color: #fff8e1; /* Màu chữ nhạt kiểu giấy cũ */
-    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3); /* Đổ bóng chữ */
-    transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.submit-btn:hover {
-    background-color: #4A2C2A; /* Màu nâu đỏ đậm hơn khi hover */
-    transform: translateY(-3px) scale(1.02); /* Giữ animation cũ */
-    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.4); /* Đổ bóng đậm hơn */
-}
-
-/* Đảm bảo các animation cũ vẫn hoạt động */
-.form-group input:hover,
-.form-group select:hover,
-.css_select:hover,
-#detailedAddress:hover {
-    transform: translateY(-3px) scale(1.02); /* Giữ animation cũ */
-    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.3); /* Đổ bóng kiểu cổ khi hover */
-}
-
-/* Thêm hiệu ứng kiểu máy đánh chữ cho tiêu đề */
-.edit-form-container h1 {
-    animation: typewriter 2s steps(20) 1s 1 normal both;
-    overflow: hidden;
-    white-space: nowrap;
-}
-
-@keyframes typewriter {
-    from {
-        width: 0;
-    }
-    to {
-        width: 100%;
-    }
-}
-    </style>
 </head>
 <body style="margin: 0;">
     <%- include('partials/header') %>
@@ -287,18 +19,22 @@
         <div class="avatar-container">
             <img id="avatarPreview" src="<%= user.avatar || '/default-avatar.jpg' %>" alt="Avatar">
         </div>
-        <div class="form-group avatar-upload">
-            <input type="hidden" id="newAvatarUrl" name="newAvatarUrl" value="">
-            <button type="button" onclick="openCloudinaryWidget()">Tải lên ảnh mới</button>
-        </div>
         <form action="/user/profile/updateprofile" method="POST" id="profileForm">
+            <!-- Đưa newAvatarUrl vào trong form -->
+            <div class="form-group avatar-upload">
+                <input type="hidden" id="newAvatarUrl" name="newAvatarUrl" value="">
+                <button type="button" onclick="openCloudinaryWidget()">Tải lên ảnh mới</button>
+            </div>
             <div class="form-group">
                 <label for="name">Tên:</label>
                 <input type="text" id="name" name="name" value="<%= user.name %>" />
             </div>
             <div class="form-group">
-                <label for="phone">Số điện thoại:</label>
-                <input type="text" id="phone" name="phone" value="<%= user.phone || '' %>" />
+                <label for="phone" style="font-family: Arial, Helvetica, sans-serif;">Số điện thoại:</label>
+                <input type="text" id="phone" name="phone" value="<%= user.phone || '' %>" 
+                       pattern="0[0-9]{10}" 
+                       title="Số điện thoại phải bắt đầu bằng 0 và có đúng 11 chữ số" 
+                       maxlength="11" />
             </div>
             <div class="form-group">
                 <label for="email">Email:</label>
@@ -338,6 +74,7 @@
     <script>
         let newAvatarUrl = '';
 
+        // Hàm mở Cloudinary Widget để upload ảnh
         function openCloudinaryWidget() {
             cloudinary.openUploadWidget({
                 cloud_name: 'dqncabikk',
@@ -358,8 +95,28 @@
             });
         }
 
-        // Sử dụng jQuery và API từ esgoo.net
+        // Xử lý địa chỉ với API từ esgoo.net
         $(document).ready(function() {
+            // Validation cho số điện thoại
+            $("#phone").on("input", function() {
+                const phoneValue = $(this).val();
+                const numericRegex = /^[0-9]*$/;
+
+                // Chỉ cho phép số
+                if (!numericRegex.test(phoneValue)) {
+                    $(this).val(phoneValue.replace(/[^0-9]/g, ''));
+                    toastr.warning("Số điện thoại chỉ được chứa các chữ số!");
+                } else if (phoneValue.length > 0 && phoneValue[0] !== '0') {
+                    // Nếu ký tự đầu không phải 0
+                    $(this).val('');
+                    toastr.warning("Số điện thoại phải bắt đầu bằng 0!");
+                } else if (phoneValue.length > 11) {
+                    // Giới hạn 11 số
+                    $(this).val(phoneValue.slice(0, 11));
+                    toastr.warning("Số điện thoại chỉ được chứa tối đa 11 số!");
+                }
+            });
+
             // Lấy danh sách tỉnh/thành phố
             $.getJSON('https://esgoo.net/api-tinhthanh/1/0.htm', function(data_tinh) {
                 if (data_tinh.error == 0) {
@@ -378,7 +135,7 @@
                                     $.each(data_quan.data, function(key_quan, val_quan) {
                                         $("#district").append('<option value="' + val_quan.id + '">' + val_quan.full_name + '</option>');
                                     });
-                                    $("#district").trigger("change"); // Gọi sự kiện để tải phường/xã
+                                    $("#district").trigger("change");
                                 }
                             });
                         }
@@ -403,38 +160,27 @@
                         }
                     });
 
-                    // Sự kiện thay đổi phường/xã
-                    $("#ward").change(function(e) {
-                        updateAddress();
-                    });
-
-                    // Sự kiện thay đổi địa chỉ chi tiết
-                    $("#detailedAddress").on("input", function(e) {
-                        updateAddress();
-                    });
+                    // Sự kiện thay đổi phường/xã và địa chỉ chi tiết
+                    $("#ward").change(updateAddress);
+                    $("#detailedAddress").on("input", updateAddress);
 
                     // Điền sẵn giá trị địa chỉ ban đầu
                     const userAddress = "<%= user.address || '' %>";
-                    console.log('Initial user.address from EJS:', userAddress);
                     let detailedAddress = '';
                     let provinceName = '';
                     let districtName = '';
                     let wardName = '';
 
-                    // Phân tích địa chỉ ban đầu
                     if (userAddress) {
                         const addressParts = userAddress.split(", ").reverse();
-                        console.log('Parsed addressParts:', addressParts);
                         if (addressParts.length >= 3) {
-                            provinceName = addressParts[0].trim(); // Thành phố Hà Nội
-                            districtName = addressParts[1].trim(); // Quận Ba Đình
-                            wardName = addressParts[2].trim(); // Phường Liễu Giai
-                            // Phần còn lại (nếu có) là địa chỉ chi tiết
+                            provinceName = addressParts[0].trim();
+                            districtName = addressParts[1].trim();
+                            wardName = addressParts[2].trim();
                             if (addressParts.length > 3) {
                                 detailedAddress = addressParts.slice(3).reverse().join(", ").trim();
                             }
                         } else {
-                            // Nếu không đủ 3 phần, coi toàn bộ là địa chỉ chi tiết
                             detailedAddress = userAddress.trim();
                         }
                     }
@@ -442,15 +188,13 @@
                     function getOptionId(selectElement, name) {
                         for (let option of selectElement.options) {
                             if (option.text.trim().toLowerCase() === name.toLowerCase()) {
-                                console.log(`Found ${selectElement.id} ${name} with ID ${option.value}`);
                                 return option.value;
                             }
                         }
-                        console.log(`${selectElement.id} ${name} not found, options:`, Array.from(selectElement.options).map(opt => opt.text));
                         return null;
                     }
 
-                    // Chờ danh sách tỉnh/thành phố được tải
+                    // Điền sẵn giá trị
                     const checkProvince = setInterval(() => {
                         if ($("#province option").length > 1) {
                             clearInterval(checkProvince);
@@ -466,45 +210,27 @@
                                                 const wardId = getOptionId(document.getElementById('ward'), wardName);
                                                 if (wardId) {
                                                     $("#ward").val(wardId);
-                                                } else {
-                                                    console.log('Ward not found, setting to default');
-                                                    $("#ward").val('0');
                                                 }
-                                                // Điền sẵn địa chỉ chi tiết
                                                 if (detailedAddress) {
                                                     $("#detailedAddress").val(detailedAddress);
                                                 }
                                                 updateAddress();
-                                            }, 500); // Chờ phường/xã tải
-                                        } else {
-                                            console.log('District not found, setting to default');
-                                            $("#district").val('0');
-                                            $("#ward").val('0');
-                                            if (detailedAddress) {
-                                                $("#detailedAddress").val(detailedAddress);
-                                            }
+                                            }, 500);
+                                        } else if (detailedAddress) {
+                                            $("#detailedAddress").val(detailedAddress);
                                             updateAddress();
                                         }
-                                    }, 500); // Chờ quận/huyện tải
-                                } else {
-                                    console.log('Province not found, setting to default');
-                                    $("#province").val('0');
-                                    $("#district").val('0');
-                                    $("#ward").val('0');
-                                    if (detailedAddress) {
-                                        $("#detailedAddress").val(detailedAddress);
-                                    }
+                                    }, 500);
+                                } else if (detailedAddress) {
+                                    $("#detailedAddress").val(detailedAddress);
                                     updateAddress();
                                 }
-                            } else {
-                                // Nếu không có địa chỉ đầy đủ, chỉ điền địa chỉ chi tiết
-                                if (detailedAddress) {
-                                    $("#detailedAddress").val(detailedAddress);
-                                }
+                            } else if (detailedAddress) {
+                                $("#detailedAddress").val(detailedAddress);
                                 updateAddress();
                             }
                         }
-                    }, 100); // Kiểm tra mỗi 100ms
+                    }, 100);
                 }
             });
         });
@@ -517,15 +243,14 @@
             const ward = document.getElementById('ward').options[document.getElementById('ward').selectedIndex]?.text || '';
             const addressInput = document.getElementById('address');
 
-            // Loại bỏ các giá trị mặc định
             const provinceText = (province && province !== 'Chọn Tỉnh/Thành phố') ? province : '';
             const districtText = (district && district !== 'Chọn Quận/Huyện') ? district : '';
             const wardText = (ward && ward !== 'Chọn Phường/Xã') ? ward : '';
 
-            // Ghép địa chỉ: địa chỉ chi tiết + phường/xã, quận/huyện, tỉnh/thành phố
             let fullAddress = '';
             if (detailedAddress) {
-                fullAddress = detailedAddress + (wardText || districtText || provinceText ? ', ' : '') + [wardText, districtText, provinceText].filter(Boolean).join(', ');
+                fullAddress = detailedAddress + (wardText || districtText || provinceText ? ', ' : '') + 
+                            [wardText, districtText, provinceText].filter(Boolean).join(', ');
             } else {
                 fullAddress = [wardText, districtText, provinceText].filter(Boolean).join(', ');
             }
@@ -538,9 +263,22 @@
         $("#profileForm").submit(function(e) {
             updateAddress();
             const finalAddress = document.getElementById('address').value;
+            const phoneValue = $("#phone").val();
+            const phoneRegex = /^0[0-9]{10}$/;
+
             console.log('Final address before submit:', finalAddress);
+            console.log('New avatar URL before submit:', document.getElementById('newAvatarUrl').value);
+
+            // Validate số điện thoại
+            if (phoneValue && !phoneRegex.test(phoneValue)) {
+                toastr.error('Số điện thoại phải bắt đầu bằng 0 và có đúng 11 chữ số!');
+                e.preventDefault();
+                return false;
+            }
+
+            // Validate địa chỉ
             if (!finalAddress.includes('Thành phố') && !finalAddress.includes('Tỉnh')) {
-                alert('Địa chỉ không đầy đủ. Vui lòng chọn Tỉnh/Thành phố!');
+                toastr.error('Địa chỉ không đầy đủ. Vui lòng chọn Tỉnh/Thành phố!');
                 e.preventDefault();
                 return false;
             }
