@@ -1,5 +1,5 @@
 require('dotenv').config();  // Nạp biến môi trường từ .env file
-
+const Notification = require('../models/Notification');
 const Product = require('../models/Product');
 const User = require('../models/User');
 const Order = require('../models/Order');
@@ -54,6 +54,22 @@ class PaymentController {
                         { _id: { $in: sellerProductIds } },
                         { $set: { status: "sold" } }
                     );
+        
+                    const io = req.app.get('io');
+                    const buyer = await User.findById(userId); 
+                    const notification = new Notification({
+                        userId: sellerId, 
+                        title: 'Đơn hàng mới',
+                        message: `Bạn có đơn hàng mới từ ${buyer.name} với tổng giá ${newOrder.totalPrice}.`,
+                    });
+
+                    await notification.save();
+
+                    io.to(sellerId).emit('notification', {
+                        title: notification.title,
+                        message: notification.message,
+                        createdAt: notification.createdAt,
+                    });
                 }
             }
 

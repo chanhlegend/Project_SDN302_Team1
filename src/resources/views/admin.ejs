@@ -128,7 +128,7 @@
             <div class="actions">
                 <button onclick="updateStatus('active')">✔ Duyệt</button>
                 <button onclick="updateStatus('rejected')">✖ Từ chối</button>
-                <button onclick="updateStatus('non_active')">⏳ Chờ duyệt</button>
+                <button onclick="updateStatus('non-active')">⏳ Chờ duyệt</button>
             </div>
             <table>
                 <thead><tr><th><input type="checkbox" id="selectAll"></th><th>ID</th><th>Tên sản phẩm</th><th>Người bán</th><th>Email</th><th>Trạng thái</th></tr></thead>
@@ -145,8 +145,10 @@
                                     <span class="status pending">Chờ duyệt</span>
                                 <% } else if (product.status === 'active') { %>
                                     <span class="status approved">Đã duyệt</span>
-                                <% } else { %>
+                                <% } else if (product.status === 'rejected') { %>
                                     <span class="status rejected">Bị từ chối</span>
+                                <% } else { %>
+                                    <span class="status approved">Đã duyệt </span>
                                 <% } %>
                             </td>
                         </tr>

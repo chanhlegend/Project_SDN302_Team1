@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const RegistrationForm = require('../models/RegistrationForm');
 const User = require('../models/User');
+const Notification = require('../models/Notification');
 // Lấy danh sách tất cả RegistrationForms
 const getAllRegistrationForms = async (req, res) => {
     if (!req.session.user || req.session.user.role !== 'admin') {
@@ -38,9 +39,25 @@ const approveRegistration = async (req, res) => {
         if (!updatedUser) {
             return res.status(404).send('User not found');
         }
+        const io = req.app.get('io');
+
+        const notification = new Notification({
+            userId: form.userId, 
+            title: 'Yêu cầu được phê duyệt',
+            message: 'Yêu cầu đăng ký làm người bán của bạn đã được phê duyệt. Bạn giờ đây là seller!',
+        });
+
+        await notification.save();
+
+        io.to(form.userId.toString()).emit('notification', {
+            title: notification.title,
+            message: notification.message,
+            createdAt: notification.createdAt,
+        });
 
         await RegistrationForm.findByIdAndDelete(formId);
 
+       
         res.redirect('/registration');
     } catch (error) {
         console.error('Error in approveRegistration:', error);

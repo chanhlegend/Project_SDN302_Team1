@@ -8,11 +8,18 @@ const RegistrationForm = require('../models/RegistrationForm');
 const { mutipleMongoeseToObject, mongoeseToObject } = require('../../util/Mongoese');
 
 class UserController {
-    // Hiển thị danh sách người dùng cho admin
-    async getCustomers(req, res, next) {
-        try {
-            const users = await User.find({}).lean();
 
+// Hiển thị danh sách người dùng cho admin
+async getCustomers(req, res, next) {
+    try {
+        const users = await User.find({}).lean();
+
+        const usersWithReportCount = await Promise.all(
+            users.map(async (user) => {
+                const reportCount = await Report.countDocuments({ sellerId: user._id });
+                return { ...user, reportCount };
+            })
+        );
             // Lấy số lượng báo cáo cho từng người dùng
             const usersWithReportCount = await Promise.all(
                 users.map(async (user) => {
@@ -38,9 +45,10 @@ class UserController {
             }
 
             const reports = await Report.find({ sellerId: sellerId })
-                .populate('reporterId', 'username email')
-                .populate('image', 'url')
+                .populate('reporterId', 'name email')
+               
                 .lean();
+
 
             res.json({ reports });
         } catch (error) {
@@ -53,13 +61,11 @@ class UserController {
         try {
             const userId = req.params.id;
 
-            // Cập nhật trạng thái người dùng thành 'banned'
             const user = await User.findByIdAndUpdate(userId, { status: 'banned' }, { new: true });
             if (!user) {
                 return res.status(404).send('Người dùng không tồn tại');
             }
 
-            // Cập nhật trạng thái của tất cả sản phẩm của người dùng thành 'rejected'
             await Product.updateMany(
                 { sellerId: userId, status: { $in: ['active', 'non_active'] } },
                 { $set: { status: 'rejected' } }
@@ -71,21 +77,18 @@ class UserController {
         }
     }
 
-    // Bỏ ban người dùng
     async unbanCustomer(req, res) {
         try {
             const userId = req.params.id;
 
-            // Cập nhật trạng thái người dùng thành 'active'
             const user = await User.findByIdAndUpdate(userId, { status: 'active' }, { new: true });
             if (!user) {
                 return res.status(404).send('Người dùng không tồn tại');
             }
 
-            // Cập nhật trạng thái của tất cả sản phẩm của người dùng trở lại trạng thái ban đầu
             await Product.updateMany(
                 { sellerId: userId, status: 'rejected' },
-                { $set: { status: 'active' } } // Hoặc 'non_active' tùy thuộc vào logic của bạn
+                { $set: { status: 'active' } }
             );
 
             res.redirect('/user/customers');

@@ -244,18 +244,22 @@
   }
 
   .notification-item h3 {
-    margin: 0;
-    font-size: 16px;
+    margin: 0 0 10px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
   }
 
   .notification-item p {
-    margin: 5px 0;
-    font-size: 14px;
+    margin: 0 0 10px;
+  font-size: 16px;
+  color: #666;
+  line-height: 1.5;
   }
 
   .notification-item small {
-    color: #777;
     font-size: 12px;
+  color: #999;
   }
 
   /* searchbtn */
