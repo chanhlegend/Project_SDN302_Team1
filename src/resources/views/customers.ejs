@@ -134,12 +134,15 @@
                             html += `
                                 <div class="report-details" style="border-bottom: 1px solid #ddd; padding: 10px 0;">
                                     <p><strong>Báo cáo #${index + 1}</strong></p>
-                                    <p><strong>Người báo cáo:</strong> ${report.reporterId.username} (${report.reporterId.email})</p>
+                                    <p><strong>Người báo cáo:</strong> ${report.reporterId.name} (${report.reporterId.email})</p>
                                     <p><strong>Lý do:</strong> ${report.reason}</p>
                                     <p><strong>Chi tiết:</strong> ${report.details || 'Không có'}</p>
                                     <p><strong>Trạng thái:</strong> ${report.status}</p>
-                                    ${report.image && report.image.length > 0 ? 
-                                        `<p><strong>Hình ảnh:</strong></p>${report.image.map(img => `<img src="${img.url}" alt="Evidence" style="max-width: 100px; margin: 5px;">`).join('')}` : ''}
+                                    ${report.evidenceUrl ? 
+                                        `<p><strong>Hình ảnh:</strong></p>
+                                        <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                                            <img src="${report.evidenceUrl}" alt="Evidence" style="max-width: 300px; margin: 5px;">
+                                    </div>` : ''}
                                 </div>
                             `;
                         });

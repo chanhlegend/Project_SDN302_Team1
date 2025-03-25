@@ -12,12 +12,11 @@ class UserController {
 async getCustomers(req, res, next) {
     try {
         const users = await User.find({}).lean();
-        
-        // Lấy số lượng báo cáo cho từng người dùng
+
         const usersWithReportCount = await Promise.all(
             users.map(async (user) => {
                 const reportCount = await Report.countDocuments({ sellerId: user._id });
-                return { ...user, reportCount }; // Thêm số lượng báo cáo vào object user
+                return { ...user, reportCount };
             })
         );
 
@@ -36,10 +35,8 @@ async getUserReports(req, res, next) {
         if (!user) {
             return res.status(404).json({ error: 'Người dùng không tồn tại' });
         }
-
         const reports = await Report.find({ sellerId: sellerId })
-            .populate('reporterId', 'username email')
-            .populate('image', 'url')
+            .populate('reporterId', 'name email')
             .lean();
 
         res.json({ reports });
@@ -53,13 +50,11 @@ async getUserReports(req, res, next) {
         try {
             const userId = req.params.id;
 
-            // Cập nhật trạng thái người dùng thành 'banned'
             const user = await User.findByIdAndUpdate(userId, { status: 'banned' }, { new: true });
             if (!user) {
                 return res.status(404).send('Người dùng không tồn tại');
             }
 
-            // Cập nhật trạng thái của tất cả sản phẩm của người dùng thành 'rejected'
             await Product.updateMany(
                 { sellerId: userId, status: { $in: ['active', 'non_active'] } },
                 { $set: { status: 'rejected' } }
@@ -71,21 +66,18 @@ async getUserReports(req, res, next) {
         }
     }
 
-    // Bỏ ban người dùng
     async unbanCustomer(req, res) {
         try {
             const userId = req.params.id;
 
-            // Cập nhật trạng thái người dùng thành 'active'
             const user = await User.findByIdAndUpdate(userId, { status: 'active' }, { new: true });
             if (!user) {
                 return res.status(404).send('Người dùng không tồn tại');
             }
 
-            // Cập nhật trạng thái của tất cả sản phẩm của người dùng trở lại trạng thái ban đầu
             await Product.updateMany(
                 { sellerId: userId, status: 'rejected' },
-                { $set: { status: 'active' } } // Hoặc 'non_active' tùy thuộc vào logic của bạn
+                { $set: { status: 'active' } }
             );
 
             res.redirect('/user/customers');
