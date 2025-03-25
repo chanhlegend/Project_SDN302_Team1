@@ -33,7 +33,7 @@ function route(app) {
     app.use('/report', reportRouter)
     app.use('/seller', sellerRouter)
     app.use('/category', categoryRouter)
-    app.use('/order', orderRouter)
+    app.use('/orders', orderRouter)
     app.use('/admin', productRouter)
     app.use('/productOwner', productOwnerRouter)
     app.use('/test', testRouter)

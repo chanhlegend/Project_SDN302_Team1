@@ -1,68 +1,66 @@
 <!DOCTYPE html>
 <html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Order Tracking</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
-    />
-    <link rel="stylesheet" href="/css/style.css" />
-    <style>
-      .nav-link {
-        color: rgb(26, 26, 26);
-        position: relative;
-        transition: color 0.3s ease;
-      }
-      .nav-link::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 50%;
-        width: 0;
-        height: 2px;
-        background-color: rgb(26, 26, 26);
-        transition: width 0.3s ease, left 0.3s ease;
-      }
-      .nav-link.active {
-        color: rgb(26, 26, 26);
-      }
-      .nav-link.active::after {
-        width: 100%;
-        left: 0;
-      }
-      .nav-link:hover {
-        color: rgb(0, 0, 0);
-      }
-    </style>
-  </head>
-  <body class="bg-gray-100">
-    <%- include('partials/header') %>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order Tracking</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <style>
+    .nav-link {
+      color: rgb(26, 26, 26);
+      position: relative;
+      transition: color 0.3s ease;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background-color: rgb(26, 26, 26);
+      transition: width 0.3s ease, left 0.3s ease;
+    }
+
+    .nav-link.active {
+      color: rgb(26, 26, 26);
+    }
+
+    .nav-link.active::after {
+      width: 100%;
+      left: 0;
+    }
+
+    .nav-link:hover {
+      color: rgb(0, 0, 0);
+    }
+  </style>
+</head>
+
+<body class="bg-gray-100">
+  <%- include('partials/header') %>
     <div class="bg-white shadow-sm">
       <div class="flex justify-between items-center border-b border-gray-200">
-        <% let tabs = ["Tất cả", "Đang duyệt", "Đang đóng gói", "Vận chuyển", "Hoàn thành", "Đã hủy"]; %>
-        <% tabs.forEach((tab, index) => { %>
-        <a
-          href="#"
-          class="nav-link <%= select == index ? 'active' : '' %> py-4 flex-1 text-center transition duration-300 ease-in-out"
-          data-index="<%= index %>"
-          ><%= tab %></a
-        >
-        <% }); %>
+        <% let tabs=["Tất cả", "Đang duyệt" , "Đang đóng gói" , "Vận chuyển" , "Hoàn thành" , "Đã hủy" ]; %>
+          <% tabs.forEach((tab, index)=> { %>
+            <a href="#"
+              class="nav-link <%= select == index ? 'active' : '' %> py-4 flex-1 text-center transition duration-300 ease-in-out"
+              data-index="<%= index %>">
+              <%= tab %>
+            </a>
+            <% }); %>
       </div>
     </div>
 
     <div class="bg-gray-100 p-4">
       <div class="bg-white flex items-center p-2 rounded shadow-sm mb-4">
         <i class="fas fa-search text-gray-400 mr-2"></i>
-        <input
-          type="text"
-          id="search-input"
-          placeholder="Tìm theo tên Shop, ID đơn hàng hoặc Tên Sản phẩm"
-          class="w-full border-none focus:outline-none text-gray-500"
-        />
+        <input type="text" id="search-input" placeholder="Tìm theo tên Shop, ID đơn hàng hoặc Tên Sản phẩm"
+          class="w-full border-none focus:outline-none text-gray-500" />
       </div>
 
       <div class="bg-white p-4 rounded shadow-sm">
@@ -86,65 +84,35 @@
       </div>
     </div>
 
-    <div
-      id="ratingModal"
-      class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden"style="margin-top: 50px;"
-    >
-      <div
-        class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white "
-      >
+    <div id="ratingModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden"
+      style="margin-top: 50px;">
+      <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white ">
         <div class="mt-3 text-center">
           <h3 class="text-lg leading-6 font-medium text-gray-900">Đánh giá</h3>
           <div class="mt-2 px-7 py-3">
             <form id="ratingForm" action="/evaluate/">
               <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700"
-                  >Điểm đánh giá</label
-                >
+                <label class="block text-sm font-medium text-gray-700">Điểm đánh giá</label>
                 <div id="starRating" class="flex justify-center space-x-1">
-                  <span class="star text-3xl cursor-pointer" data-value="1"
-                    >☆</span
-                  >
-                  <span class="star text-3xl cursor-pointer" data-value="2"
-                    >☆</span
-                  >
-                  <span class="star text-3xl cursor-pointer" data-value="3"
-                    >☆</span
-                  >
-                  <span class="star text-3xl cursor-pointer" data-value="4"
-                    >☆</span
-                  >
-                  <span class="star text-3xl cursor-pointer" data-value="5"
-                    >☆</span
-                  >
+                  <span class="star text-3xl cursor-pointer" data-value="1">☆</span>
+                  <span class="star text-3xl cursor-pointer" data-value="2">☆</span>
+                  <span class="star text-3xl cursor-pointer" data-value="3">☆</span>
+                  <span class="star text-3xl cursor-pointer" data-value="4">☆</span>
+                  <span class="star text-3xl cursor-pointer" data-value="5">☆</span>
                 </div>
                 <input type="hidden" id="rating" name="rating" value="0" />
               </div>
               <div class="mb-4">
-                <label
-                  for="comment"
-                  class="block text-sm font-medium text-gray-700"
-                  >Nhận xét</label
-                >
-                <textarea
-                  id="comment"
-                  name="comment"
-                  rows="3"
-                  class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                ></textarea>
+                <label for="comment" class="block text-sm font-medium text-gray-700">Nhận xét</label>
+                <textarea id="comment" name="comment" rows="3"
+                  class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
               </div>
               <div class="flex justify-end">
-                <button
-                  type="button"
-                  onclick="closeRatingModal()"
-                  class="mr-2 bg-gray-500 text-white px-4 py-2 rounded-md"
-                >
+                <button type="button" onclick="closeRatingModal()"
+                  class="mr-2 bg-gray-500 text-white px-4 py-2 rounded-md">
                   Đóng
                 </button>
-                <button
-                  type="submit"
-                  class="bg-blue-500 text-white px-4 py-2 rounded-md"
-                >
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md">
                   Gửi đánh giá
                 </button>
               </div>
@@ -153,10 +121,11 @@
         </div>
       </div>
     </div>
-    
+
 
     <script src="/js/orderTracking.js"></script>
-  </body>
+</body>
+
 </html>
 <script>
   document.addEventListener("DOMContentLoaded", function () {
@@ -164,21 +133,21 @@
 
     // Hàm để tự động kích hoạt tab "Tất cả" và load dữ liệu của nó
     function activateTab(tabIndex = 0) {
-        navLinks.forEach((link, index) => {
-            link.classList.remove("active"); // Loại bỏ active khỏi tất cả các tab
-            if (index === tabIndex) {
-                link.classList.add("active"); // Thêm active cho tab được chọn
-                updateOrders(tabIndex); // Load dữ liệu cho tab "Tất cả"
-            }
-        });
+      navLinks.forEach((link, index) => {
+        link.classList.remove("active"); // Loại bỏ active khỏi tất cả các tab
+        if (index === tabIndex) {
+          link.classList.add("active"); // Thêm active cho tab được chọn
+          updateOrders(tabIndex); // Load dữ liệu cho tab "Tất cả"
+        }
+      });
     }
 
-    
+
     navLinks.forEach((link, index) => {
-        link.addEventListener("click", function (event) {
-            event.preventDefault();
-            activateTab(index); // Chuyển sang tab tương ứng và load dữ liệu
-        });
+      link.addEventListener("click", function (event) {
+        event.preventDefault();
+        activateTab(index); // Chuyển sang tab tương ứng và load dữ liệu
+      });
     });
 
     // Hàm gọi API để lấy danh sách đơn hàng
@@ -215,14 +184,12 @@
       <td class="py-2 px-4 border-b border-gray-200">${products}</td>
       <td class="py-2 px-4 border-b border-gray-200">${order.totalPrice.toLocaleString()} VND</td>
       <td class="py-2 px-4 border-b border-gray-200 text-center">
-         <i class="fas fa-eye cursor-pointer text-blue-500 mr-3" onclick="viewDetails('${
-           order._id
-         }')"></i>
-         ${
-           select == 4
-             ? `<span class="cursor-pointer text-yellow-500 ml-3" onclick="rateOrder('${order.product[0].sellerId}', '${order.product[0]._id}')" data-product-id="${order.product[0]._id}">Đánh giá</span>`
-             : ""
-         }
+         <i class="fas fa-eye cursor-pointer text-blue-500 mr-3" onclick="viewDetails('${order._id
+              }')"></i>
+         ${select == 4
+                ? `<span class="cursor-pointer text-yellow-500 ml-3" onclick="rateOrder('${order.product[0].sellerId}', '${order.product[0]._id}')" data-product-id="${order.product[0]._id}">Đánh giá</span>`
+                : ""
+              }
       </td>
   </tr>
                 `;
@@ -355,8 +322,9 @@
 
     // Hàm xem chi tiết đơn hàng
     window.viewDetails = function (id) {
-        alert(`Xem chi tiết đơn hàng ID: ${id}`);
+      const url = `/orders/detailOrder?id=${id}`;
+      window.location.href = url;
     };
-});
+  });
 
 </script>
