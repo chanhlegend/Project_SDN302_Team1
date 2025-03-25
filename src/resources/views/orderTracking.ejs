@@ -88,8 +88,70 @@
 
     <div
       id="ratingModal"
-      class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden"style="margin-top: 50px;">
-      <!-- Modal Content here -->
+      class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden"style="margin-top: 50px;"
+    >
+      <div
+        class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white "
+      >
+        <div class="mt-3 text-center">
+          <h3 class="text-lg leading-6 font-medium text-gray-900">Đánh giá</h3>
+          <div class="mt-2 px-7 py-3">
+            <form id="ratingForm" action="/evaluate/">
+              <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700"
+                  >Điểm đánh giá</label
+                >
+                <div id="starRating" class="flex justify-center space-x-1">
+                  <span class="star text-3xl cursor-pointer" data-value="1"
+                    >☆</span
+                  >
+                  <span class="star text-3xl cursor-pointer" data-value="2"
+                    >☆</span
+                  >
+                  <span class="star text-3xl cursor-pointer" data-value="3"
+                    >☆</span
+                  >
+                  <span class="star text-3xl cursor-pointer" data-value="4"
+                    >☆</span
+                  >
+                  <span class="star text-3xl cursor-pointer" data-value="5"
+                    >☆</span
+                  >
+                </div>
+                <input type="hidden" id="rating" name="rating" value="0" />
+              </div>
+              <div class="mb-4">
+                <label
+                  for="comment"
+                  class="block text-sm font-medium text-gray-700"
+                  >Nhận xét</label
+                >
+                <textarea
+                  id="comment"
+                  name="comment"
+                  rows="3"
+                  class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                ></textarea>
+              </div>
+              <div class="flex justify-end">
+                <button
+                  type="button"
+                  onclick="closeRatingModal()"
+                  class="mr-2 bg-gray-500 text-white px-4 py-2 rounded-md"
+                >
+                  Đóng
+                </button>
+                <button
+                  type="submit"
+                  class="bg-blue-500 text-white px-4 py-2 rounded-md"
+                >
+                  Gửi đánh giá
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
     
 
@@ -121,46 +183,172 @@
 
     // Hàm gọi API để lấy danh sách đơn hàng
     function updateOrders(select) {
-        fetch("/orderTracking/list", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ select }),
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                const orderList = document.getElementById("order-list");
-                orderList.innerHTML = "";
+      fetch("/orderTracking/list", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ select }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          const orderList = document.getElementById("order-list");
+          orderList.innerHTML = "";
 
-                if (data.orders.length === 0) {
-                    orderList.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-gray-500">${data.message}</td></tr>`;
-                    return;
-                }
+          if (data.orders.length === 0) {
+            orderList.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-gray-500">${data.message}</td></tr>`;
+            return;
+          }
 
-                data.orders.forEach((order) => {
-                    const products = order.product
-                        .map(
-                            (p) => `
-                            <div class="flex items-center space-x-2">
-                                <span>${p.productName}</span>
-                            </div>
-                        `
-                        )
-                        .join("");
+          data.orders.forEach((order) => {
+            const products = order.product
+              .map(
+                (p) => `
+                    <div class="flex items-center space-x-2">
+                        <span>${p.productName}</span>
+                    </div>
+                `
+              )
+              .join("");
 
-                    orderList.innerHTML += `
-                        <tr>
-                            <td class="py-2 px-4 border-b border-gray-200">${order._id}</td>
-                            <td class="py-2 px-4 border-b border-gray-200">${products}</td>
-                            <td class="py-2 px-4 border-b border-gray-200">${order.totalPrice.toLocaleString()} VND</td>
-                            <td class="py-2 px-4 border-b border-gray-200 text-center">
-                                <i class="fas fa-eye cursor-pointer text-blue-500 mr-3" onclick="viewDetails('${order._id}')"></i>
-                            </td>
-                        </tr>
-                    `;
+            orderList.innerHTML += `
+                     <tr>
+      <td class="py-2 px-4 border-b border-gray-200">${order._id}</td>
+      <td class="py-2 px-4 border-b border-gray-200">${products}</td>
+      <td class="py-2 px-4 border-b border-gray-200">${order.totalPrice.toLocaleString()} VND</td>
+      <td class="py-2 px-4 border-b border-gray-200 text-center">
+         <i class="fas fa-eye cursor-pointer text-blue-500 mr-3" onclick="viewDetails('${
+           order._id
+         }')"></i>
+         ${
+           select == 4
+             ? `<span class="cursor-pointer text-yellow-500 ml-3" onclick="rateOrder('${order.product[0].sellerId}', '${order.product[0]._id}')" data-product-id="${order.product[0]._id}">Đánh giá</span>`
+             : ""
+         }
+      </td>
+  </tr>
+                `;
+
+            if (select == 4) {
+              order.product.forEach((p) => {
+                checkIfEvaluated(p._id).then((result) => {
+                  if (result.success && result.isEvaluated) {
+                    // Nếu đã đánh giá, cập nhật giao diện
+                    const rateButton = document.querySelector(
+                      `[data-product-id="${p._id}"]`
+                    );
+                    if (rateButton) {
+                      rateButton.textContent = "Đã đánh giá";
+                      rateButton.style.pointerEvents = "none"; // Vô hiệu hóa nút
+                      rateButton.style.opacity = "0.5"; // Làm mờ nút
+                    }
+                  }
                 });
-            })
-            .catch((error) => console.error("Lỗi khi tải đơn hàng:", error));
+              });
+            }
+          });
+        })
+        .catch((error) => console.error("Lỗi khi tải đơn hàng:", error));
     }
+
+
+    window.rateOrder = async function (orderId, productId) {
+      const checkResult = await checkIfEvaluated(productId);
+      if (checkResult.success && checkResult.isEvaluated) {
+        alert("Bạn đã đánh giá sản phẩm này rồi!");
+        return;
+      }
+      const modal = document.getElementById("ratingModal");
+      modal.classList.remove("hidden");
+
+      // Lưu orderId vào form để sử dụng khi submit
+      const ratingForm = document.getElementById("ratingForm");
+      ratingForm.dataset.orderId = orderId;
+      ratingForm.dataset.productId = productId;
+    };
+
+    // Hàm đóng modal đánh giá
+    window.closeRatingModal = function () {
+      const modal = document.getElementById("ratingModal");
+      modal.classList.add("hidden");
+    };
+    document.querySelectorAll(".star").forEach((star) => {
+      star.addEventListener("click", function () {
+        let value = this.dataset.value;
+        document.getElementById("rating").value = value;
+        highlightStars(value);
+      });
+    });
+
+    function highlightStars(value) {
+      document.querySelectorAll(".star").forEach((star) => {
+        star.textContent = star.dataset.value <= value ? "★" : "☆";
+        star.classList.toggle("text-yellow-500", star.dataset.value <= value);
+      });
+    }
+
+    async function checkIfEvaluated(productId, evaluaterId) {
+      try {
+        const response = await fetch("/evaluate/check-evaluated", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ productId }),
+          credentials: "include",
+        });
+
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        console.error("Lỗi khi kiểm tra đánh giá:", error);
+        return { success: false, message: "Lỗi khi kiểm tra đánh giá" };
+      }
+    }
+
+    // Xử lý submit form đánh giá
+    document
+      .getElementById("ratingForm")
+      .addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const evaluatedId = this.dataset.orderId;
+        const productId = this.dataset.productId;
+        const star = document.getElementById("rating").value;
+        const comment = document.getElementById("comment").value;
+
+        fetch("/evaluate/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ evaluatedId, star, comment, productId }),
+          credentials: "include",
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              alert("Đánh giá thành công!");
+
+              const rateButton = document.querySelector(
+                `[onclick="rateOrder('${evaluatedId}', '${productId}')"]`
+              );
+              if (rateButton) {
+                rateButton.textContent = "Đã đánh giá";
+                rateButton.style.pointerEvents = "none"; // Vô hiệu hóa nút
+                rateButton.style.opacity = "0.5"; // Làm mờ nút
+              }
+
+              document.getElementById("ratingForm").reset();
+              document.getElementById("rating").value = ""; // Xóa số sao
+              document.getElementById("comment").value = ""; // Xóa bình luận
+
+              // Reset hiển thị sao
+              highlightStars(0);
+
+              closeRatingModal();
+            } else {
+              alert("Có lỗi xảy ra khi đánh giá: " + data.message);
+            }
+          })
+          .catch((error) => {
+            console.error("Lỗi khi gửi đánh giá:", error);
+          });
+      });
 
     // Khi trang được load, tự động kích hoạt tab "Tất cả"
     activateTab(0);
